@@ -21,7 +21,6 @@
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",
     "test:headed:slow": "SLOWMO=true npx playwright test --headed",
-    "build": "tsc -p tsconfig.build.json && biome check --fix utils/ tests/",
     "lint:js": "biome lint --fix utils/ tests/",
     "format:js": "biome format --fix utils/ tests/"
   },
