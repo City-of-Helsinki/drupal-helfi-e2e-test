@@ -1,18 +1,19 @@
 import { defineConfig, devices } from '@playwright/test';
-import path from 'node:path';
-import fs from 'node:fs';
 import { getStorageStatePath } from './utils/storagePath';
+import { sites, getSiteConfig } from './sites.config';
 
 type Config = Parameters<typeof defineConfig>[0];
 
 const baseSetupPath = require.resolve('./utils/globalSetup');
 const baseTeardownPath = require.resolve('./utils/globalTeardown');
 
+const browserConfig = devices['Desktop Chrome']
+
 const base: Config = {
   globalSetup: [baseSetupPath],
   globalTeardown: [baseTeardownPath],
   testDir: './tests',
-  testMatch: '**/*.ts',
+  testMatch: '**/*.spec.ts',
   timeout: 300_000,
   expect: { timeout: 5_000 },
   fullyParallel: true,
@@ -28,7 +29,31 @@ const base: Config = {
     launchOptions: { slowMo: process.env.SLOWMO ? 1_000 : 0 },
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    // Common tests project - runs only shared tests with first site's config.
+    {
+      name: 'common',
+      testMatch: '**/tests/common/**/*.spec.ts',
+      use: {
+        ...browserConfig,
+        baseURL: sites.length > 0 ? getSiteConfig(sites[0]).baseURL : process.env.BASE_URL ?? 'https://www.test.hel.ninja/',
+      },
+    },
+    // Generate a project for each configured site.
+    ...sites.map((site) => {
+      const siteConfig = getSiteConfig(site);
+      return {
+        name: site.name,
+        // Include both common tests and site-specific tests.
+        testMatch: [
+          '**/tests/common/**/*.spec.ts',
+          `**/tests/sites/${site.name}/**/*.spec.ts`,
+        ],
+        use: {
+          ...browserConfig,
+          baseURL: siteConfig.baseURL,
+        },
+      };
+    }),
   ],
 };
 

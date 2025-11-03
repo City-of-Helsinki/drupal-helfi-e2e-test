@@ -28,7 +28,13 @@ The E2E testing framework is designed to:
 ├── .env                       # Environment variables
 ├── package.json               # NPM package configuration
 ├── playwright.config.ts       # Base Playwright configuration
+├── sites.config.ts            # Multi-site configuration
 ├── tests/                     # Test files
+│   ├── common/                # Common tests for all sites
+│   │   └── *.spec.ts
+│   └── sites/                 # Site-specific tests
+│       └── {site-name}/
+│           └── *.spec.ts
 └── utils/                     # Shared utilities
     ├── fetchJsonApiRequest.ts # API request helper
     ├── globalSetup.ts         # Global test setup
@@ -40,9 +46,7 @@ The E2E testing framework is designed to:
 
 ## Setup and Installation
 
-This package is intended to be used as a dependency in other projects. It is not intended to be used directly. 
-
-When developing this package, the tests can be run in similar way as in the dependent projects. 
+When developing this package, the tests can be run in the same way as in the dependent projects.
 
 1. **Install Dependencies**:
    ```bash
@@ -99,3 +103,6 @@ Projects can extend and override these settings as needed.
 - Common page interaction patterns
 - Cookie consent handling
 - Dialog and alert management
+
+### Site-specific tests
+- See [`README.md`](./tests/sites/README.md).
