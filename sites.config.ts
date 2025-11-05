@@ -31,11 +31,11 @@ export const sites: SiteConfig[] = [
     envPrefix: 'ETUSIVU',
     defaultBaseURL: 'https://www.test.hel.ninja/',
   },
-  //{
-  //  name: 'tyo-yrittaminen',
-  //  envPrefix: 'TYO_YRITTAMINEN',
-  //  defaultBaseURL: 'https://www.test.hel.ninja/',
-  //},
+  {
+    name: 'tyo-yrittaminen',
+    envPrefix: 'TYO_YRITTAMINEN',
+    defaultBaseURL: 'https://www.test.hel.ninja/',
+  },
   // Add more sites here as needed:
   // {
   //   name: 'asuminen',
