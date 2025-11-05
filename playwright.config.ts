@@ -2,6 +2,12 @@ import { defineConfig, devices } from '@playwright/test';
 import { getStorageStatePath } from './utils/storagePath';
 import { sites, getSiteConfig } from './sites.config';
 
+try {
+  process.loadEnvFile('.env')
+} catch (e) {
+  // Use default config.
+}
+
 type Config = Parameters<typeof defineConfig>[0];
 
 const baseSetupPath = require.resolve('./utils/globalSetup');
