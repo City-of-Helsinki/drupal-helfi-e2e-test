@@ -35,13 +35,13 @@ const base: Config = {
     launchOptions: { slowMo: process.env.SLOWMO ? 1_000 : 0 },
   },
   projects: [
-    // Common tests project - runs only shared tests with first site's config.
+    // Common tests project - runs only shared tests.
     {
       name: 'common',
       testMatch: '**/tests/common/**/*.spec.ts',
       use: {
         ...browserConfig,
-        baseURL: sites.length > 0 ? getSiteConfig(sites[0]).baseURL : process.env.BASE_URL ?? 'https://www.test.hel.ninja/',
+        baseURL: process.env.BASE_URL ?? 'https://www.test.hel.ninja/',
       },
     },
     // Generate a project for each configured site.

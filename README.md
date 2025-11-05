@@ -46,18 +46,16 @@ The E2E testing framework is designed to:
 
 ## Setup and Installation
 
-When developing this package, the tests can be run in the same way as in the dependent projects.
-
 1. **Install Dependencies**:
    ```bash
    npm install
    ```
 
 2. **Environment Variables**:
-   Create a `.env` file with required variables:
+   ```bash
+   cp .env.example .env
    ```
-   BASE_URL=https://your-site.docker.so
-   ```
+   Edit the env file to suit your needs.
 
 3. **Running Tests**:
    ```bash

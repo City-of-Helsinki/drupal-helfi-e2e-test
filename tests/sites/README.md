@@ -16,7 +16,7 @@ tests/sites/
 
 ## Adding a New Site
 
-To add tests for a new Drupal site:
+To add tests for a site:
 
 ### 1. Configure the Site
 
@@ -95,7 +95,4 @@ npx playwright test --project=common
 
 # Run all sites
 npx playwright test
-
-# Run tests in headed mode for a site
-npx playwright test --project=etusivu --headed
 ```
