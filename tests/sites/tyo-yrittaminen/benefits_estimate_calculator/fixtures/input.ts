@@ -1,74 +1,73 @@
-import { expect, test } from '@playwright/test';
-import translations from '../../../../../../../sote/public/modules/contrib/helfi_platform_config/modules/helfi_calculator/assets/js/helsinkiBenefitAmountEstimate/_translations';
+import { expect, test, type Page } from '@playwright/test';
 
 const replaceValue = '${value}';
 const PAY_SUBSIDY_PERCENTAGES = ['50', '70'];
 
-const fillVacationMoney = (page, value) =>
+const fillVacationMoney = (page: Page, value) =>
   test.step('Fill vacation money', async () => {
-    await page.getByLabel(translations.label_vacation_money.fi).fill(String(value));
+    await page.getByLabel('Lomaraha').fill(String(value));
   });
 
-const fillMonthlyPay = (page, value) =>
+const fillMonthlyPay = (page: Page, value) =>
   test.step('Fill monthly pay', async () => {
-    await page.getByLabel(translations.label_monthly_pay.fi).fill(String(value));
+    await page.getByLabel('Työntekijän tuleva bruttopalkka').fill(String(value));
   });
 
-const selectPaySubsidyGranted = (page) =>
+const selectPaySubsidyGranted = (page: Page) =>
   test.step('Select pay subsidy granted', async () => {
-    await page.getByText(translations.label_pay_subsidy_true.fi, { exact: true }).click();
+    await page.getByText('Palkkatuki tai 55 vuotta täyttäneiden työllistämistuki', { exact: true }).click();
   });
 
-const selectPaySubsidyNotGranted = (page) =>
+const selectPaySubsidyNotGranted = (page: Page) =>
   test.step('Select pay subsidy not granted', async () => {
-    await page.getByText(translations.label_pay_subsidy_false.fi, { exact: true }).click();
+    await page.getByText('Työsuhteeseen ei ole myönnetty tai haettu muuta tukea', { exact: true }).click();
   });
 
-const selectPaySubsidyPercentageOption1 = (page) =>
+const selectPaySubsidyPercentageOption1 = (page: Page) =>
   test.step('Select pay subsidy percentage #1', async () => {
     await page
       .getByText(
-        translations.label_pay_subsidy_percentage_1.fi.replace(replaceValue, PAY_SUBSIDY_PERCENTAGES.at(0), {
+        'Tuki kattaa ${value} % palkkauskustannuksista (tuen perusteena ammatillisen osaamisen parantaminen)'.replace(replaceValue, PAY_SUBSIDY_PERCENTAGES.at(0), {
           exact: true,
         }),
       )
       .click();
   });
 
-const selectPaySubsidyPercentageOption2 = (page) =>
+const selectPaySubsidyPercentageOption2 = (page: Page) =>
   test.step('Select pay subsidy percentage #2', async () => {
     await page
       .getByText(
-        translations.label_pay_subsidy_percentage_2.fi.replace(replaceValue, PAY_SUBSIDY_PERCENTAGES.at(1), {
+        'Tuki kattaa ${value} % palkkauskustannuksista (tuen perusteena alentunut työkyky tai 55 vuotta täyttäneiden työllistämistuki)'.replace(replaceValue, PAY_SUBSIDY_PERCENTAGES.at(1), {
           exact: true,
         }),
       )
       .click();
   });
 
-const selectCompanyTypeBusiness = (page) =>
+const selectCompanyTypeBusiness = (page: Page) =>
   test.step('Select business', async () => {
-    await page.getByText(translations.label_company_type_business.fi, { exact: true }).click({ force: true });
+    await page.getByText('Työnantaja on yritys', { exact: true }).click({ force: true });
   });
 
-const selectCompanyTypeAssociation = (page) =>
+const selectCompanyTypeAssociation = (page: Page) =>
   test.step('Select association', async () => {
-    await page.getByText(translations.label_company_type_association.fi, { exact: true }).click({ force: true });
+    await page.getByText('Työnantaja on yhteisö', { exact: true }).click({ force: true });
   });
 
-const checkAssociationHasBusinessActivities = (page) =>
+const checkAssociationHasBusinessActivities = (page: Page) =>
   test.step('Check association has business activities', async () => {
-    await page.getByText(translations.label_association_has_business_activities.fi).isVisible();
-    await page.getByText(translations.label_association_has_business_activities.fi, { exact: true }).click();
+    await page.getByText('Yhteisö harjoittaa taloudellista toimintaa').isVisible();
+    await page.getByText('Yhteisö harjoittaa taloudellista toimintaa', { exact: true }).click();
   });
 
-const clickResultsButton = (page) =>
+const clickResultsButton = (page: Page) =>
   test.step('Click results button', async () => {
-    await page.getByRole('button', { name: 'Laske arvio' }).click({ force: true });
+    await page.getByRole('button', { name: 'Laske arvio' }).click();
   });
 
 const resultSelector = '.helfi-calculator__receipt-total__value';
-const expectResult = (page, result) =>
+const expectResult = (page: Page, result) =>
   test.step('Click results button', async () => {
     expect(await page.locator(resultSelector).textContent()).toBe(result);
   });

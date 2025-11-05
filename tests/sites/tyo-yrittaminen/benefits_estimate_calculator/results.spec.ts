@@ -61,10 +61,9 @@ const TEST_CASES = [
   },
 ];
 
-test.slow();
 test.describe.configure({ mode: 'parallel' });
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://localhost:3001/src/js/calculator/helsinkiBenefitAmountEstimate/helsinki-benefit-test.html');
+  await page.goto('/fi/yritykset-ja-tyo/tyonantajat/taloudellista-tukea-tyonantajalle/helsinki-lisan-laskuri');
 });
 
 TEST_CASES.forEach((testCase) => {
@@ -76,7 +75,7 @@ TEST_CASES.forEach((testCase) => {
         await selectCompanyTypeBusiness(page);
         await selectPaySubsidyNotGranted(page);
         await clickResultsButton(page);
-        expectResult(page, testCase.BUSINESS_ACTIVITIES.NONE);
+        await expectResult(page, testCase.BUSINESS_ACTIVITIES.NONE);
       });
 
       test('Fill in form and check results (50)', async ({ page }) => {
@@ -86,7 +85,7 @@ TEST_CASES.forEach((testCase) => {
         await selectPaySubsidyGranted(page);
         await selectPaySubsidyPercentageOption1(page);
         await clickResultsButton(page);
-        expectResult(page, testCase.BUSINESS_ACTIVITIES['50']);
+        await expectResult(page, testCase.BUSINESS_ACTIVITIES['50']);
       });
 
       test('Fill in form and check results (70)', async ({ page }) => {
@@ -96,7 +95,7 @@ TEST_CASES.forEach((testCase) => {
         await selectPaySubsidyGranted(page);
         await selectPaySubsidyPercentageOption2(page);
         await clickResultsButton(page);
-        expectResult(page, testCase.BUSINESS_ACTIVITIES['70']);
+        await expectResult(page, testCase.BUSINESS_ACTIVITIES['70']);
       });
     });
 
@@ -108,7 +107,7 @@ TEST_CASES.forEach((testCase) => {
         await checkAssociationHasBusinessActivities(page);
         await selectPaySubsidyNotGranted(page);
         await clickResultsButton(page);
-        expectResult(page, testCase.BUSINESS_ACTIVITIES.NONE);
+        await expectResult(page, testCase.BUSINESS_ACTIVITIES.NONE);
       });
 
       test('Fill in form and check results (50)', async ({ page }) => {
@@ -119,7 +118,7 @@ TEST_CASES.forEach((testCase) => {
         await selectPaySubsidyGranted(page);
         await selectPaySubsidyPercentageOption1(page);
         await clickResultsButton(page);
-        expectResult(page, testCase.BUSINESS_ACTIVITIES['50']);
+        await expectResult(page, testCase.BUSINESS_ACTIVITIES['50']);
       });
 
       test('Fill in form and check results (70)', async ({ page }) => {
@@ -130,7 +129,7 @@ TEST_CASES.forEach((testCase) => {
         await selectPaySubsidyGranted(page);
         await selectPaySubsidyPercentageOption2(page);
         await clickResultsButton(page);
-        expectResult(page, testCase.BUSINESS_ACTIVITIES['70']);
+        await expectResult(page, testCase.BUSINESS_ACTIVITIES['70']);
       });
     });
 
@@ -141,7 +140,7 @@ TEST_CASES.forEach((testCase) => {
         await selectCompanyTypeAssociation(page);
         await selectPaySubsidyNotGranted(page);
         await clickResultsButton(page);
-        expectResult(page, testCase.ASSOCIATION.NONE);
+        await expectResult(page, testCase.ASSOCIATION.NONE);
       });
 
       test('[Association] Fill in form and check results (50)', async ({ page }) => {
@@ -151,7 +150,7 @@ TEST_CASES.forEach((testCase) => {
         await selectPaySubsidyGranted(page);
         await selectPaySubsidyPercentageOption1(page);
         await clickResultsButton(page);
-        expectResult(page, testCase.ASSOCIATION['50']);
+        await expectResult(page, testCase.ASSOCIATION['50']);
       });
 
       test('[Association] Fill in form and check results (70)', async ({ page }) => {
@@ -161,7 +160,7 @@ TEST_CASES.forEach((testCase) => {
         await selectPaySubsidyGranted(page);
         await selectPaySubsidyPercentageOption2(page);
         await clickResultsButton(page);
-        expectResult(page, testCase.ASSOCIATION['70']);
+        await expectResult(page, testCase.ASSOCIATION['70']);
       });
     });
   });
