@@ -24,7 +24,12 @@ const base: Config = {
   expect: { timeout: 5_000 },
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  // Reporter to use. See https://playwright.dev/docs/test-reporters
+  reporter: [
+    ['list'],
+    ['junit', { outputFile: 'report/e2e-junit-results.xml' }],
+    ['html', { open: 'never', outputFolder: 'report/html' }],
+  ],
   use: {
     baseURL: process.env.BASE_URL ?? 'https://www.test.hel.ninja/',
     storageState: getStorageStatePath(),
