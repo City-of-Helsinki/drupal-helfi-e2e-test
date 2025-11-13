@@ -1,6 +1,8 @@
 node_modules
 playwright-report
+report
 test-results
 dist
 .idea
 .env
+.DS_Store
