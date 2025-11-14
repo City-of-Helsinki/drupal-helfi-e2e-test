@@ -95,4 +95,13 @@ npx playwright test --project=common
 
 # Run all sites
 npx playwright test
+
+# Run a specific test
+npx playwright test tests/sites/etusivu/cookieBanner.spec.ts
+
+# Run tests slower so that after each action the test waits 1 second
+SLOWMO=true npx playwright test
+
+# Run tests with headed browser
+npx playwright test tests/sites/etusivu/cookieBanner.spec.ts --headed
 ```
