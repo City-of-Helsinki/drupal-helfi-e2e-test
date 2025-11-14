@@ -36,6 +36,11 @@ export const sites: SiteConfig[] = [
     envPrefix: 'TYO_YRITTAMINEN',
     defaultBaseURL: 'https://www.test.hel.ninja/',
   },
+  {
+    name: 'hallinto',
+    envPrefix: 'HALLINTO',
+    defaultBaseURL: 'https://www.test.hel.ninja/',
+  },
   // Add more sites here as needed:
   // {
   //   name: 'asuminen',
