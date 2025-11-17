@@ -16,7 +16,7 @@ if (
 }
 
 const hookContent = `#!/bin/sh
-npm run format:js && npm run lint:js
+npm run lint:js
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
   exit 1
