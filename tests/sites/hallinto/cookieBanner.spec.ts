@@ -29,6 +29,33 @@ async function askemBannerOnPage(page: Page) {
   return askemBanner;
 }
 
+type cookieTypes = 'preferences' | 'statistics' | 'chat';
+
+async function acceptCookieType(page: Page, cookieTypes: cookieTypes[]) {
+  // Set up a promise that resolves when the page reloads
+  const reloadPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+
+  // Open the cookie settings.
+  const toggleCookiePreferencesButton = page.locator('.hds-cc__accordion-button--details');
+  await toggleCookiePreferencesButton.click();
+  
+  // Select the cookie types.
+  for (const cookieType of cookieTypes) {
+    const acceptCookieTypeButton = page.locator(`input#${cookieType}-cookies`);
+    await acceptCookieTypeButton.click();
+  }
+
+  // Accept the selected cookie types.
+  const acceptSelectedCookiesButton = page.locator('.hds-cc__selected-cookies-button');
+  await acceptSelectedCookiesButton.click();
+
+  // Wait for the navigation to complete
+  await reloadPromise;
+
+  // Add assertions to verify the page state after reload
+  await expect(page).toHaveURL('/fi/paatoksenteko-ja-hallinto/helfin-sisallontuottajan-opas/sivujen-rakentaminen-drupalissa/komponentit/videoupotus');
+}
+
 async function acceptAllCookies(page: Page) {
   const acceptAllCookiesButton = page.locator('.hds-cc__all-cookies-button');
   await acceptAllCookiesButton.click();
@@ -63,16 +90,7 @@ test.describe('Cookie Banner', () => {
   test('should show the remote video paragraphs content after accepting statistics and preferences cookies', async ({ page }) => {
     const videosOnPage = await allVideosOnPage(page);
 
-    // Open the cookie settings and select statistics cookies and accept them.
-    const toggleCookiePreferencesButton = page.locator('.hds-cc__accordion-button--details');
-    const acceptStatisticsCookiesCheckbox = page.locator('input#statistics-cookies');
-    const acceptPreferencesCookiesCheckbox = page.locator('input#preferences-cookies');
-    const acceptSelectedCookiesButton = page.locator('.hds-cc__selected-cookies-button');
-    await toggleCookiePreferencesButton.click();
-    await acceptStatisticsCookiesCheckbox.click();
-    await acceptPreferencesCookiesCheckbox.click();
-    await acceptSelectedCookiesButton.click();
-
+    await acceptCookieType(page, ['statistics', 'preferences']);
     // Make sure the videos are now visible.
     for (const video of videosOnPage) {
       await expect(video.locator('iframe')).toHaveCount(1);
@@ -101,16 +119,35 @@ test.describe('Cookie Banner', () => {
   test('should show the Askem banner after accepting statistics cookies', async ({ page }) => {
     const askemBanner = await askemBannerOnPage(page);
 
-    // Open the cookie settings and select statistics cookies and accept them.
-    const toggleCookiePreferencesButton = page.locator('.hds-cc__accordion-button--details');
-    const acceptStatisticsCookiesCheckbox = page.locator('input#statistics-cookies');
-    const acceptSelectedCookiesButton = page.locator('.hds-cc__selected-cookies-button');
-    await toggleCookiePreferencesButton.click();
-    await acceptStatisticsCookiesCheckbox.click();
-    await acceptSelectedCookiesButton.click();
+    await acceptCookieType(page, ['statistics']);
 
     // Make sure the Askem banner is now visible.
     await expect(askemBanner.locator('.askem')).toHaveCount(1);
     await expect(askemBanner.locator('.askem')).not.toBeEmpty();
+  });
+
+  test('should not allow any cookies before accepting cookies', async ({ page, context }) => {
+    await navigateToTestPage(page);
+ 
+    const cookies = await context.cookies();
+ 
+    expect(cookies).toHaveLength(0);
+  });
+  
+  test('should allow cookie consent cookie after accepting all cookies', async ({ page, context }) => {
+    await navigateToTestPage(page);
+
+    let cookies = await context.cookies();
+    let hasConsentsCookie = cookies.some(cookie => cookie.name.match('helfi-cookie-consents'));
+    
+    expect(hasConsentsCookie, 'Expected that no cookie called "helfi-cookie-consents" is be set before accepting statistics cookies').toBeFalsy();
+
+    await acceptAllCookies(page);
+    await page.waitForLoadState('domcontentloaded');
+    
+    cookies = await context.cookies();
+    hasConsentsCookie = cookies.some(cookie => cookie.name.match('helfi-cookie-consents'));
+
+    expect(hasConsentsCookie, 'Expected a cookie called "helfi-cookie-consents" to be set after accepting statistics cookies').toBeTruthy();
   });
 });
