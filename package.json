@@ -14,7 +14,7 @@
   "directories": {
     "test": "tests"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@biomejs/biome": "^2.3.4",
     "@dotenvx/dotenvx": "^1.15.0",
     "@playwright/test": "^1.55.1",
