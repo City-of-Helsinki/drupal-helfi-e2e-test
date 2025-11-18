@@ -20,7 +20,9 @@ export default async function globalSetup(config: FullConfig) {
 
   // Launch a new browser instance.
   const browser = await chromium.launch();
-  const page = await browser.newPage({ baseURL: config.projects[0].use.baseURL });
+  const page = await browser.newPage({
+    baseURL: config.projects[0].use.baseURL,
+  });
 
   try {
     // Navigate to the base URL to initialize the session.

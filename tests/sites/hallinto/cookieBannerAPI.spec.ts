@@ -4,11 +4,7 @@ import { sites } from '../../../sites.config';
 import { logger } from '../../../utils/logger';
 
 // Type definitions based on the example response
-type Language = {
-  code: string;
-  name: string;
-  direction: 'ltr' | 'rtl';
-};
+type Language = { code: string; name: string; direction: 'ltr' | 'rtl' };
 
 type Cookie = {
   name: string;
@@ -33,24 +29,23 @@ type CookieBannerResponse = {
   remove: boolean;
   fallbackLanguage: string;
   requiredGroups: CookieGroup[];
-  robotCookies: Array<{
-    name: string;
-    storageType: number;
-  }>;
+  robotCookies: Array<{ name: string; storageType: number }>;
   groupsWhitelistedForApi: string[];
   translations: Record<string, Record<string, string>>;
 };
 
 test('should receive valid cookie banner API response', async () => {
   // Get the Etusivu site configuration
-  const etusivuConfig = sites.find(site => site.name === 'etusivu');
+  const etusivuConfig = sites.find((site) => site.name === 'etusivu');
   if (!etusivuConfig) {
     throw new Error('Etusivu site configuration not found');
   }
 
   // Get the base URL from environment variable or use default
-  const baseURL = process.env[`${etusivuConfig.envPrefix}_BASE_URL`] || etusivuConfig.defaultBaseURL;
-  
+  const baseURL =
+    process.env[`${etusivuConfig.envPrefix}_BASE_URL`] ||
+    etusivuConfig.defaultBaseURL;
+
   if (!baseURL) {
     throw new Error('Base URL for Etusivu is not defined');
   }
@@ -60,18 +55,22 @@ test('should receive valid cookie banner API response', async () => {
   try {
     response = await fetchJsonApiRequest<CookieBannerResponse>(
       baseURL,
-      '/fi/api/cookie-banner'
+      '/fi/api/cookie-banner',
     );
-} catch (error) {
-  if (error instanceof Error) {
-    throw new Error(`Failed to fetch cookie banner data from ${baseURL}/fi/api/cookie-banner. The API might be down or the endpoint is not accessible. Error: ${error.message}`);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(
+        `Failed to fetch cookie banner data from ${baseURL}/fi/api/cookie-banner. The API might be down or the endpoint is not accessible. Error: ${error.message}`,
+      );
+    }
+    throw new Error(
+      `Unknown error occurred while fetching cookie banner data from ${baseURL}/fi/api/cookie-banner`,
+    );
   }
-  throw new Error(`Unknown error occurred while fetching cookie banner data from ${baseURL}/fi/api/cookie-banner`);
-}
 
   // Verify the response structure.
   expect(response).toBeDefined();
-  
+
   // Check required top-level properties.
   expect(response).toHaveProperty('languages');
   expect(Array.isArray(response.languages)).toBe(true);
@@ -88,8 +87,8 @@ test('should receive valid cookie banner API response', async () => {
 
   // Check at least one language is defined.
   expect(response.languages.length).toBeGreaterThan(0);
-  
-  response.languages.forEach(language => {
+
+  response.languages.forEach((language) => {
     expect(language).toHaveProperty('code');
     expect(language).toHaveProperty('name');
     expect(language).toHaveProperty('direction');
@@ -98,21 +97,21 @@ test('should receive valid cookie banner API response', async () => {
 
   // Check required groups.
   expect(response.requiredGroups.length).toBeGreaterThan(0);
-  response.requiredGroups.forEach(group => {
+  response.requiredGroups.forEach((group) => {
     expect(group).toHaveProperty('groupId');
     expect(group).toHaveProperty('title');
     expect(group).toHaveProperty('description');
     expect(Array.isArray(group.cookies)).toBe(true);
-    
+
     // Check translations for required languages.
-    ['fi', 'sv', 'en'].forEach(lang => {
+    ['fi', 'sv', 'en'].forEach((lang) => {
       expect(group.title).toHaveProperty(lang);
       expect(group.description).toHaveProperty(lang);
     });
   });
 
   // Check robot cookies.
-  response.robotCookies.forEach(cookie => {
+  response.robotCookies.forEach((cookie) => {
     expect(cookie).toHaveProperty('name');
     expect(cookie).toHaveProperty('storageType');
   });
