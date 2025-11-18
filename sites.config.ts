@@ -41,6 +41,11 @@ export const sites: SiteConfig[] = [
     envPrefix: 'HALLINTO',
     defaultBaseURL: 'https://www.test.hel.ninja/',
   },
+  {
+    name: 'rekry',
+    envPrefix: 'REKRY',
+    defaultBaseURL: 'https://www.test.hel.ninja/',
+  },
   // Add more sites here as needed:
   // {
   //   name: 'asuminen',
