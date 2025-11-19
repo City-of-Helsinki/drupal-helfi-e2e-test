@@ -1,5 +1,5 @@
 import { logger } from '../../../utils/logger';
-import { expect, Locator, test, type Page } from '@playwright/test';
+import { expect, type Locator, test, type Page } from '@playwright/test';
 
 /**
  * Cookie types that can be accepted.
