@@ -73,9 +73,7 @@ async function askemBannerIsEmpty(askemBanner: Locator, page: Page) {
  */
 async function acceptCookieType(page: Page, cookieTypes: cookieTypes[]) {
   // Set up a promise that resolves when the page reloads
-  const reloadPromise = page.waitForNavigation({
-    waitUntil: 'domcontentloaded',
-  });
+  const reloadPromise = page.waitForLoadState('domcontentloaded');
 
   // Open the cookie settings.
   const toggleCookiePreferencesButton = page.locator(
