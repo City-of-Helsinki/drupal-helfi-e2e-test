@@ -202,7 +202,13 @@ test.describe('Cookie Banner', () => {
     const acceptAllCookiesButton = page.locator('.hds-cc__all-cookies-button');
     await acceptAllCookiesButton.click();
     await page.waitForLoadState('domcontentloaded');
-    await page.waitForSelector('.responsive-video-container iframe');
+    
+    // Select the example YouTube iframe.
+    const frame = page.frameLocator('iframe[title="Video: Esimerkki videoupotuksesta Youtubesta."]');
+
+    // Wait for the iframe to be loaded.
+    const iframeBody = frame.locator('html');
+    await expect(iframeBody).toBeVisible();
 
     cookies = await context.cookies();
     hasConsentsCookie = cookies.some((cookie) =>
