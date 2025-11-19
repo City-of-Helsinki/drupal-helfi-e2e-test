@@ -18,46 +18,22 @@ const TEST_CASES = [
     NAME: 'Low',
     MONTLY_PAY: '400',
     VACATION_MONEY: '16',
-    BUSINESS_ACTIVITIES: {
-      NONE: '252,00',
-      50: '52,00',
-      70: '224,00',
-    },
-    ASSOCIATION: {
-      NONE: '504,00',
-      50: '304,00',
-      70: '224,00',
-    },
+    BUSINESS_ACTIVITIES: { NONE: '252,00', 50: '52,00', 70: '224,00' },
+    ASSOCIATION: { NONE: '504,00', 50: '304,00', 70: '224,00' },
   },
   {
     NAME: 'Medium',
     MONTLY_PAY: '1000',
     VACATION_MONEY: '42',
-    BUSINESS_ACTIVITIES: {
-      NONE: '631,00',
-      50: '131,00',
-      70: '562,00',
-    },
-    ASSOCIATION: {
-      NONE: '800,00',
-      50: '762,00',
-      70: '562,00',
-    },
+    BUSINESS_ACTIVITIES: { NONE: '631,00', 50: '131,00', 70: '562,00' },
+    ASSOCIATION: { NONE: '800,00', 50: '762,00', 70: '562,00' },
   },
   {
     NAME: 'High',
     MONTLY_PAY: '2000',
     VACATION_MONEY: '88',
-    BUSINESS_ACTIVITIES: {
-      NONE: '800,00',
-      50: '264,00',
-      70: '800,00',
-    },
-    ASSOCIATION: {
-      NONE: '800,00',
-      50: '800,00',
-      70: '800,00',
-    },
+    BUSINESS_ACTIVITIES: { NONE: '800,00', 50: '264,00', 70: '800,00' },
+    ASSOCIATION: { NONE: '800,00', 50: '800,00', 70: '800,00' },
   },
 ];
 
