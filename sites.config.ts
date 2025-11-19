@@ -32,8 +32,8 @@ export const sites: SiteConfig[] = [
     defaultBaseURL: 'https://www.test.hel.ninja/',
   },
   {
-    name: 'tyo-yrittaminen',
-    envPrefix: 'TYO_YRITTAMINEN',
+    name: 'rekry',
+    envPrefix: 'REKRY',
     defaultBaseURL: 'https://www.test.hel.ninja/',
   },
   {
@@ -42,8 +42,8 @@ export const sites: SiteConfig[] = [
     defaultBaseURL: 'https://www.test.hel.ninja/',
   },
   {
-    name: 'rekry',
-    envPrefix: 'REKRY',
+    name: 'tyo-yrittaminen',
+    envPrefix: 'TYO_YRITTAMINEN',
     defaultBaseURL: 'https://www.test.hel.ninja/',
   },
   // Add more sites here as needed:

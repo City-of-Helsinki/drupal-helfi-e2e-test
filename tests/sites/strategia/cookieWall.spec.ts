@@ -1,12 +1,21 @@
 import { logger } from '../../../utils/logger';
 import { expect, test, type Page } from '@playwright/test';
 
+/**
+ * Cookie types that can be accepted.
+ */
+type cookieTypes = 'preferences' | 'statistics' | 'chat';
+
 test.beforeEach(async ({ context }) => {
   await context.clearCookies();
   logger('Cleared all cookies before test');
 });
 
 // Helper functions
+
+/**
+ * Navigates to the test page and waits for the cookie banner to be visible.
+ */
 async function navigateToTestPage(page: Page) {
   await page.goto(
     '/fi/paatoksenteko-ja-hallinto/helfin-sisallontuottajan-opas/sivujen-rakentaminen-drupalissa/komponentit/videoupotus',
@@ -16,6 +25,9 @@ async function navigateToTestPage(page: Page) {
   await expect(page.locator('.hds-cc__container')).toBeVisible();
 }
 
+/**
+ * Returns all videos on the page.
+ */
 async function allVideosOnPage(page: Page) {
   await navigateToTestPage(page);
   await page.waitForSelector('.components--upper');
@@ -24,6 +36,9 @@ async function allVideosOnPage(page: Page) {
   return videosOnPage;
 }
 
+/**
+ * Returns the askem banner on the page.
+ */
 async function askemBannerOnPage(page: Page) {
   await navigateToTestPage(page);
   const askemBanner = page.locator('[data-hdbt-selector="askem"]');
@@ -32,8 +47,27 @@ async function askemBannerOnPage(page: Page) {
   return askemBanner;
 }
 
-type cookieTypes = 'preferences' | 'statistics' | 'chat';
+/**
+ * Checks that the askem banner is visible.
+ */
+async function askemBannerIsVisible(askemBanner: any) {
+  await expect(askemBanner.locator('.askem')).toHaveCount(1);
+  await expect(askemBanner.locator('.askem')).not.toBeEmpty();
+  await expect(askemBanner.locator('.askem-header-text')).toHaveText('Löysitkö etsimäsi tiedon tältä sivulta?');
+}
+ 
+/**
+ * Checks that the askem banner is empty.
+ */
+async function askemBannerIsEmpty(askemBanner: any, page: Page) {
+  await expect(askemBanner.locator('.askem')).toHaveCount(1);
+  await expect(askemBanner.locator('.askem')).toBeEmpty();
+  await expect(page.locator('.askem-cookie-compliance .message h2')).toHaveText('Haluatko antaa meille palautetta tästä sivusta?');
+}
 
+/**
+ * Accepts the given cookie types.
+ */
 async function acceptCookieType(page: Page, cookieTypes: cookieTypes[]) {
   // Set up a promise that resolves when the page reloads
   const reloadPromise = page.waitForNavigation({
@@ -67,12 +101,15 @@ async function acceptCookieType(page: Page, cookieTypes: cookieTypes[]) {
   );
 }
 
+/**
+ * Accepts all cookies.
+ */
 async function acceptAllCookies(page: Page) {
   const acceptAllCookiesButton = page.locator('.hds-cc__all-cookies-button');
   await acceptAllCookiesButton.click();
 }
 
-test.describe('Cookie Banner', () => {
+test.describe('Cookie Wall', () => {
   test('should hide the remote video paragraphs content from user before accepting cookies', async ({
     page,
   }) => {
@@ -123,8 +160,7 @@ test.describe('Cookie Banner', () => {
 
     // The Askem banner should not be visible before accepting cookies.
     // There should be a button to edit cookie settings however.
-    await expect(askemBanner.locator('.askem')).toHaveCount(1);
-    await expect(askemBanner.locator('.askem')).toBeEmpty();
+    await askemBannerIsEmpty(askemBanner, page);
   });
 
   test('should show the Askem banner after accepting all cookies', async ({
@@ -134,9 +170,7 @@ test.describe('Cookie Banner', () => {
 
     await acceptAllCookies(page);
 
-    // Make sure the Askem banner is now visible.
-    await expect(askemBanner.locator('.askem')).toHaveCount(1);
-    await expect(askemBanner.locator('.askem')).not.toBeEmpty();
+    await askemBannerIsVisible(askemBanner);
   });
 
   test('should show the Askem banner after accepting statistics cookies', async ({
@@ -146,9 +180,7 @@ test.describe('Cookie Banner', () => {
 
     await acceptCookieType(page, ['statistics']);
 
-    // Make sure the Askem banner is now visible.
-    await expect(askemBanner.locator('.askem')).toHaveCount(1);
-    await expect(askemBanner.locator('.askem')).not.toBeEmpty();
+    await askemBannerIsVisible(askemBanner);
   });
 
   test('should not allow any cookies before accepting cookies', async ({
