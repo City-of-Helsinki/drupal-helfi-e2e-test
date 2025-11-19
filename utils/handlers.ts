@@ -40,17 +40,15 @@ const cookieHandler = async (page: Page) => {
 const dialogHandler = async (page: Page) => {
   try {
     // Set 'helfi_no_survey' cookie to disable survey dialog
-    await page
-      .context()
-      .addCookies([
-        {
-          name: 'helfi_no_survey',
-          value: '1',
-          domain: new URL(page.url()).hostname,
-          path: '/',
-          httpOnly: false,
-        },
-      ]);
+    await page.context().addCookies([
+      {
+        name: 'helfi_no_survey',
+        value: '1',
+        domain: new URL(page.url()).hostname,
+        path: '/',
+        httpOnly: false,
+      },
+    ]);
   } catch (error) {
     logger(
       `Failed to set survey cookie: ${error instanceof Error ? error.message : 'Unknown error'}`,
