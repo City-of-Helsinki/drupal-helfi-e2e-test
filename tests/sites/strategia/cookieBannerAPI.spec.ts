@@ -166,7 +166,7 @@ test.describe('Cookie Banner', () => {
       .flatMap(cookie => cookie.name);
 
     // MD5 pattern for auto-generated cookie names
-    const md5Pattern = new RegExp(`^[0-9a-f]{32}$`);
+    const md5Pattern = /^[0-9a-f]{32}$/;
 
     // Filter out any essential cookies and MD5-named cookies.
     const nonEssentialCookies = cookies.filter(
