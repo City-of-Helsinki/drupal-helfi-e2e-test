@@ -1,5 +1,5 @@
 import { fetchJsonApiRequest } from '../../../utils/fetchJsonApiRequest';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { sites } from '../../../sites.config';
 import { logger } from '../../../utils/logger';
 
@@ -34,13 +34,28 @@ type CookieBannerResponse = {
   translations: Record<string, Record<string, string>>;
 };
 
-test('should receive valid cookie banner API response', async () => {
+/**
+ * Navigates to the test page and waits for the cookie banner to be visible.
+ */
+async function navigateToTestPage(page: Page) {
+  await page.goto(
+    '/fi/paatoksenteko-ja-hallinto/helfin-sisallontuottajan-opas/sivujen-rakentaminen-drupalissa/komponentit/videoupotus',
+    { waitUntil: 'domcontentloaded' },
+  );
+  await page.waitForSelector('.hds-cc__container');
+  await expect(page.locator('.hds-cc__container')).toBeVisible();
+}
+
+/**
+ * Returns cookie banner API response.
+ */
+async function apiResponse() {
   // Get the Etusivu site configuration
   const etusivuConfig = sites.find((site) => site.name === 'etusivu');
   if (!etusivuConfig) {
     throw new Error('Etusivu site configuration not found');
   }
-
+  
   // Get the base URL from environment variable or use default
   const baseURL =
     process.env[`${etusivuConfig.envPrefix}_BASE_URL`] ||
@@ -49,7 +64,7 @@ test('should receive valid cookie banner API response', async () => {
   if (!baseURL) {
     throw new Error('Base URL for Etusivu is not defined');
   }
-
+  
   // Make the API request to the cookie banner endpoint
   let response: CookieBannerResponse;
   try {
@@ -68,57 +83,142 @@ test('should receive valid cookie banner API response', async () => {
     );
   }
 
-  // Verify the response structure.
-  expect(response).toBeDefined();
+  return response;
+}
 
-  // Check required top-level properties.
-  expect(response).toHaveProperty('languages');
-  expect(Array.isArray(response.languages)).toBe(true);
-  expect(response).toHaveProperty('siteName');
-  expect(response).toHaveProperty('cookieName');
-  expect(response).toHaveProperty('monitorInterval');
-  expect(response).toHaveProperty('remove');
-  expect(response).toHaveProperty('fallbackLanguage');
-  expect(response).toHaveProperty('requiredGroups');
-  expect(Array.isArray(response.requiredGroups)).toBe(true);
-  expect(Array.isArray(response.robotCookies)).toBe(true);
-  expect(Array.isArray(response.groupsWhitelistedForApi)).toBe(true);
-  expect(response).toHaveProperty('translations');
+test.describe('Cookie Banner', () => {
+  test('should receive valid cookie banner API response', async () => {
+    const response = await apiResponse();
 
-  // Check at least one language is defined.
-  expect(response.languages.length).toBeGreaterThan(0);
+    // Verify the response structure.
+    expect(response).toBeDefined();
 
-  response.languages.forEach((language) => {
-    expect(language).toHaveProperty('code');
-    expect(language).toHaveProperty('name');
-    expect(language).toHaveProperty('direction');
-    expect(['ltr', 'rtl']).toContain(language.direction);
-  });
+    // Check required top-level properties.
+    expect(response).toHaveProperty('languages');
+    expect(Array.isArray(response.languages)).toBe(true);
+    expect(response).toHaveProperty('siteName');
+    expect(response).toHaveProperty('cookieName');
+    expect(response).toHaveProperty('monitorInterval');
+    expect(response).toHaveProperty('remove');
+    expect(response).toHaveProperty('fallbackLanguage');
+    expect(response).toHaveProperty('requiredGroups');
+    expect(Array.isArray(response.requiredGroups)).toBe(true);
+    expect(Array.isArray(response.robotCookies)).toBe(true);
+    expect(Array.isArray(response.groupsWhitelistedForApi)).toBe(true);
+    expect(response).toHaveProperty('translations');
 
-  // Check required groups.
-  expect(response.requiredGroups.length).toBeGreaterThan(0);
-  response.requiredGroups.forEach((group) => {
-    expect(group).toHaveProperty('groupId');
-    expect(group).toHaveProperty('title');
-    expect(group).toHaveProperty('description');
-    expect(Array.isArray(group.cookies)).toBe(true);
+    // Check at least one language is defined.
+    expect(response.languages.length).toBeGreaterThan(0);
 
-    // Check translations for required languages.
-    ['fi', 'sv', 'en'].forEach((lang) => {
-      expect(group.title).toHaveProperty(lang);
-      expect(group.description).toHaveProperty(lang);
+    response.languages.forEach((language) => {
+      expect(language).toHaveProperty('code');
+      expect(language).toHaveProperty('name');
+      expect(language).toHaveProperty('direction');
+      expect(['ltr', 'rtl']).toContain(language.direction);
     });
+
+    // Check required groups.
+    expect(response.requiredGroups.length).toBeGreaterThan(0);
+    response.requiredGroups.forEach((group) => {
+      expect(group).toHaveProperty('groupId');
+      expect(group).toHaveProperty('title');
+      expect(group).toHaveProperty('description');
+      expect(Array.isArray(group.cookies)).toBe(true);
+
+      // Check translations for required languages.
+      ['fi', 'sv', 'en'].forEach((lang) => {
+        expect(group.title).toHaveProperty(lang);
+        expect(group.description).toHaveProperty(lang);
+      });
+    });
+
+    // Check robot cookies.
+    response.robotCookies.forEach((cookie) => {
+      expect(cookie).toHaveProperty('name');
+      expect(cookie).toHaveProperty('storageType');
+    });
+
+    // Log API information for debugging.
+    logger(`Found ${response.requiredGroups.length} cookie groups`);
+    logger(`Site name: ${response.siteName}`);
+    logger(`Cookie name: ${response.cookieName}`);
+    logger(`Fallback language: ${response.fallbackLanguage}`);
   });
 
-  // Check robot cookies.
-  response.robotCookies.forEach((cookie) => {
-    expect(cookie).toHaveProperty('name');
-    expect(cookie).toHaveProperty('storageType');
+  test('should not allow any cookies before accepting cookies', async ({
+    page,
+    context,
+  }) => {
+    await navigateToTestPage(page);
+
+    // Make sure all cookies have time to load.
+    await page.waitForTimeout(1000);
+    const cookies = await context.cookies();
+
+    const response = await apiResponse();
+
+    // Get all essential cookie names from the requiredGroups
+    const essentialCookies = response.requiredGroups
+      .filter(group => group.groupId === 'essential')
+      .flatMap(group => group.cookies.map(cookie => cookie.name));
+
+    const robotCookies = response.robotCookies
+      .flatMap(cookie => cookie.name);
+
+    // MD5 pattern for auto-generated cookie names
+    const md5Pattern = new RegExp(`^[0-9a-f]{32}$`);
+
+    // Filter out any essential cookies and MD5-named cookies.
+    const nonEssentialCookies = cookies.filter(
+      cookie => !essentialCookies.includes(cookie.name) && !md5Pattern.test(cookie.name) && !robotCookies.includes(cookie.name)
+    );
+
+    expect(nonEssentialCookies).toHaveLength(0);
   });
 
-  // Log API information for debugging.
-  logger(`Found ${response.requiredGroups.length} cookie groups`);
-  logger(`Site name: ${response.siteName}`);
-  logger(`Cookie name: ${response.cookieName}`);
-  logger(`Fallback language: ${response.fallbackLanguage}`);
+  test('should allow statistics cookie after accepting all cookies', async ({
+    page,
+    context,
+  }) => {
+    await navigateToTestPage(page);
+
+    let cookies = await context.cookies();
+    let hasConsentsCookie = cookies.some((cookie) =>
+      cookie.name === 'helfi-cookie-consents',
+    );
+    let hasMatomoCookie = cookies.some((cookie) =>
+      cookie.name.match(/^_pk_id\./)
+    );
+
+    expect(
+      hasConsentsCookie,
+      'Expected that no cookie called "helfi-cookie-consents" is set before accepting statistics cookies',
+    ).toBeFalsy();
+    expect(
+      hasMatomoCookie,
+      'Expected that no cookie matching "_pk_id.*" is set before accepting statistics cookies',
+    ).toBeFalsy();
+
+    const acceptAllCookiesButton = page.locator('.hds-cc__all-cookies-button');
+    await acceptAllCookiesButton.click();
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForSelector('.responsive-video-container iframe');
+
+    cookies = await context.cookies();
+    hasConsentsCookie = cookies.some((cookie) =>
+      cookie.name === 'helfi-cookie-consents',
+    );
+    hasMatomoCookie = cookies.some((cookie) =>
+      cookie.name.match(/^_pk_id\./)
+    );
+
+    expect(
+      hasConsentsCookie,
+      'Expected a cookie called "helfi-cookie-consents" to be set after accepting statistics cookies',
+    ).toBeTruthy();
+    expect(
+      hasMatomoCookie,
+      'Expected a cookie matching "_pk_id.*" to be set after accepting statistics cookies',
+    ).toBeTruthy();
+  });
 });

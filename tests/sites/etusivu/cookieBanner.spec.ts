@@ -6,13 +6,19 @@ test.beforeEach(async ({ context }) => {
   logger('Cleared all cookies before test');
 });
 
-// Helper functions
+
+/**
+ * Navigates to the front page and waits for the cookie banner to be visible.
+ */
 async function navigateToFrontPage(page: Page) {
   await page.goto('/fi', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('.hds-cc__container');
   return page.locator('.hds-cc__container');
 }
 
+/**
+ * Verifies the cookie settings on the cookie settings page.
+ */
 async function verifyCookieSettings(
   page: Page,
   expectedStates: Record<string, boolean>,

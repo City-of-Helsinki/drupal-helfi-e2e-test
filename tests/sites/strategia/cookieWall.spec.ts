@@ -183,45 +183,4 @@ test.describe('Cookie Wall', () => {
 
     await askemBannerIsVisible(askemBanner);
   });
-
-  test('should not allow any cookies before accepting cookies', async ({
-    page,
-    context,
-  }) => {
-    await navigateToTestPage(page);
-
-    const cookies = await context.cookies();
-
-    expect(cookies).toHaveLength(0);
-  });
-
-  test('should allow cookie consent cookie after accepting all cookies', async ({
-    page,
-    context,
-  }) => {
-    await navigateToTestPage(page);
-
-    let cookies = await context.cookies();
-    let hasConsentsCookie = cookies.some((cookie) =>
-      cookie.name.match('helfi-cookie-consents'),
-    );
-
-    expect(
-      hasConsentsCookie,
-      'Expected that no cookie called "helfi-cookie-consents" is be set before accepting statistics cookies',
-    ).toBeFalsy();
-
-    await acceptAllCookies(page);
-    await page.waitForLoadState('domcontentloaded');
-
-    cookies = await context.cookies();
-    hasConsentsCookie = cookies.some((cookie) =>
-      cookie.name.match('helfi-cookie-consents'),
-    );
-
-    expect(
-      hasConsentsCookie,
-      'Expected a cookie called "helfi-cookie-consents" to be set after accepting statistics cookies',
-    ).toBeTruthy();
-  });
 });
