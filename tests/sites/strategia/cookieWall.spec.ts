@@ -31,9 +31,8 @@ async function navigateToTestPage(page: Page) {
 async function allVideosOnPage(page: Page) {
   await navigateToTestPage(page);
   await page.waitForSelector('.components--upper');
-  const videosOnPage = await page.locator('.component--remote-video').all();
 
-  return videosOnPage;
+  return await page.locator('.component--remote-video').all();
 }
 
 /**
