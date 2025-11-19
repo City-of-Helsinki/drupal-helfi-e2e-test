@@ -25,7 +25,9 @@ const cookieHandler = async (page: Page) => {
     await agreeButton.click();
   } catch (error) {
     // Log if no cookie banner is found.
-    logger(`No cookie banner found: ${error instanceof Error ? error.message : String(error)}`);
+    logger(
+      `No cookie banner found: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 };
 
@@ -48,7 +50,9 @@ const dialogHandler = async (page: Page) => {
       },
     ]);
   } catch (error) {
-    logger(`Failed to set survey cookie: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    logger(
+      `Failed to set survey cookie: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
   }
 };
 

@@ -21,13 +21,13 @@
       "style": { "noUnusedTemplateLiteral": "warn", "useImportType": "warn" }
     }
   },
-  "formatter": { "enabled": true, "expand": "never", "useEditorconfig": true },
+  "formatter": { "enabled": true, "expand": "auto", "useEditorconfig": true },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
       "jsxQuoteStyle": "single",
       "semicolons": "always",
-      "expand": "never",
+      "expand": "auto",
       "quoteProperties": "asNeeded",
       "trailingCommas": "all",
       "attributePosition": "auto",
