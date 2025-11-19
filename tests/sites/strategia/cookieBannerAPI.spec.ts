@@ -215,6 +215,7 @@ test.describe('Cookie Banner', () => {
     const iframeBody = frame.locator('html');
     await expect(iframeBody).toBeVisible();
 
+    // The cookie setting might still take a while so here is another additional wait.
     await page.waitForTimeout(1000);
 
     cookies = await context.cookies();
