@@ -1,5 +1,5 @@
 import { logger } from '../../../utils/logger';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, Locator, test, type Page } from '@playwright/test';
 
 /**
  * Cookie types that can be accepted.
@@ -50,7 +50,7 @@ async function askemBannerOnPage(page: Page) {
 /**
  * Checks that the askem banner is visible.
  */
-async function askemBannerIsVisible(askemBanner: any) {
+async function askemBannerIsVisible(askemBanner: Locator) {
   await expect(askemBanner.locator('.askem')).toHaveCount(1);
   await expect(askemBanner.locator('.askem')).not.toBeEmpty();
   await expect(askemBanner.locator('.askem-header-text')).toHaveText('Löysitkö etsimäsi tiedon tältä sivulta?');
@@ -59,7 +59,7 @@ async function askemBannerIsVisible(askemBanner: any) {
 /**
  * Checks that the askem banner is empty.
  */
-async function askemBannerIsEmpty(askemBanner: any, page: Page) {
+async function askemBannerIsEmpty(askemBanner: Locator, page: Page) {
   await expect(askemBanner.locator('.askem')).toHaveCount(1);
   await expect(askemBanner.locator('.askem')).toBeEmpty();
   await expect(page.locator('.askem-cookie-compliance .message h2')).toHaveText('Haluatko antaa meille palautetta tästä sivusta?');
