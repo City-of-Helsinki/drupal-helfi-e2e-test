@@ -34,6 +34,11 @@ type CookieBannerResponse = {
   translations: Record<string, Record<string, string>>;
 };
 
+test.beforeEach(async ({ context }) => {
+  await context.clearCookies();
+  logger('Cleared all cookies before test');
+});
+
 /**
  * Navigates to the test page and waits for the cookie banner to be visible.
  */
