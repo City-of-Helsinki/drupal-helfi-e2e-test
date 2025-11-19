@@ -215,6 +215,8 @@ test.describe('Cookie Banner', () => {
     const iframeBody = frame.locator('html');
     await expect(iframeBody).toBeVisible();
 
+    await page.waitForTimeout(1000);
+
     cookies = await context.cookies();
     hasConsentsCookie = cookies.some((cookie) =>
       cookie.name === 'helfi-cookie-consents',
