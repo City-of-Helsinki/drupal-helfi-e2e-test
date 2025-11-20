@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { test } from '@playwright/test';
 import { testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
 test.beforeEach(async ({ page }) => {
