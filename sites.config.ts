@@ -37,6 +37,11 @@ export const sites: SiteConfig[] = [
     defaultBaseURL: 'https://www.test.hel.ninja/',
   },
   {
+    name: 'sote',
+    envPrefix: 'SOTE',
+    defaultBaseURL: 'https://www.test.hel.ninja/',
+  },
+  {
     name: 'strategia',
     envPrefix: 'STRATEGIA',
     defaultBaseURL: 'https://www.test.hel.ninja/',
