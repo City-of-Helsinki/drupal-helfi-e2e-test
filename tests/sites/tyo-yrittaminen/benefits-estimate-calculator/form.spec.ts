@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { clickResultsButton } from './fixtures/input';
+import { testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
 test.beforeEach(async ({ page }) => {
   await page.goto(
@@ -7,25 +7,8 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('On submit, unfilled fields give an error', async ({ page }) => {
-  await clickResultsButton(page);
-
-  expect(await page.getByLabel('Virheilmoitus').isVisible());
-  expect(
-    await page
-      .getByRole('link', { name: 'Työntekijän tuleva bruttopalkka' })
-      .isVisible(),
-  );
-  expect(
-    await page.getByRole('link', { name: 'Työnantajan muoto' }).isVisible(),
-  );
-  expect(
-    await page
-      .getByRole('link', {
-        name: 'Työsuhteeseen myönnetyt tai haetut muut tuet, kuten palkkatuki',
-      })
-      .isVisible(),
-  );
+test('Test unfilled fields', async ({ page }) => {
+  await testUnfilledFields(page);
 });
 
 test('Monthly pay input must be positive and in range', async ({ page }) => {

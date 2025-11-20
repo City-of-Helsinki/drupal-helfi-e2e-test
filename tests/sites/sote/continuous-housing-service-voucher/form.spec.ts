@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { clickResultsButton } from './fixtures/input';
+import { testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
 test.beforeEach(async ({ page }) => {
   await page.goto(
@@ -7,26 +7,8 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test('On submit, unfilled fields give an error', async ({ page }) => {
-  await clickResultsButton(page);
-
-  // General error message should be visible.
-  const errorMessage = page.getByLabel('Täytäthän puuttuvat tiedot.');
-  expect(errorMessage.isVisible()).toBeTruthy();
-
-  // Find all required fields and their error messages.
-  const requiredFields = await page.locator('.input--required').all();
-  const requiredFieldMessages = await page.locator('.input--required .hdbt-error-text').all();
-
-  // Required fields should be marked as invalid.
-  for (const requiredField of requiredFields) {
-    await expect(requiredField).toContainClass('hds-text-input--invalid');
-  }
-
-  // Required fields should have error messages visible.
-  for (const requiredFieldMessage of requiredFieldMessages) {
-    await expect(requiredFieldMessage).toContainText('Kenttä on pakollinen.');
-  }
+test('Test unfilled fields', async ({ page }) => {
+  await testUnfilledFields(page);
 });
 
 test('Net income per month input must be positive and in range', async ({ page }) => {

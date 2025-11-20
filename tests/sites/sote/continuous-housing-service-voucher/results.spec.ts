@@ -1,9 +1,8 @@
 import { test } from '@playwright/test';
+import { clickResultsButton, expectResult } from '../../../common/calculators/calculatorsCommon';
 import {
   fillNetIncomePerMonth,
   fillServiceProviderPrice,
-  clickResultsButton,
-  expectResult,
 } from './fixtures/input';
 
 const TEST_CASES = [
