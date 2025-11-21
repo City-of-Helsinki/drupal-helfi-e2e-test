@@ -137,11 +137,14 @@ test('If safety phone is selected, a helper text must become visible', async ({
 
   await expect(input).toBeChecked();
 
+  // Wait for 500ms for animations to complete
+  await page.waitForTimeout(500);
+
   expect(
     page.getByText(
       'Huomiothan, että turvapalveluiden hälytyskäynti maksaa 23,25 € tai 46,50 € kerta tulorajoistasi riippuen. Kuukausittain laskutamme enintään 5 hälytyskäyntiä, eli tulorajoistasi riippuen enintään 116,25 € tai 232,50 € kuukaudessa.',
     ),
-  ).toBeVisible();
+  ).toBeVisible({ visible: true });
 });
 
 test('Grocery delivery service input must be selected', async ({ page }) => {
