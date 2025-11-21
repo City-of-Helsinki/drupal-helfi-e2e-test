@@ -11,7 +11,9 @@ test('Test unfilled fields', async ({ page }) => {
   await testUnfilledFields(page);
 });
 
-test('Net income per month input must be positive and in range', async ({ page }) => {
+test('Net income per month input must be positive and in range', async ({
+  page,
+}) => {
   await page.getByLabel('Hakijan nettotulot kuukaudessa (euroa)').fill('-1');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(
@@ -22,7 +24,9 @@ test('Net income per month input must be positive and in range', async ({ page }
       .isVisible(),
   ).toBeTruthy();
 
-  await page.getByLabel('Hakijan nettotulot kuukaudessa (euroa)').fill('10000€');
+  await page
+    .getByLabel('Hakijan nettotulot kuukaudessa (euroa)')
+    .fill('10000€');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
   expect(
@@ -34,7 +38,9 @@ test('Net income per month input must be positive and in range', async ({ page }
   ).toBeFalsy();
 });
 
-test('Service provider price per 24h input must be positive and in range', async ({ page }) => {
+test('Service provider price per 24h input must be positive and in range', async ({
+  page,
+}) => {
   await page.getByLabel('Palveluasumisen vuorokausihinta (euroa)').fill('-1');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(

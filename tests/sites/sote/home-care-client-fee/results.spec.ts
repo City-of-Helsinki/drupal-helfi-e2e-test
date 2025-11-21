@@ -1,5 +1,8 @@
 import { test } from '@playwright/test';
-import { clickResultsButton, expectResult } from '../../../common/calculators/calculatorsCommon';
+import {
+  clickResultsButton,
+  expectResult,
+} from '../../../common/calculators/calculatorsCommon';
 import {
   fillHouseholdSize,
   fillGrossIncomePerMonth,
@@ -47,7 +50,8 @@ const TEST_CASES = [
       NO_PHONE_NO_GROCERY_4: '570,00',
       NO_PHONE_NO_GROCERY_7: '630,00',
     },
-  },{
+  },
+  {
     NAME: 'High',
     HOUSEHOLD_SIZE: '4',
     GROSS_INCOME_PER_MONTH: '7000',
@@ -76,7 +80,9 @@ test.beforeEach(async ({ page }) => {
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {
     test.describe('Home care client fee', () => {
-      test('With safety phone, grocery delivery service and NO meal service', async ({ page }) => {
+      test('With safety phone, grocery delivery service and NO meal service', async ({
+        page,
+      }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
         await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
@@ -87,7 +93,9 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.MEAL_SERVICE.PHONE_GROCERY_NONE);
       });
 
-      test('With safety phone, grocery delivery service and 4 meal services', async ({ page }) => {
+      test('With safety phone, grocery delivery service and 4 meal services', async ({
+        page,
+      }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
         await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
@@ -99,7 +107,9 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.MEAL_SERVICE.PHONE_GROCERY_4);
       });
 
-      test('With safety phone, grocery delivery service and 7 meal services', async ({ page }) => {
+      test('With safety phone, grocery delivery service and 7 meal services', async ({
+        page,
+      }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
         await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
@@ -111,7 +121,9 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.MEAL_SERVICE.PHONE_GROCERY_7);
       });
 
-      test('With NO safety phone, grocery delivery service and NO meal service', async ({ page }) => {
+      test('With NO safety phone, grocery delivery service and NO meal service', async ({
+        page,
+      }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
         await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
@@ -122,7 +134,9 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.MEAL_SERVICE.NO_PHONE_GROCERY_NONE);
       });
 
-      test('With NO safety phone, grocery delivery service and 4 meal services', async ({ page }) => {
+      test('With NO safety phone, grocery delivery service and 4 meal services', async ({
+        page,
+      }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
         await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
@@ -134,7 +148,9 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.MEAL_SERVICE.NO_PHONE_GROCERY_4);
       });
 
-      test('With NO safety phone, grocery delivery service and 7 meal services', async ({ page }) => {
+      test('With NO safety phone, grocery delivery service and 7 meal services', async ({
+        page,
+      }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
         await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
@@ -146,7 +162,9 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.MEAL_SERVICE.NO_PHONE_GROCERY_7);
       });
 
-      test('With NO safety phone, NO grocery delivery service and NO meal service', async ({ page }) => {
+      test('With NO safety phone, NO grocery delivery service and NO meal service', async ({
+        page,
+      }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
         await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
@@ -154,10 +172,15 @@ TEST_CASES.forEach((testCase) => {
         await selectNoGroceryDeliveryService(page);
         await selectNoMealService(page);
         await clickResultsButton(page);
-        await expectResult(page, testCase.MEAL_SERVICE.NO_PHONE_NO_GROCERY_NONE);
+        await expectResult(
+          page,
+          testCase.MEAL_SERVICE.NO_PHONE_NO_GROCERY_NONE,
+        );
       });
 
-      test('With NO safety phone, NO grocery delivery service and 4 meal services', async ({ page }) => {
+      test('With NO safety phone, NO grocery delivery service and 4 meal services', async ({
+        page,
+      }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
         await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
@@ -169,7 +192,9 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.MEAL_SERVICE.NO_PHONE_NO_GROCERY_4);
       });
 
-      test('With NO safety phone, NO grocery delivery service and 7 meal services', async ({ page }) => {
+      test('With NO safety phone, NO grocery delivery service and 7 meal services', async ({
+        page,
+      }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
         await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);

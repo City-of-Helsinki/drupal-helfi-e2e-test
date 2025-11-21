@@ -60,7 +60,7 @@ async function apiResponse() {
   if (!etusivuConfig) {
     throw new Error('Etusivu site configuration not found');
   }
-  
+
   // Get the base URL from environment variable or use default
   const baseURL =
     process.env[`${etusivuConfig.envPrefix}_BASE_URL`] ||
@@ -69,7 +69,7 @@ async function apiResponse() {
   if (!baseURL) {
     throw new Error('Base URL for Etusivu is not defined');
   }
-  
+
   // Make the API request to the cookie banner endpoint
   let response: CookieBannerResponse;
   try {
@@ -164,18 +164,20 @@ test.describe('Cookie Banner', () => {
 
     // Get all essential cookie names from the requiredGroups
     const essentialCookies = response.requiredGroups
-      .filter(group => group.groupId === 'essential')
-      .flatMap(group => group.cookies.map(cookie => cookie.name));
+      .filter((group) => group.groupId === 'essential')
+      .flatMap((group) => group.cookies.map((cookie) => cookie.name));
 
-    const robotCookies = response.robotCookies
-      .flatMap(cookie => cookie.name);
+    const robotCookies = response.robotCookies.flatMap((cookie) => cookie.name);
 
     // MD5 pattern for auto-generated cookie names
     const md5Pattern = /^[0-9a-f]{32}$/;
 
     // Filter out any essential cookies and MD5-named cookies.
     const nonEssentialCookies = cookies.filter(
-      cookie => !essentialCookies.includes(cookie.name) && !md5Pattern.test(cookie.name) && !robotCookies.includes(cookie.name)
+      (cookie) =>
+        !essentialCookies.includes(cookie.name) &&
+        !md5Pattern.test(cookie.name) &&
+        !robotCookies.includes(cookie.name),
     );
 
     expect(nonEssentialCookies).toHaveLength(0);
@@ -188,11 +190,11 @@ test.describe('Cookie Banner', () => {
     await navigateToTestPage(page);
 
     let cookies = await context.cookies();
-    let hasConsentsCookie = cookies.some((cookie) =>
-      cookie.name === 'helfi-cookie-consents',
+    let hasConsentsCookie = cookies.some(
+      (cookie) => cookie.name === 'helfi-cookie-consents',
     );
     let hasMatomoCookie = cookies.some((cookie) =>
-      cookie.name.match(/^_pk_id\./)
+      cookie.name.match(/^_pk_id\./),
     );
 
     expect(
@@ -207,9 +209,11 @@ test.describe('Cookie Banner', () => {
     const acceptAllCookiesButton = page.locator('.hds-cc__all-cookies-button');
     await acceptAllCookiesButton.click();
     await page.waitForLoadState('domcontentloaded');
-    
+
     // Select the example YouTube iframe.
-    const frame = page.frameLocator('iframe[title="Video: Esimerkki videoupotuksesta Youtubesta."]');
+    const frame = page.frameLocator(
+      'iframe[title="Video: Esimerkki videoupotuksesta Youtubesta."]',
+    );
 
     // Wait for the iframe to be loaded.
     const iframeBody = frame.locator('html');
@@ -219,12 +223,10 @@ test.describe('Cookie Banner', () => {
     await page.waitForTimeout(1000);
 
     cookies = await context.cookies();
-    hasConsentsCookie = cookies.some((cookie) =>
-      cookie.name === 'helfi-cookie-consents',
+    hasConsentsCookie = cookies.some(
+      (cookie) => cookie.name === 'helfi-cookie-consents',
     );
-    hasMatomoCookie = cookies.some((cookie) =>
-      cookie.name.match(/^_pk_id\./)
-    );
+    hasMatomoCookie = cookies.some((cookie) => cookie.name.match(/^_pk_id\./));
 
     expect(
       hasConsentsCookie,

@@ -9,18 +9,17 @@ async function selectRadioOption(group: Locator, option: 'yes' | 'no') {
   await expect(label).toBeVisible();
   await label.click();
 
-  const input = option === 'yes' 
-    ? group.locator('input[type="radio"]').first()
-    : group.locator('input[type="radio"]').last();
-    
+  const input =
+    option === 'yes'
+      ? group.locator('input[type="radio"]').first()
+      : group.locator('input[type="radio"]').last();
+
   await expect(input).toBeChecked();
-};
+}
 
 const fillHouseholdSize = (page: Page, value: string) =>
   test.step('Fill household size', async () => {
-    await page
-      .getByLabel('Talouden koko (henkilöä)')
-      .fill(String(value));
+    await page.getByLabel('Talouden koko (henkilöä)').fill(String(value));
   });
 
 const fillGrossIncomePerMonth = (page: Page, value: string) =>
@@ -39,17 +38,17 @@ const fillMonthlyUsage = (page: Page, value: string) =>
 
 const selectSafetyPhone = async (page: Page) =>
   test.step('Select safety phone option', async () => {
-    const group = page.getByRole('group', { 
-      name: 'Laske arvioon turvapuhelin ja turvaranneke' 
+    const group = page.getByRole('group', {
+      name: 'Laske arvioon turvapuhelin ja turvaranneke',
     });
-    
+
     await selectRadioOption(group, 'yes');
   });
 
 const selectNoSafetyPhone = (page: Page) =>
   test.step('Select no safety phone option', async () => {
-    const group = page.getByRole('group', { 
-      name: 'Laske arvioon turvapuhelin ja turvaranneke' 
+    const group = page.getByRole('group', {
+      name: 'Laske arvioon turvapuhelin ja turvaranneke',
     });
 
     await selectRadioOption(group, 'no');
@@ -57,35 +56,35 @@ const selectNoSafetyPhone = (page: Page) =>
 
 const selectGroceryDeliveryService = (page: Page) =>
   test.step('Select grocery delivery service', async () => {
-    const group = page.getByRole('group', { 
-      name: 'Laske arvioon kauppapalvelu' 
+    const group = page.getByRole('group', {
+      name: 'Laske arvioon kauppapalvelu',
     });
-    
+
     await selectRadioOption(group, 'yes');
   });
 
 const selectNoGroceryDeliveryService = (page: Page) =>
   test.step('Select grocery delivery service', async () => {
-    const group = page.getByRole('group', { 
-      name: 'Laske arvioon kauppapalvelu' 
+    const group = page.getByRole('group', {
+      name: 'Laske arvioon kauppapalvelu',
     });
-    
+
     await selectRadioOption(group, 'no');
   });
 
 const selectMealService = (page: Page) =>
   test.step('Select meal service', async () => {
-    const group = page.getByRole('group', { 
-      name: 'Laske arvioon ateriapalvelu' 
+    const group = page.getByRole('group', {
+      name: 'Laske arvioon ateriapalvelu',
     });
-    
+
     await selectRadioOption(group, 'yes');
   });
 
 const selectNoMealService = (page: Page) =>
   test.step('Select meal service', async () => {
-    const group = page.getByRole('group', { 
-      name: 'Laske arvioon ateriapalvelu' 
+    const group = page.getByRole('group', {
+      name: 'Laske arvioon ateriapalvelu',
     });
 
     await selectRadioOption(group, 'no');
@@ -97,7 +96,6 @@ const fillMealServicePerWeek = (page: Page, value: string) =>
       .getByLabel('Aterioiden määrä viikossa (kpl)')
       .fill(String(value));
   });
-  
 
 export {
   fillHouseholdSize,

@@ -11,14 +11,14 @@ test('Test unfilled fields', async ({ page }) => {
   await testUnfilledFields(page);
 });
 
-test('Household size input must be positive, integer and in range', async ({ page }) => {
+test('Household size input must be positive, integer and in range', async ({
+  page,
+}) => {
   await page.getByLabel('Talouden koko (henkilöä)').fill('-1');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(
     await page
-      .getByText(
-        'Arvon pitää olla 1 tai enemmän: Talouden koko.',
-      )
+      .getByText('Arvon pitää olla 1 tai enemmän: Talouden koko.')
       .isVisible(),
   ).toBeTruthy();
 
@@ -26,9 +26,7 @@ test('Household size input must be positive, integer and in range', async ({ pag
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(
     await page
-      .getByText(
-        'Kenttään on syötettävä kokonaisluku: Talouden koko.',
-      )
+      .getByText('Kenttään on syötettävä kokonaisluku: Talouden koko.')
       .isVisible(),
   ).toBeTruthy();
 
@@ -37,14 +35,14 @@ test('Household size input must be positive, integer and in range', async ({ pag
 
   expect(
     await page
-      .getByText(
-        'Arvon pitää olla 1 tai enemmän: Talouden koko.',
-      )
+      .getByText('Arvon pitää olla 1 tai enemmän: Talouden koko.')
       .isVisible(),
   ).toBeFalsy();
 });
 
-test('Gross income per month input must be positive and in range', async ({ page }) => {
+test('Gross income per month input must be positive and in range', async ({
+  page,
+}) => {
   await page.getByLabel('Talouden bruttotulot kuukaudessa (euroa)').fill('-1');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(
@@ -55,7 +53,9 @@ test('Gross income per month input must be positive and in range', async ({ page
       .isVisible(),
   ).toBeTruthy();
 
-  await page.getByLabel('Talouden bruttotulot kuukaudessa (euroa)').fill('1000,10€');
+  await page
+    .getByLabel('Talouden bruttotulot kuukaudessa (euroa)')
+    .fill('1000,10€');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
   expect(
@@ -67,8 +67,12 @@ test('Gross income per month input must be positive and in range', async ({ page
   ).toBeFalsy();
 });
 
-test('Monthly usage input must be positive, integer and in range', async ({ page }) => {
-  await page.getByLabel('Kotihoidon tuntimäärä kuukaudessa (tuntia)').fill('-1');
+test('Monthly usage input must be positive, integer and in range', async ({
+  page,
+}) => {
+  await page
+    .getByLabel('Kotihoidon tuntimäärä kuukaudessa (tuntia)')
+    .fill('-1');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(
     await page
@@ -78,7 +82,9 @@ test('Monthly usage input must be positive, integer and in range', async ({ page
       .isVisible(),
   ).toBeTruthy();
 
-  await page.getByLabel('Kotihoidon tuntimäärä kuukaudessa (tuntia)').fill('745');
+  await page
+    .getByLabel('Kotihoidon tuntimäärä kuukaudessa (tuntia)')
+    .fill('745');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(
     await page
@@ -88,7 +94,9 @@ test('Monthly usage input must be positive, integer and in range', async ({ page
       .isVisible(),
   ).toBeTruthy();
 
-  await page.getByLabel('Kotihoidon tuntimäärä kuukaudessa (tuntia)').fill('0,5');
+  await page
+    .getByLabel('Kotihoidon tuntimäärä kuukaudessa (tuntia)')
+    .fill('0,5');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(
     await page
@@ -110,8 +118,9 @@ test('Monthly usage input must be positive, integer and in range', async ({ page
   ).toBeFalsy();
 });
 
-
-test('Service provider price per hour input must be positive and in range', async ({ page }) => {
+test('Service provider price per hour input must be positive and in range', async ({
+  page,
+}) => {
   await page.getByLabel('Palveluntuottajan tuntihinta (euroa)').fill('-1');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(

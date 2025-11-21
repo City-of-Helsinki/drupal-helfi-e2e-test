@@ -2,9 +2,7 @@ import { test, type Page } from '@playwright/test';
 
 const fillHouseholdSize = (page: Page, value: string) =>
   test.step('Fill household size', async () => {
-    await page
-      .getByLabel('Talouden koko (henkilöä)')
-      .fill(String(value));
+    await page.getByLabel('Talouden koko (henkilöä)').fill(String(value));
   });
 
 const fillGrossIncomePerMonth = (page: Page, value: string) =>

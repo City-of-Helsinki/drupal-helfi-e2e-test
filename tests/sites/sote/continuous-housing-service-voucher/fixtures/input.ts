@@ -14,7 +14,4 @@ const fillServiceProviderPrice = (page: Page, value: string) =>
       .fill(String(value));
   });
 
-export {
-  fillNetIncomePerMonth,
-  fillServiceProviderPrice,
-};
+export { fillNetIncomePerMonth, fillServiceProviderPrice };

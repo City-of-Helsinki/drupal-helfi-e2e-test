@@ -1,5 +1,8 @@
 import { test } from '@playwright/test';
-import { clickResultsButton, expectResult } from '../../../common/calculators/calculatorsCommon';
+import {
+  clickResultsButton,
+  expectResult,
+} from '../../../common/calculators/calculatorsCommon';
 import {
   checkAssociationHasBusinessActivities,
   fillMonthlyPay,
