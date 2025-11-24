@@ -2,6 +2,7 @@ import { test } from '@playwright/test';
 import {
   clickResultsButton,
   expectResult,
+  publishedBeforeEach,
 } from '../../../common/calculators/calculatorsCommon';
 import {
   fillHouseholdSize,
@@ -34,11 +35,9 @@ const TEST_CASES = [
 ];
 
 test.describe.configure({ mode: 'parallel' });
-test.beforeEach(async ({ page }) => {
-  await page.goto(
-    '/fi/sosiaali-ja-terveyspalvelut/lasten-ja-perheiden-palvelut/tukea-lapselle-nuorelle-ja-perheelle/varhaisen-tuen-sosiaalipalvelut/lapsiperheiden-kotipalvelu/lapsiperheiden-kotipalvelun-asiakasmaksulaskuri',
-  );
-});
+test.beforeEach(publishedBeforeEach(
+  '/fi/sosiaali-ja-terveyspalvelut/lasten-ja-perheiden-palvelut/tukea-lapselle-nuorelle-ja-perheelle/varhaisen-tuen-sosiaalipalvelut/lapsiperheiden-kotipalvelu/lapsiperheiden-kotipalvelun-asiakasmaksulaskuri',
+));
 
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {

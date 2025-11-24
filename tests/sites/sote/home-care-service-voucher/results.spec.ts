@@ -2,6 +2,7 @@ import { test } from '@playwright/test';
 import {
   clickResultsButton,
   expectResult,
+  publishedBeforeEach,
 } from '../../../common/calculators/calculatorsCommon';
 import {
   fillHouseholdSize,
@@ -38,11 +39,9 @@ const TEST_CASES = [
 ];
 
 test.describe.configure({ mode: 'parallel' });
-test.beforeEach(async ({ page }) => {
-  await page.goto(
-    '/fi/sosiaali-ja-terveyspalvelut/senioripalvelut/kotihoito/kotihoidon-asiakkaaksi/kotihoidon-palvelusetelilaskuri',
-  );
-});
+test.beforeEach(publishedBeforeEach(
+  '/fi/sosiaali-ja-terveyspalvelut/senioripalvelut/kotihoito/kotihoidon-asiakkaaksi/kotihoidon-palvelusetelilaskuri',
+));
 
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {

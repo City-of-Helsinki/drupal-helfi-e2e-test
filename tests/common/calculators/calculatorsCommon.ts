@@ -1,4 +1,5 @@
-import { expect, type Page, test } from '@playwright/test';
+import { expect, type Page, test, type TestInfo } from '@playwright/test';
+import { logger } from '../../../utils/logger';
 
 const clickResultsButton = (page: Page) =>
   test.step('Click results button', async () => {
@@ -38,4 +39,20 @@ const testUnfilledFields = (page: Page) =>
     }
   });
 
-export { testUnfilledFields, clickResultsButton, expectResult };
+const skipUnpublished = async (
+  page: Page,
+  url: string,
+  testInfo: TestInfo,
+) => {
+  const response = await page.goto(url, { waitUntil: 'networkidle' });
+
+  if ((!response || !response.ok()) && response?.status() === 403) {
+    testInfo.skip(true, 'The calculator page is unpublished. Access 403 - Skipping tests');
+  }
+};
+
+const publishedBeforeEach = (url: string) =>
+  async ({ page }: { page: Page }, testInfo: TestInfo) =>
+    skipUnpublished(page, url, testInfo);
+
+export { testUnfilledFields, clickResultsButton, expectResult, publishedBeforeEach };

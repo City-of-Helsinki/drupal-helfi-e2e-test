@@ -2,6 +2,7 @@ import { test } from '@playwright/test';
 import {
   clickResultsButton,
   expectResult,
+  publishedBeforeEach,
 } from '../../../common/calculators/calculatorsCommon';
 import {
   checkAssociationHasBusinessActivities,
@@ -64,11 +65,9 @@ const TEST_CASES = [
 ];
 
 test.describe.configure({ mode: 'parallel' });
-test.beforeEach(async ({ page }) => {
-  await page.goto(
-    '/fi/yritykset-ja-tyo/tyonantajat/taloudellista-tukea-tyonantajalle/helsinki-lisan-laskuri',
-  );
-});
+test.beforeEach(publishedBeforeEach(
+  '/fi/yritykset-ja-tyo/tyonantajat/taloudellista-tukea-tyonantajalle/helsinki-lisan-laskuri',
+));
 
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {

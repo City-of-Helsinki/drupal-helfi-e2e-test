@@ -1,6 +1,5 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
-import { logger } from '../../../../utils/logger';
-import { clickResultsButton } from '../../../common/calculators/calculatorsCommon';
+import { clickResultsButton, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
 import { addNextChildsInformation, fillHouseHoldSize } from './fixtures/input';
 
 const expectVisible = async (locator: Locator) => {
@@ -29,21 +28,9 @@ const fillRegularDaysOffPerMonth = (page: Page, value: string) => {
   });
 };
 
-test.beforeEach(async ({ page }) => {
-  const response = await page.goto(
-    '/fi/kasvatus-ja-koulutus/varhaiskasvatus/varhaiskasvatusmaksut/varhaiskasvatusmaksun-laskuri',
-    { waitUntil: 'networkidle' },
-  );
-
-  // Skip if page is unpublished.
-  if ((!response || !response.ok()) && response?.status() === 403) {
-    const message =
-      'The early childhood education fee page is unpublished. Access denied 403 - Skipping tests';
-    logger(message, response.statusText());
-    test.skip(true, message);
-    return;
-  }
-});
+test.beforeEach(publishedBeforeEach(
+  '/fi/kasvatus-ja-koulutus/varhaiskasvatus/varhaiskasvatusmaksut/varhaiskasvatusmaksun-laskuri',
+));
 
 test('On submit, unfilled fields give an error', async ({ page }) => {
   // Add three child´s information sub forms.

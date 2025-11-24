@@ -1,22 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { logger } from '../../../../utils/logger';
-import { testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
+import { publishedBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
-test.beforeEach(async ({ page }) => {
-  const response = await page.goto(
-    '/fi/sosiaali-ja-terveyspalvelut/lasten-ja-perheiden-palvelut/tukea-lapselle-nuorelle-ja-perheelle/varhaisen-tuen-sosiaalipalvelut/lapsiperheiden-kotipalvelu/lapsiperheiden-kotipalvelun-asiakasmaksulaskuri',
-    { waitUntil: 'networkidle' },
-  );
-
-  // Skip if page is unpublished.
-  if ((!response || !response.ok()) && response?.status() === 403) {
-    const message =
-      'The families home services client fee page is unpublished. Access denied 403 - Skipping tests';
-    logger(message, response.statusText());
-    test.skip(true, message);
-    return;
-  }
-});
+test.beforeEach(publishedBeforeEach(
+  '/fi/sosiaali-ja-terveyspalvelut/lasten-ja-perheiden-palvelut/tukea-lapselle-nuorelle-ja-perheelle/varhaisen-tuen-sosiaalipalvelut/lapsiperheiden-kotipalvelu/lapsiperheiden-kotipalvelun-asiakasmaksulaskuri',
+));
 
 test('Test unfilled fields', async ({ page }) => {
   await testUnfilledFields(page);
