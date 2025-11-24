@@ -60,7 +60,7 @@ test('Gross income per month input must be positive and in range', async ({
   ).toBeTruthy();
 
   await page
-    .getByLabel('Talouden bruttotulot kuukaudessa (euroa)')
+    .getByLabel('Perheen bruttotulot kuukaudessa (euroa)')
     .fill('1000,10€');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
