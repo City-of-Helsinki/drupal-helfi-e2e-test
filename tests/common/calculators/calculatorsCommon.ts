@@ -1,5 +1,4 @@
 import { expect, type Page, test, type TestInfo } from '@playwright/test';
-import { logger } from '../../../utils/logger';
 
 const clickResultsButton = (page: Page) =>
   test.step('Click results button', async () => {
