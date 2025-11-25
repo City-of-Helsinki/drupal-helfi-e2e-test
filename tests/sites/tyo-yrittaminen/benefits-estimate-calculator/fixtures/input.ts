@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { test, type Page } from '@playwright/test';
 
 const PAY_SUBSIDY_PERCENTAGES = ['50', '70'];
 
@@ -76,17 +76,6 @@ const checkAssociationHasBusinessActivities = (page: Page) =>
       .click();
   });
 
-const clickResultsButton = (page: Page) =>
-  test.step('Click results button', async () => {
-    await page.getByRole('button', { name: 'Laske arvio' }).click();
-  });
-
-const resultSelector = '.helfi-calculator__receipt-total__value';
-const expectResult = (page: Page, result: string) =>
-  test.step('Click results button', async () => {
-    expect(await page.locator(resultSelector).textContent()).toBe(result);
-  });
-
 export {
   selectPaySubsidyPercentageOption1,
   selectPaySubsidyPercentageOption2,
@@ -97,6 +86,4 @@ export {
   checkAssociationHasBusinessActivities,
   selectPaySubsidyGranted,
   selectPaySubsidyNotGranted,
-  clickResultsButton,
-  expectResult,
 };

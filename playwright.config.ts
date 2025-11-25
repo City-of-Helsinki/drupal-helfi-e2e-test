@@ -1,10 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
+import { getSiteConfig, sites } from './sites.config';
 import { getStorageStatePath } from './utils/storagePath';
-import { sites, getSiteConfig } from './sites.config';
 
 try {
   process.loadEnvFile('.env')
-} catch (e) {
+} catch (_e) {
   // Use default config.
 }
 
@@ -32,6 +32,12 @@ const base: Config = {
   ],
   use: {
     baseURL: process.env.BASE_URL ?? 'https://www.test.hel.ninja/',
+    /**
+     * @todo storageState is created using an incorrect baseURL in local environment setup.
+     * This causes cookie banner to reappear during test runs.
+     * Workaround for local sites is to call the "await cookieHandler(page);" before each test.
+     * This does not affect runs against test/stage/prod.
+     */
     storageState: getStorageStatePath(),
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',

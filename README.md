@@ -62,6 +62,10 @@ The E2E testing framework is designed to:
    # Run all tests
    npm run test
    ```
+4. **Running Tests with just one worker can help with performance issues**:
+   ```bash
+   npx playwright test --workers=1
+   ```
 
 ## Configuration
 

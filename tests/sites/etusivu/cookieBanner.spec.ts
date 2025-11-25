@@ -6,7 +6,6 @@ test.beforeEach(async ({ context }) => {
   logger('Cleared all cookies before test');
 });
 
-
 /**
  * Navigates to the front page and waits for the cookie banner to be visible.
  */
