@@ -13,7 +13,7 @@ type TestCase = {
 /**
  * Test cases for different language versions.
  */
-const TEST_CASES = [
+const TEST_CASES: TestCase[] = [
   {
     langcode: 'fi',
     searchFormLabel: 'Mitä haet?',
