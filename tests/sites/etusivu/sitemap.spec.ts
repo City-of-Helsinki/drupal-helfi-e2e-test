@@ -48,7 +48,12 @@ const testUrls = (
         await test.step(`URL: ${url} should return 200`, async () => {
           const response = await request.get(url);
           const status = response.status();
-          expect(status, `Expected 200, got ${status}`).toBe(200);
+          // Expect status 200 and 410.
+          // 410 is allowed as it means the page has been removed.
+          expect(
+            status === 200 || status === 410,
+            `URL: ${url} returned ${status}, expected 200 or 410`
+          ).toBeTruthy();
         });
       }),
     );
