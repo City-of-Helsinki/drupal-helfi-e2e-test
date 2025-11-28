@@ -19,10 +19,6 @@ import path from 'node:path';
  *   Typical output: '/tmp/storageState.json' or similar
  */
 export const getStorageStatePath = (): string => {
-  const dir =
-    process.env.STORAGE_STATE_DIR ||
-    process.env.XDG_RUNTIME_DIR ||
-    process.env.TMPDIR ||
-    os.tmpdir();
+  const dir = process.env.STORAGE_STATE_DIR || process.env.XDG_RUNTIME_DIR || process.env.TMPDIR || os.tmpdir();
   return path.resolve(dir, 'storageState.json');
 };

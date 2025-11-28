@@ -7,16 +7,12 @@ const fillHouseholdSize = (page: Page, value: string) =>
 
 const fillGrossIncomePerMonth = (page: Page, value: string) =>
   test.step('Fill gross income per month', async () => {
-    await page
-      .getByLabel('Perheen bruttotulot kuukaudessa (euroa)')
-      .fill(String(value));
+    await page.getByLabel('Perheen bruttotulot kuukaudessa (euroa)').fill(String(value));
   });
 
 const fillMonthlyUsage = (page: Page, value: string) =>
   test.step('Fill monthly usage', async () => {
-    await page
-      .getByLabel('Palvelutunteja kuukaudessa (tuntia)')
-      .fill(String(value));
+    await page.getByLabel('Palvelutunteja kuukaudessa (tuntia)').fill(String(value));
   });
 
 export { fillHouseholdSize, fillGrossIncomePerMonth, fillMonthlyUsage };

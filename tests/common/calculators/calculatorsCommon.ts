@@ -21,9 +21,7 @@ const testUnfilledFields = (page: Page) =>
 
     // Find all visible required fields and their error messages.
     const requiredFields = await page.locator('.input--required:visible').all();
-    const requiredFieldMessages = await page
-      .locator('.input--required .hdbt-error-text')
-      .all();
+    const requiredFieldMessages = await page.locator('.input--required .hdbt-error-text').all();
 
     // Required fields should be marked as invalid.
     for (const requiredField of requiredFields) {
@@ -32,17 +30,11 @@ const testUnfilledFields = (page: Page) =>
 
     // Required fields should have error messages visible.
     for (const requiredFieldMessage of requiredFieldMessages) {
-      await expect(requiredFieldMessage).toHaveText(
-        /^(Kenttä|Valinta) on pakollinen\.$/,
-      );
+      await expect(requiredFieldMessage).toHaveText(/^(Kenttä|Valinta) on pakollinen\.$/);
     }
   });
 
-const skipUnpublished = async (
-  page: Page,
-  url: string,
-  testInfo: TestInfo,
-) => {
+const skipUnpublished = async (page: Page, url: string, testInfo: TestInfo) => {
   const response = await page.goto(url, { waitUntil: 'networkidle' });
 
   if ((!response || !response.ok()) && response?.status() === 403) {
@@ -50,7 +42,8 @@ const skipUnpublished = async (
   }
 };
 
-const publishedBeforeEach = (url: string) =>
+const publishedBeforeEach =
+  (url: string) =>
   async ({ page }: { page: Page }, testInfo: TestInfo) =>
     skipUnpublished(page, url, testInfo);
 
