@@ -8,6 +8,8 @@
 <!-- Describe steps how to install the features. Default steps are provided. -->
 * Get the feature branch
   * `git fetch && git checkout UHF-0000_insert_correct_branch`
+* Install the testing tools
+  * `nvm use && npm i`
 
 ## How to test
 <!-- Describe steps how to test the features. Add as many steps as you want to be tested -->
