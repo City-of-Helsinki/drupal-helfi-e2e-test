@@ -1,5 +1,4 @@
 import { type APIRequestContext, type APIResponse, expect, test} from '@playwright/test';
-import { sites } from '../../../sites.config';
 import { logger } from "../../../utils/logger";
 import { mapSitemaps } from './utils/mappers';
 
@@ -90,18 +89,7 @@ const testMultiPageSitemap = (
 /**
  * Verify the sitemap structure and URL accessibility.
  */
-test('Sitemap', async ({ request }) => {
-  // Get the Etusivu site configuration.
-  const etusivuConfig = sites.find((site) => site.name === 'etusivu');
-  if (!etusivuConfig) {
-    throw new Error('Etusivu site configuration not found');
-  }
-
-  // Determine the base URL from environment or config.
-  const baseURL =
-    process.env[`${etusivuConfig.envPrefix}_BASE_URL`] ||
-    etusivuConfig.defaultBaseURL || '';
-
+test('Sitemap', async ({ request, baseURL }) => {
   // Skip the test on local environments as all URLs point to test.hel.ninja.
   if (baseURL?.toLowerCase().includes('docker') || !baseURL) {
     const message = 'Skipping the sitemap test for local environments.';
