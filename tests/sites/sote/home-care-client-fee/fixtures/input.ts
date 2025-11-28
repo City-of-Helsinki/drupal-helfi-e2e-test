@@ -10,9 +10,7 @@ async function selectRadioOption(group: Locator, option: 'yes' | 'no') {
   await label.click();
 
   const input =
-    option === 'yes'
-      ? group.locator('input[type="radio"]').first()
-      : group.locator('input[type="radio"]').last();
+    option === 'yes' ? group.locator('input[type="radio"]').first() : group.locator('input[type="radio"]').last();
 
   await expect(input).toBeChecked();
 }
@@ -24,16 +22,12 @@ const fillHouseholdSize = (page: Page, value: string) =>
 
 const fillGrossIncomePerMonth = (page: Page, value: string) =>
   test.step('Fill gross income per month', async () => {
-    await page
-      .getByLabel('Talouden bruttotulot kuukaudessa (euroa)')
-      .fill(String(value));
+    await page.getByLabel('Talouden bruttotulot kuukaudessa (euroa)').fill(String(value));
   });
 
 const fillMonthlyUsage = (page: Page, value: string) =>
   test.step('Fill monthly usage', async () => {
-    await page
-      .getByLabel('Kotihoidon tuntimäärä kuukaudessa (tuntia)')
-      .fill(String(value));
+    await page.getByLabel('Kotihoidon tuntimäärä kuukaudessa (tuntia)').fill(String(value));
   });
 
 const selectSafetyPhone = async (page: Page) =>
@@ -92,9 +86,7 @@ const selectNoMealService = (page: Page) =>
 
 const fillMealServicePerWeek = (page: Page, value: string) =>
   test.step('Fill meal service per week', async () => {
-    await page
-      .getByLabel('Aterioiden määrä viikossa (kpl)')
-      .fill(String(value));
+    await page.getByLabel('Aterioiden määrä viikossa (kpl)').fill(String(value));
   });
 
 export {

@@ -29,38 +29,53 @@ export const sites: SiteConfig[] = [
   {
     name: 'etusivu',
     envPrefix: 'ETUSIVU',
-    defaultBaseURL: 'https://www.test.hel.ninja/',
+    defaultBaseURL: 'https://www.test.hel.ninja',
   },
   {
     name: 'kasko',
     envPrefix: 'KASKO',
-    defaultBaseURL: 'https://www.test.hel.ninja/',
+    defaultBaseURL: 'https://www.test.hel.ninja',
   },
   {
     name: 'rekry',
     envPrefix: 'REKRY',
-    defaultBaseURL: 'https://www.test.hel.ninja/',
+    defaultBaseURL: 'https://www.test.hel.ninja',
   },
   {
     name: 'sote',
     envPrefix: 'SOTE',
-    defaultBaseURL: 'https://www.test.hel.ninja/',
+    defaultBaseURL: 'https://www.test.hel.ninja',
   },
   {
     name: 'strategia',
     envPrefix: 'STRATEGIA',
-    defaultBaseURL: 'https://www.test.hel.ninja/',
+    defaultBaseURL: 'https://www.test.hel.ninja',
   },
   {
     name: 'tyo-yrittaminen',
     envPrefix: 'TYO_YRITTAMINEN',
-    defaultBaseURL: 'https://www.test.hel.ninja/',
+    defaultBaseURL: 'https://www.test.hel.ninja',
+  },
+  {
+    name: 'kuva',
+    envPrefix: 'KUVA',
+    defaultBaseURL: 'https://www.test.hel.ninja',
+  },
+  {
+    name: 'kymp',
+    envPrefix: 'KYMP',
+    defaultBaseURL: 'https://www.test.hel.ninja',
+  },
+  {
+    name: 'asuminen',
+    envPrefix: 'ASUMINEN',
+    defaultBaseURL: 'https://www.test.hel.ninja',
   },
   // Add more sites here as needed:
   // {
   //   name: 'asuminen',
   //   envPrefix: 'ASUMINEN',
-  //   defaultBaseURL: 'https://asuminen.test.hel.ninja/',
+  //   defaultBaseURL: 'https://asuminen.test.hel.ninja',
   // },
 ];
 

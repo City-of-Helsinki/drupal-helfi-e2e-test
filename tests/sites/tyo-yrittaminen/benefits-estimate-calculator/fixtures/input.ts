@@ -9,9 +9,7 @@ const fillVacationMoney = (page: Page, value: string) =>
 
 const fillMonthlyPay = (page: Page, value: string) =>
   test.step('Fill monthly pay', async () => {
-    await page
-      .getByLabel('Työntekijän tuleva bruttopalkka')
-      .fill(String(value));
+    await page.getByLabel('Työntekijän tuleva bruttopalkka').fill(String(value));
   });
 
 const selectPaySubsidyGranted = (page: Page) =>
@@ -54,26 +52,18 @@ const selectPaySubsidyPercentageOption2 = (page: Page) =>
 
 const selectCompanyTypeBusiness = (page: Page) =>
   test.step('Select business', async () => {
-    await page
-      .getByText('Työnantaja on yritys', { exact: true })
-      .click({ force: true });
+    await page.getByText('Työnantaja on yritys', { exact: true }).click({ force: true });
   });
 
 const selectCompanyTypeAssociation = (page: Page) =>
   test.step('Select association', async () => {
-    await page
-      .getByText('Työnantaja on yhteisö', { exact: true })
-      .click({ force: true });
+    await page.getByText('Työnantaja on yhteisö', { exact: true }).click({ force: true });
   });
 
 const checkAssociationHasBusinessActivities = (page: Page) =>
   test.step('Check association has business activities', async () => {
-    await page
-      .getByText('Yhteisö harjoittaa taloudellista toimintaa')
-      .isVisible();
-    await page
-      .getByText('Yhteisö harjoittaa taloudellista toimintaa', { exact: true })
-      .click();
+    await page.getByText('Yhteisö harjoittaa taloudellista toimintaa').isVisible();
+    await page.getByText('Yhteisö harjoittaa taloudellista toimintaa', { exact: true }).click();
   });
 
 export {

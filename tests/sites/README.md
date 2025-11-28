@@ -99,6 +99,9 @@ npx playwright test
 # Run a specific test
 npx playwright test tests/sites/etusivu/cookieBanner.spec.ts
 
+# Run tests with playwright UI
+npx playwright test tests/sites/etusivu/cookieBanner.spec.ts --ui
+
 # Run tests slower so that after each action the test waits 1 second
 SLOWMO=true npx playwright test
 

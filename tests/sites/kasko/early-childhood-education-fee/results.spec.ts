@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { cookieHandler } from "../../../../utils/handlers";
+import { cookieHandler } from '../../../../utils/handlers';
 import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
 import {
   addNextChildsInformation,
@@ -7,23 +7,23 @@ import {
   fillHouseHoldSize,
   fillRegularDaysOffPerMonth,
   selectDaycareTime,
-  selectDaycareType, selectDaycareTypeExtra,
+  selectDaycareType,
+  selectDaycareTypeExtra,
 } from './fixtures/input';
 import { type ChildDetails, type TestCase, testCases } from './fixtures/testCases';
 
 test.beforeEach(
-  publishedBeforeEach(
-  '/fi/kasvatus-ja-koulutus/varhaiskasvatus/varhaiskasvatusmaksut/varhaiskasvatusmaksun-laskuri',
-));
+  publishedBeforeEach('/fi/kasvatus-ja-koulutus/varhaiskasvatus/varhaiskasvatusmaksut/varhaiskasvatusmaksun-laskuri'),
+);
 
-test.beforeEach(async ({page}) => {
+test.beforeEach(async ({ page }) => {
   await cookieHandler(page);
 });
 
 test.describe('Early childhood education fee', () => {
   testCases.forEach((testCase: TestCase) => {
     test.describe(testCase.NAME, () => {
-      test('Fill in form and check results', async ({page}) => {
+      test('Fill in form and check results', async ({ page }) => {
         const children = Object.values(testCase.CHILDREN) as ChildDetails[];
 
         // Fill in household size and gross income.
