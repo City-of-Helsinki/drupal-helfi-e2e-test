@@ -1,4 +1,4 @@
-import { expect, type Page, test, type TestInfo } from '@playwright/test';
+import { expect, type Page, type TestInfo, test } from '@playwright/test';
 
 const clickResultsButton = (page: Page) =>
   test.step('Click results button', async () => {

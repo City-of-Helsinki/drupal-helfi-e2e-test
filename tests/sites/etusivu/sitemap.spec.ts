@@ -1,5 +1,5 @@
-import { type APIRequestContext, type APIResponse, expect, test} from '@playwright/test';
-import { logger } from "../../../utils/logger";
+import { type APIRequestContext, type APIResponse, expect, test } from '@playwright/test';
+import { logger } from '../../../utils/logger';
 import { mapSitemaps } from './utils/mappers';
 
 /**
@@ -35,11 +35,7 @@ const extractLocs = (xml: string): string[] => {
  * @param pageUrls - Array of URLs to test.
  * @param path - The sitemap path being tested.
  */
-const testUrls = (
-  request: APIRequestContext,
-  pageUrls: string[],
-  path: string
-) =>
+const testUrls = (request: APIRequestContext, pageUrls: string[], path: string) =>
   test.step(`Testing URLs for sitemap: ${path}`, async () => {
     const sampleUrls = pickRandomItems(pageUrls);
 
@@ -50,10 +46,7 @@ const testUrls = (
           const status = response.status();
           // Expect status 200 and 410.
           // 410 is allowed as it means the page has been removed.
-          expect(
-            status === 200 || status === 410,
-            `URL: ${url} returned ${status}, expected 200 or 410`
-          ).toBeTruthy();
+          expect(status === 200 || status === 410, `URL: ${url} returned ${status}, expected 200 or 410`).toBeTruthy();
         });
       }),
     );
@@ -66,18 +59,11 @@ const testUrls = (
  * @param response - Response containing the sitemap XML.
  * @param path - The sitemap path being tested.
  */
-const testMultiPageSitemap = (
-  request: APIRequestContext,
-  response: APIResponse,
-  path: string
-) =>
+const testMultiPageSitemap = (request: APIRequestContext, response: APIResponse, path: string) =>
   test.step(`Testing the multipage sitemap: ${path}`, async () => {
     const sitemapXml = await response.text();
     const pageUrls = extractLocs(sitemapXml);
-    expect(
-      pageUrls.length,
-      `Expected more than one sitemap page, got ${pageUrls.length}`
-    ).toBeGreaterThan(1);
+    expect(pageUrls.length, `Expected more than one sitemap page, got ${pageUrls.length}`).toBeGreaterThan(1);
 
     await pageUrls.reduce<Promise<void>>(
       (chain, item) =>
@@ -125,10 +111,7 @@ test('Sitemap', async ({ request, baseURL }) => {
       // Handle normal sitemap.
       const pageUrls = extractLocs(await response.text());
 
-      expect(
-        pageUrls.length,
-        `Sitemap ${path} does not contain any <loc> entries`
-      ).toBeGreaterThan(0);
+      expect(pageUrls.length, `Sitemap ${path} does not contain any <loc> entries`).toBeGreaterThan(0);
 
       await testUrls(request, pageUrls, path);
     }),

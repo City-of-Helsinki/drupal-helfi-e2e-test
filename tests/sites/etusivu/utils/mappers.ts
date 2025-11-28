@@ -20,10 +20,7 @@ export type MappedSitemap = {
  * @param baseUrl - The base URL to map sitemap entries to (optional)
  * @returns Array of processed sitemap entries
  */
-export const mapSitemaps = (
-  rootSitemapXml: string,
-  baseUrl?: string,
-): MappedSitemap[] => {
+export const mapSitemaps = (rootSitemapXml: string, baseUrl?: string): MappedSitemap[] => {
   // Early return if no base URL is provided.
   if (!baseUrl) return [];
 
