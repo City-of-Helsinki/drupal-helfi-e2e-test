@@ -16,7 +16,7 @@
     "test": "tests"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.4",
+    "@biomejs/biome": "^2.3.8",
     "@dotenvx/dotenvx": "^1.15.0",
     "@playwright/test": "^1.55.1",
     "@types/node": "^24.5.2",
