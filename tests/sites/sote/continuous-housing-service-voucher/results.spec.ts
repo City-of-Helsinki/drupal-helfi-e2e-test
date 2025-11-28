@@ -1,13 +1,6 @@
 import { test } from '@playwright/test';
-import {
-  clickResultsButton,
-  expectResult,
-  publishedBeforeEach,
-} from '../../../common/calculators/calculatorsCommon';
-import {
-  fillNetIncomePerMonth,
-  fillServiceProviderPrice,
-} from './fixtures/input';
+import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
+import { fillNetIncomePerMonth, fillServiceProviderPrice } from './fixtures/input';
 
 const TEST_CASES = [
   {
@@ -31,9 +24,11 @@ const TEST_CASES = [
 ];
 
 test.describe.configure({ mode: 'parallel' });
-test.beforeEach(publishedBeforeEach(
-  '/fi/sosiaali-ja-terveyspalvelut/senioripalvelut/ikaantyneiden-asumispalvelut/palveluasumisen-palvelusetelilaskuri',
-));
+test.beforeEach(
+  publishedBeforeEach(
+    '/fi/sosiaali-ja-terveyspalvelut/senioripalvelut/ikaantyneiden-asumispalvelut/palveluasumisen-palvelusetelilaskuri',
+  ),
+);
 
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {

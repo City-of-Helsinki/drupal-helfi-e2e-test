@@ -1,9 +1,5 @@
 import { test } from '@playwright/test';
-import {
-  clickResultsButton,
-  expectResult,
-  publishedBeforeEach,
-} from '../../../common/calculators/calculatorsCommon';
+import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
 import {
   checkAssociationHasBusinessActivities,
   fillMonthlyPay,
@@ -65,9 +61,9 @@ const TEST_CASES = [
 ];
 
 test.describe.configure({ mode: 'parallel' });
-test.beforeEach(publishedBeforeEach(
-  '/fi/yritykset-ja-tyo/tyonantajat/taloudellista-tukea-tyonantajalle/helsinki-lisan-laskuri',
-));
+test.beforeEach(
+  publishedBeforeEach('/fi/yritykset-ja-tyo/tyonantajat/taloudellista-tukea-tyonantajalle/helsinki-lisan-laskuri'),
+);
 
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {
@@ -146,9 +142,7 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.ASSOCIATION.NONE);
       });
 
-      test('[Association] Fill in form and check results (50)', async ({
-        page,
-      }) => {
+      test('[Association] Fill in form and check results (50)', async ({ page }) => {
         await fillMonthlyPay(page, testCase.MONTLY_PAY);
         await fillVacationMoney(page, testCase.VACATION_MONEY);
         await selectCompanyTypeAssociation(page);
@@ -158,9 +152,7 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.ASSOCIATION['50']);
       });
 
-      test('[Association] Fill in form and check results (70)', async ({
-        page,
-      }) => {
+      test('[Association] Fill in form and check results (70)', async ({ page }) => {
         await fillMonthlyPay(page, testCase.MONTLY_PAY);
         await fillVacationMoney(page, testCase.VACATION_MONEY);
         await selectCompanyTypeAssociation(page);

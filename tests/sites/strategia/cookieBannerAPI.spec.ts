@@ -62,9 +62,7 @@ async function apiResponse() {
   }
 
   // Get the base URL from environment variable or use default
-  const baseURL =
-    process.env[`${etusivuConfig.envPrefix}_BASE_URL`] ||
-    etusivuConfig.defaultBaseURL;
+  const baseURL = process.env[`${etusivuConfig.envPrefix}_BASE_URL`] || etusivuConfig.defaultBaseURL;
 
   if (!baseURL) {
     throw new Error('Base URL for Etusivu is not defined');
@@ -73,19 +71,14 @@ async function apiResponse() {
   // Make the API request to the cookie banner endpoint
   let response: CookieBannerResponse;
   try {
-    response = await fetchJsonApiRequest<CookieBannerResponse>(
-      baseURL,
-      '/fi/api/cookie-banner',
-    );
+    response = await fetchJsonApiRequest<CookieBannerResponse>(baseURL, '/fi/api/cookie-banner');
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(
         `Failed to fetch cookie banner data from ${baseURL}/fi/api/cookie-banner. The API might be down or the endpoint is not accessible. Error: ${error.message}`,
       );
     }
-    throw new Error(
-      `Unknown error occurred while fetching cookie banner data from ${baseURL}/fi/api/cookie-banner`,
-    );
+    throw new Error(`Unknown error occurred while fetching cookie banner data from ${baseURL}/fi/api/cookie-banner`);
   }
 
   return response;
@@ -150,10 +143,7 @@ test.describe('Cookie Banner', () => {
     logger(`Fallback language: ${response.fallbackLanguage}`);
   });
 
-  test('should not allow any cookies before accepting cookies', async ({
-    page,
-    context,
-  }) => {
+  test('should not allow any cookies before accepting cookies', async ({ page, context }) => {
     await navigateToTestPage(page);
 
     // Make sure all cookies have time to load.
@@ -175,27 +165,18 @@ test.describe('Cookie Banner', () => {
     // Filter out any essential cookies and MD5-named cookies.
     const nonEssentialCookies = cookies.filter(
       (cookie) =>
-        !essentialCookies.includes(cookie.name) &&
-        !md5Pattern.test(cookie.name) &&
-        !robotCookies.includes(cookie.name),
+        !essentialCookies.includes(cookie.name) && !md5Pattern.test(cookie.name) && !robotCookies.includes(cookie.name),
     );
 
     expect(nonEssentialCookies).toHaveLength(0);
   });
 
-  test('should allow statistics cookie after accepting all cookies', async ({
-    page,
-    context,
-  }) => {
+  test('should allow statistics cookie after accepting all cookies', async ({ page, context }) => {
     await navigateToTestPage(page);
 
     let cookies = await context.cookies();
-    let hasConsentsCookie = cookies.some(
-      (cookie) => cookie.name === 'helfi-cookie-consents',
-    );
-    let hasMatomoCookie = cookies.some((cookie) =>
-      cookie.name.match(/^_pk_id\./),
-    );
+    let hasConsentsCookie = cookies.some((cookie) => cookie.name === 'helfi-cookie-consents');
+    let hasMatomoCookie = cookies.some((cookie) => cookie.name.match(/^_pk_id\./));
 
     expect(
       hasConsentsCookie,
@@ -211,9 +192,7 @@ test.describe('Cookie Banner', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Select the example YouTube iframe.
-    const frame = page.frameLocator(
-      'iframe[title="Video: Esimerkki videoupotuksesta Youtubesta."]',
-    );
+    const frame = page.frameLocator('iframe[title="Video: Esimerkki videoupotuksesta Youtubesta."]');
 
     // Wait for the iframe to be loaded.
     const iframeBody = frame.locator('html');
@@ -223,9 +202,7 @@ test.describe('Cookie Banner', () => {
     await page.waitForTimeout(1000);
 
     cookies = await context.cookies();
-    hasConsentsCookie = cookies.some(
-      (cookie) => cookie.name === 'helfi-cookie-consents',
-    );
+    hasConsentsCookie = cookies.some((cookie) => cookie.name === 'helfi-cookie-consents');
     hasMatomoCookie = cookies.some((cookie) => cookie.name.match(/^_pk_id\./));
 
     expect(

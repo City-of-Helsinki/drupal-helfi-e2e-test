@@ -52,9 +52,7 @@ async function askemBannerOnPage(page: Page) {
 async function askemBannerIsVisible(askemBanner: Locator) {
   await expect(askemBanner.locator('.askem')).toHaveCount(1);
   await expect(askemBanner.locator('.askem')).not.toBeEmpty();
-  await expect(askemBanner.locator('.askem-header-text')).toHaveText(
-    'Löysitkö etsimäsi tiedon tältä sivulta?',
-  );
+  await expect(askemBanner.locator('.askem-header-text')).toHaveText('Löysitkö etsimäsi tiedon tältä sivulta?');
 }
 
 /**
@@ -76,9 +74,7 @@ async function acceptCookieType(page: Page, cookieTypes: cookieTypes[]) {
   const reloadPromise = page.waitForLoadState('domcontentloaded');
 
   // Open the cookie settings.
-  const toggleCookiePreferencesButton = page.locator(
-    '.hds-cc__accordion-button--details',
-  );
+  const toggleCookiePreferencesButton = page.locator('.hds-cc__accordion-button--details');
   await toggleCookiePreferencesButton.click();
 
   // Select the cookie types.
@@ -88,9 +84,7 @@ async function acceptCookieType(page: Page, cookieTypes: cookieTypes[]) {
   }
 
   // Accept the selected cookie types.
-  const acceptSelectedCookiesButton = page.locator(
-    '.hds-cc__selected-cookies-button',
-  );
+  const acceptSelectedCookiesButton = page.locator('.hds-cc__selected-cookies-button');
   await acceptSelectedCookiesButton.click();
 
   // Wait for the navigation to complete
@@ -111,9 +105,7 @@ async function acceptAllCookies(page: Page) {
 }
 
 test.describe('Cookie Wall', () => {
-  test('should hide the remote video paragraphs content from user before accepting cookies', async ({
-    page,
-  }) => {
+  test('should hide the remote video paragraphs content from user before accepting cookies', async ({ page }) => {
     const videosOnPage = await allVideosOnPage(page);
 
     // The videos should not be visible before accepting cookies.
@@ -122,16 +114,12 @@ test.describe('Cookie Wall', () => {
       await expect(video.locator('iframe')).toHaveCount(0);
 
       // Check for the edit cookie preferences button with specific onclick attribute.
-      const editCookiePreferencesButton = video.locator(
-        'a[onclick*="window.hdsCookieConsentClickEvent(event, this)"]',
-      );
+      const editCookiePreferencesButton = video.locator('a[onclick*="window.hdsCookieConsentClickEvent(event, this)"]');
       await expect(editCookiePreferencesButton).toBeVisible();
     }
   });
 
-  test('should show the remote video paragraphs content after accepting all cookies', async ({
-    page,
-  }) => {
+  test('should show the remote video paragraphs content after accepting all cookies', async ({ page }) => {
     const videosOnPage = await allVideosOnPage(page);
 
     await acceptAllCookies(page);
@@ -154,9 +142,7 @@ test.describe('Cookie Wall', () => {
     }
   });
 
-  test('should hide the Askem banner before accepting cookies', async ({
-    page,
-  }) => {
+  test('should hide the Askem banner before accepting cookies', async ({ page }) => {
     const askemBanner = await askemBannerOnPage(page);
 
     // The Askem banner should not be visible before accepting cookies.
@@ -164,9 +150,7 @@ test.describe('Cookie Wall', () => {
     await askemBannerIsEmpty(askemBanner, page);
   });
 
-  test('should show the Askem banner after accepting all cookies', async ({
-    page,
-  }) => {
+  test('should show the Askem banner after accepting all cookies', async ({ page }) => {
     const askemBanner = await askemBannerOnPage(page);
 
     await acceptAllCookies(page);
@@ -174,9 +158,7 @@ test.describe('Cookie Wall', () => {
     await askemBannerIsVisible(askemBanner);
   });
 
-  test('should show the Askem banner after accepting statistics cookies', async ({
-    page,
-  }) => {
+  test('should show the Askem banner after accepting statistics cookies', async ({ page }) => {
     const askemBanner = await askemBannerOnPage(page);
 
     await acceptCookieType(page, ['statistics']);

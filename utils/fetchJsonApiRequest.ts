@@ -1,8 +1,4 @@
-import {
-  type APIRequestContext,
-  expect,
-  request as playwrightRequest,
-} from '@playwright/test';
+import { type APIRequestContext, expect, request as playwrightRequest } from '@playwright/test';
 
 /**
  * Type definition for the JSON:API response structure
@@ -54,9 +50,7 @@ export async function fetchRequest<T>(
   const isOk = response.ok();
   expect(
     isOk,
-    isOk
-      ? undefined
-      : `GET ${endpoint} failed with status ${response.status()} ${response.statusText()}`,
+    isOk ? undefined : `GET ${endpoint} failed with status ${response.status()} ${response.statusText()}`,
   ).toBeTruthy();
 
   // Parse and return the JSON response.

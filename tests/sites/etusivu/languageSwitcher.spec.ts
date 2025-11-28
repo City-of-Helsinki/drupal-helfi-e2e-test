@@ -14,9 +14,7 @@ test('Verify language switcher links', async ({ page }) => {
   await page.waitForSelector('.language-link:not(.is-disabled)');
 
   // Get all non-disabled language links.
-  const languageLinks = await page
-    .locator('.language-link:not(.is-disabled)')
-    .all();
+  const languageLinks = await page.locator('.language-link:not(.is-disabled)').all();
 
   // Click through each language link.
   for (const link of languageLinks) {
@@ -47,9 +45,7 @@ test('Verify language switcher links', async ({ page }) => {
   // Test clicking back to the initial language.
   await test.step('Return to initial language', async () => {
     // Find and click the initial language link.
-    const initialLangLink = page.locator(
-      `.language-link[lang="${initialPath.substring(1, 3)}"]`,
-    );
+    const initialLangLink = page.locator(`.language-link[lang="${initialPath.substring(1, 3)}"]`);
     await expect(initialLangLink).toBeVisible();
     await initialLangLink.click();
 

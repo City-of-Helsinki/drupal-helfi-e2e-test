@@ -1,7 +1,4 @@
-import {
-  fetchJsonApiRequest,
-  type JsonApiResponse,
-} from '../../../utils/fetchJsonApiRequest';
+import { fetchJsonApiRequest, type JsonApiResponse } from '../../../utils/fetchJsonApiRequest';
 import { logger } from '../../../utils/logger';
 import { expect, test } from '@playwright/test';
 import { extractTextSegments } from '../../../utils/extractTextSegments';
@@ -38,22 +35,16 @@ test('Externally published announcements are visible', async ({ page }) => {
 
   // Filter for published announcements that are marked for external publishing.
   const items: Announcement[] = (data?.data ?? []).filter(
-    (n: Announcement) =>
-      n?.attributes?.status === true &&
-      n?.attributes?.field_publish_externally === true,
+    (n: Announcement) => n?.attributes?.status === true && n?.attributes?.field_publish_externally === true,
   );
 
   // Skip test if no matching announcements found.
   if (items.length === 0) {
-    logger(
-      'No externally published announcements in JSON:API; nothing to verify.',
-    );
+    logger('No externally published announcements in JSON:API; nothing to verify.');
     return;
   }
 
-  logger(
-    `Found ${items.length} externally published announcements in JSON:API; verifying visibility.`,
-  );
+  logger(`Found ${items.length} externally published announcements in JSON:API; verifying visibility.`);
 
   await items.reduce(async (prev, item) => {
     await prev;
@@ -87,12 +78,8 @@ test('Externally published announcements are visible', async ({ page }) => {
       // it is visible. Return after first successful match.
       for (const segment of textSegments) {
         try {
-          await expect(
-            announcementContent.filter({ hasText: segment }),
-          ).toBeVisible({ timeout: 3_000 });
-          logger(
-            `Found announcement on path ${path}, text: ${segment.slice(0, 50)}...`,
-          );
+          await expect(announcementContent.filter({ hasText: segment })).toBeVisible({ timeout: 3_000 });
+          logger(`Found announcement on path ${path}, text: ${segment.slice(0, 50)}...`);
           return;
         } catch (_e) {
           // Continue to next segment if this one isn't found
@@ -100,9 +87,7 @@ test('Externally published announcements are visible', async ({ page }) => {
       }
 
       // If we get here, no segments were found
-      throw new Error(
-        `None of the text segments were found in the announcement on ${path}`,
-      );
+      throw new Error(`None of the text segments were found in the announcement on ${path}`);
     });
   }, Promise.resolve());
 });
