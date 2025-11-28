@@ -41,7 +41,7 @@ const TEST_CASES: TestCase[] = [
  * @param testCase - Test case data.
  */
 const fillSearchForm = (searchFormWrapper: Locator, testCase: TestCase) =>
-  test.step('Test the search page with search phrase', async () => {
+  test.step('Fill and submit search form', async () => {
     const searchForm = searchFormWrapper.locator('.helfi-search__form');
     await expect(searchForm).toBeVisible();
 
@@ -63,7 +63,7 @@ const fillSearchForm = (searchFormWrapper: Locator, testCase: TestCase) =>
  * @param testCase - Test case data.
  */
 const testSearchPage = (page: Page, testCase: TestCase) =>
-  test.step('Test the search page with search phrase', async () => {
+  test.step('Assert search results URL and query', async () => {
     // Wait for navigation to search results page.
     await page.waitForURL(`**${testCase.searchUrlPath}**`);
 
