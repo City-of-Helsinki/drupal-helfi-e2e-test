@@ -71,6 +71,8 @@ test.describe('News archive', () => {
     test.describe(testCase.NAME, () => {
       test('Fill in the form and check results', async ({ page }) => {
         await navigateToNewsArchive(page);
+        await verifyReact(page);
+
         if (testCase.TEXT_FILTER !== null) {
           await fillTextFilter(page, testCase.TEXT_FILTER);
         }

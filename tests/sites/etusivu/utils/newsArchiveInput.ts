@@ -16,8 +16,10 @@ async function fillDropdown(page: Page, selector: string, values: string[]) {
     await option.evaluate((el) => {
       (el as HTMLElement).click();
     });
-    
-    await expect(option).toHaveAttribute('aria-selected', 'true');
+
+    await expect(async () => {
+      await expect(option).toHaveAttribute('aria-selected', 'true');
+    }).toPass({ timeout: 5000 });
   }
 
   // Close the dropdown.
