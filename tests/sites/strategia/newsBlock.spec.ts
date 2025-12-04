@@ -1,5 +1,5 @@
 import { logger } from '../../../utils/logger';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('News listing block', () => {
   test('should be visible on the front page', async ({ page }) => {
