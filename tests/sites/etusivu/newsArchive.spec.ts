@@ -41,8 +41,8 @@ async function verifyReact(page: Page) {
   await page.waitForSelector('.news-archive .hdbt-search--react__form-container');
   await page.waitForSelector('.news-archive .react-search__results');
 
-  expect(page.locator('.news-archive .hdbt-search--react__form-container')).toBeVisible();
-  expect(page.locator('.news-archive .react-search__results')).toBeVisible();
+  await expect(page.locator('.news-archive .hdbt-search--react__form-container')).toBeVisible();
+  await expect(page.locator('.news-archive .react-search__results')).toBeVisible();
 }
 
 test.describe('News archive', () => {
@@ -72,19 +72,23 @@ test.describe('News archive', () => {
       test('Fill in the form and check results', async ({ page }) => {
         await navigateToNewsArchive(page);
         await verifyReact(page);
-
-        if (testCase.TEXT_FILTER !== null) {
-          await fillTextFilter(page, testCase.TEXT_FILTER);
-        }
-        if (testCase.TOPICS !== null) {
-          await fillTopics(page, testCase.TOPICS);
-        }
-        if (testCase.CITY_DISTRICTS !== null) {
-          await fillCityDistricts(page, testCase.CITY_DISTRICTS);
-        }
-        if (testCase.TARGET_GROUPS !== null) {
-          await fillTargetGroups(page, testCase.TARGET_GROUPS);
-        }
+        
+        // Then chain the form filling operations
+        await (async () => {
+          if (testCase.TEXT_FILTER !== null) {
+            await fillTextFilter(page, testCase.TEXT_FILTER);
+          }
+          if (testCase.TOPICS !== null) {
+            await fillTopics(page, testCase.TOPICS);
+          }
+          if (testCase.CITY_DISTRICTS !== null) {
+            await fillCityDistricts(page, testCase.CITY_DISTRICTS);
+          }
+          if (testCase.TARGET_GROUPS !== null) {
+            await fillTargetGroups(page, testCase.TARGET_GROUPS);
+          }
+        })();
+        
         await clickSubmitButton(page);
         await expectResult(page);
       });

@@ -9,18 +9,20 @@ async function fillDropdown(page: Page, selector: string, values: string[]) {
   await expect(page.getByRole('listbox')).toBeVisible();
 
   // Select options
-  for (const value of values) {
-    const option = page.locator(`.hdbt-search--react__dropdown-filters > *:nth-child(${selector}) li[aria-label="${value}"]`);
-    
-    // As playwright click won't work for this case, we use evaluate to click the element.
-    await option.evaluate((el) => {
-      (el as HTMLElement).click();
-    });
+  await values.reduce<Promise<void>>(
+    (chain, value) =>
+      chain.then(async () => {
+        const option = page.locator(`.hdbt-search--react__dropdown-filters > *:nth-child(${selector}) li[aria-label="${value}"]`);
+        
+        // As playwright click won't work for this case, we use evaluate to click the element.
+        await option.evaluate((el) => {
+          (el as HTMLElement).click();
+        });
 
-    await expect(async () => {
-      await expect(option).toHaveAttribute('aria-selected', 'true');
-    }).toPass({ timeout: 5000 });
-  }
+        await expect(option).toHaveAttribute('aria-selected', 'true');
+      }),
+    Promise.resolve(),
+  );
 
   // Close the dropdown.
   await dropdownButton.click();
@@ -60,15 +62,12 @@ const expectResult = async (page: Page) =>
     const initialText = await page.locator(resultSelector).textContent() || '';
     
     // Wait for the results to change
-    await page.waitForFunction(
-      ({ selector, initialText }) => {
-        const resultElement = document.querySelector(selector);
-        if (!resultElement) return false;
-        const currentText = resultElement.textContent || '';
-        return currentText !== initialText && currentText.includes('hakutulosta');
-      },
-      { selector: resultSelector, initialText }
-    );
+    const resultLocator = page.locator(resultSelector);
+    await resultLocator.waitFor({ state: 'visible' });
+    
+    // Wait for the text to change from initial and contain 'hakutulosta'
+    await expect(resultLocator).not.toHaveText(initialText, { timeout: 5000 });
+    await expect(resultLocator).toContainText('hakutulosta', { timeout: 5000 });
 
     // Now get the actual result text and verify
     const resultText = await page.locator(resultSelector).textContent();
