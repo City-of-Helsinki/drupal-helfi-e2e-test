@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { type TestCase } from './newsArchiveTestCases';
+import type {TestCase } from './newsArchiveTestCases';
 import { DOMParser } from 'xmldom';
 
 /**
