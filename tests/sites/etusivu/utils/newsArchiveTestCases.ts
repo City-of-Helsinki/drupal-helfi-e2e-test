@@ -20,6 +20,13 @@ interface TestCase {
 
 const testCases: TestCases = [
   {
+    NAME: 'should work without filters',
+    TEXT_FILTER: null,
+    TOPICS: null,
+    CITY_DISTRICTS: null,
+    TARGET_GROUPS: null,
+  },
+  {
     NAME: 'should have functional text filter',
     TEXT_FILTER: 'Helsinki',
     TOPICS: null,
@@ -46,6 +53,13 @@ const testCases: TestCases = [
     TOPICS: null,
     CITY_DISTRICTS: null,
     TARGET_GROUPS: ['Lapsiperheet', 'Seniorit'],
+  },
+  {
+    NAME: 'should work with multiple filters',
+    TEXT_FILTER: 'Helsinki',
+    TOPICS: null,
+    CITY_DISTRICTS: ['Keskusta'],
+    TARGET_GROUPS: null,
   },
 ];
 

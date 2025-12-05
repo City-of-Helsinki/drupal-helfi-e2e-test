@@ -1,6 +1,5 @@
 import { logger } from '../../../utils/logger';
 import { expect, test, type Page } from '@playwright/test';
-import { DOMParser } from 'xmldom';
 import { type TestCase, testCases } from './utils/newsArchiveTestCases';
 import {
   fillTextFilter,
@@ -9,29 +8,24 @@ import {
   fillTargetGroups,
   clickSubmitButton,
   expectResult,
+  expectRss,
 } from './utils/newsArchiveInput';
-
-/**
- * Navigates to the front page and from there to the news archive.
- */
-async function navigateToArchiveFromFrontPage(page: Page) {
-  await page.goto('/fi', { waitUntil: 'domcontentloaded' });
-
-  await page.waitForSelector('.latest-news__link');
-  const newsArchiveLink = page.locator('.latest-news__link');
-  await expect(newsArchiveLink).toBeVisible();
-  await newsArchiveLink.click();
-  
-  await verifyReact(page);
-  
-  logger('News archive is accessible from the front page.');
-}
 
 /**
  * Navigates to the news archive.
  */
 async function navigateToNewsArchive(page: Page) {
+  // Navigate to the news archive.
   await page.goto('/fi/uutiset', { waitUntil: 'domcontentloaded' });
+
+  // Verify that the react application has successfully loaded.
+  await verifyReact(page);
+  
+  // Make sure there is no error message.
+  expect(
+    await page.locator('.react-search__results').getByText('Sisällön lataamisessa tapahtui virhe.').isVisible(),
+  ).toBeFalsy();
+
   return page.locator('.news-archive');
 }
 
@@ -39,98 +33,43 @@ async function navigateToNewsArchive(page: Page) {
  * Verify that the React application has fully loaded.
  */
 async function verifyReact(page: Page) {
+  // Wait for the form and results container to load.
   await page.waitForSelector('.news-archive .hdbt-search--react__form-container');
   await page.waitForSelector('.news-archive .react-search__results');
 
+  // Expect  the form and results container to be visible.
   await expect(page.locator('.news-archive .hdbt-search--react__form-container')).toBeVisible();
   await expect(page.locator('.news-archive .react-search__results')).toBeVisible();
 }
 
 test.describe('News archive', () => {
   test('should be accessible from the front page', async ({ page }) => {
-    await navigateToArchiveFromFrontPage(page);
+    // Navigate to the front page of the instance.
+    await page.goto('/fi', { waitUntil: 'domcontentloaded' });
+
+    // Find the link to the news archive.
+    await page.waitForSelector('.latest-news__link');
+    const newsArchiveLink = page.locator('.latest-news__link');
+    await expect(newsArchiveLink).toBeVisible();
+
+    // Click to link.
+    await newsArchiveLink.click();
+    
+    // Expect the React application to load.
+    await verifyReact(page);
+    
+    logger('News archive is accessible from the front page.');
   });
   
   test('should have results by default', async ({ page }) => {
+    // Go directly to the news archive page.
     const newsArchive = await navigateToNewsArchive(page);
-
-    await verifyReact(page);
-
-    // Make sure there is no error message.
-    expect(
-      await newsArchive.locator('.react-search__results').getByText('Sisällön lataamisessa tapahtui virhe.').isVisible(),
-    ).toBeFalsy();
 
     // Check that there is at least one result.
     const cardCount = await newsArchive.locator('.react-search__results').locator('.card').count();
     expect(cardCount).toBeGreaterThan(1);
 
     logger('News archive with results has been verified.');
-  });
-
-  test('should have RSS-link that includes the same ten news items as the archive', async ({ page }) => {
-    const newsArchive = await navigateToNewsArchive(page);
-
-    await verifyReact(page);
-
-    // Make sure there is no error message.
-    expect(
-      await newsArchive.locator('.react-search__results').getByText('Sisällön lataamisessa tapahtui virhe.').isVisible(),
-    ).toBeFalsy();
-
-    const newsArchiveFilterResults = page.locator('.react-search__results');
-    await expect(newsArchiveFilterResults).toBeVisible();
-
-    // Save all news items from the news archive.
-    const archiveItems = newsArchive.locator('.card');
-
-    // Find the rss-link.
-    const rssLink = newsArchive.locator('.news-archive__rss-link');
-
-    // Make sure the link is visible.
-    expect(
-      await rssLink.isVisible()
-    ).toBeTruthy();
-
-    // Get the url of the RSS feed from the link.
-    const rssUrl = await rssLink.getAttribute('href');
-    expect(rssUrl).toBeTruthy();
-
-    // Fetch the RSS feed.
-    if (rssUrl) {
-      const response = await page.request.get(rssUrl, {
-        ignoreHTTPSErrors: true
-      });
-      expect(response.status()).toBe(200);
-      
-      const rssContent = await response.text();
-      const rssXml = new DOMParser().parseFromString(rssContent, 'text/xml');
-
-      // Use getElementsByTagName instead of querySelector
-      const rssElement = rssXml.getElementsByTagName('rss')[0];
-      const channelElement = rssXml.getElementsByTagName('channel')[0];
-      const channelTitle = channelElement.getElementsByTagName('title')[0].textContent?.trim();
-
-      // Verify basic RSS structure
-      expect(rssElement).toBeDefined();
-      expect(channelElement).toBeDefined();
-      expect(channelTitle).toContain('Uutiset');
-
-      // Get all items
-      const rssItems = rssXml.getElementsByTagName('item');
-
-      // Compare the number of news items.
-      const archiveItemCount = await archiveItems.count();
-      expect(archiveItemCount).toBeGreaterThanOrEqual(rssItems.length);
-
-      const itemsToCompare = Math.min(rssItems.length, archiveItemCount);
-      for (let i = 0; i < itemsToCompare; i++) {
-        const archiveItemTitle = (await archiveItems.nth(i).locator('.card__link').textContent())?.trim();
-        const rssItemTitle = rssItems[i].getElementsByTagName('title')[0].textContent?.trim();
-        expect(archiveItemTitle).toBe(rssItemTitle);
-      }
-    }
-    logger('News archive has RSS-link that includes the same news items as the archive.');
   });
 
   testCases.forEach((testCase: TestCase) => {
@@ -156,7 +95,8 @@ test.describe('News archive', () => {
         })();
         
         await clickSubmitButton(page);
-        await expectResult(page);
+        await expectResult(page, testCase);
+        await expectRss(page);
       });
     });
   });
