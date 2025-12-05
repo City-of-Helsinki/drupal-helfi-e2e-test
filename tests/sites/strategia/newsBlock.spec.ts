@@ -29,7 +29,7 @@ type NewsItem = {
 };
 
 async function findNewsListingBlock(page: Page) {
-  await page.goto('/fi', { waitUntil: 'domcontentloaded' });
+  await page.goto('/fi/paatoksenteko-ja-hallinto', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('.component--news-list');
 
   // Find the news listing element from the page.
@@ -118,10 +118,13 @@ test.describe('News listing block', () => {
       }
 
       // Go to the instance front page where the news listing block is.
-      await page.goto('/fi', { waitUntil: 'domcontentloaded' });
+      await page.goto('/fi/paatoksenteko-ja-hallinto', { waitUntil: 'domcontentloaded' });
 
       // Verify that the news item is visible in the instance front page.
-      await expect(page.getByText(title, { exact: true })).toBeVisible();
+      const newsItem = page.locator('.news-listing__item')
+        .filter({ has: page.getByRole('link', { name: title, exact: true }) })
+        .first();
+      await expect(newsItem).toBeVisible();
     }, Promise.resolve());
 
     logger('News listing block has the same news items as in the API response.');
