@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
+import { clickResultsButton, existsBeforeEach, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
 import {
   fillHouseholdSize,
   fillGrossIncomePerMonth,
@@ -69,7 +69,7 @@ const TEST_CASES = [
 
 test.describe.configure({ mode: 'parallel' });
 test.beforeEach(
-  publishedBeforeEach(
+  existsBeforeEach(
     '/fi/sosiaali-ja-terveyspalvelut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri',
   ),
 );

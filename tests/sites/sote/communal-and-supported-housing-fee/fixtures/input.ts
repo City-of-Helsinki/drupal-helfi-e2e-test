@@ -73,7 +73,7 @@ const selectNoSafetyPhone = (page: Page) =>
 const selectGroceryDeliveryService = (page: Page) =>
   test.step('Select grocery delivery service', async () => {
     const group = page.getByRole('group', {
-      name: 'Laske arvioon ruokakaupan kotiinkuljetuspalvelu',
+      name: 'Laske arvioon kauppapalvelu',
     });
 
     await selectRadioOption(group, 'yes');
@@ -82,7 +82,7 @@ const selectGroceryDeliveryService = (page: Page) =>
 const selectNoGroceryDeliveryService = (page: Page) =>
   test.step('Select grocery delivery service', async () => {
     const group = page.getByRole('group', {
-      name: 'Laske arvioon ruokakaupan kotiinkuljetuspalvelu',
+      name: 'Laske arvioon kauppapalvelu',
     });
 
     await selectRadioOption(group, 'no');

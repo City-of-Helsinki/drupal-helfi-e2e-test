@@ -42,9 +42,23 @@ const skipUnpublished = async (page: Page, url: string, testInfo: TestInfo) => {
   }
 };
 
+const skipNotFound = async (page: Page, url: string, testInfo: TestInfo) => {
+  const response = await page.goto(url, { waitUntil: 'networkidle' });
+
+  if ((!response || !response.ok()) && response?.status() === 404) {
+    testInfo.skip(true, 'The calculator page is not found. Access 404 - Skipping tests');
+  }
+};
+
+// This is used for calculators that are not yet in production.
+const existsBeforeEach =
+  (url: string) =>
+  async ({ page }: { page: Page }, testInfo: TestInfo) =>
+    skipNotFound(page, url, testInfo);
+
 const publishedBeforeEach =
   (url: string) =>
   async ({ page }: { page: Page }, testInfo: TestInfo) =>
     skipUnpublished(page, url, testInfo);
 
-export { testUnfilledFields, clickResultsButton, expectResult, publishedBeforeEach };
+export { testUnfilledFields, clickResultsButton, expectResult, publishedBeforeEach, existsBeforeEach };
