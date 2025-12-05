@@ -1,6 +1,6 @@
 import { fetchJsonApiRequest, type JsonApiResponse } from '../../../utils/fetchJsonApiRequest';
 import { logger } from '../../../utils/logger';
-import { expect, type Page, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
 /**
  * Type definition for news item data structure from Drupal's JSON:API.
@@ -83,7 +83,7 @@ test.describe('News listing block', () => {
     // Fetch news items from Drupal's JSON:API using the created query parameters.
     const data = await fetchJsonApiRequest<JsonApiResponse<NewsItem>>(
       process.env.ETUSIVU_BASE_URL ?? 'https://www.test.hel.ninja',
-      `/fi/jsonapi/node/news?${params.toString()}`
+      '/fi/jsonapi/node/news?' + params.toString()
     );
 
     // Verify we received data from the API.
@@ -126,7 +126,7 @@ test.describe('News listing block', () => {
   test('should have a link-button on the block that takes the user to front page news listing with correct filters', async ({ page }) => {
     const newsListingBlock = await findNewsListingBlock(page);
 
-    // Find the button on the block that takes the user to front page news listing.
+    // Find the link-button on the block that takes the user to front page news listing.
     const linkButton = newsListingBlock.getByRole('link').filter({ hasText: 'Katso kaikki aiheen uutiset' });
 
     // Make sure the button is visible.
@@ -134,25 +134,44 @@ test.describe('News listing block', () => {
       await linkButton.isVisible()
     ).toBeTruthy();
 
-    // Save the first item on the news listing block.
-    const firstNewsListingItemTitleElement = newsListingBlock.locator('.news-listing__item:first-child .news-listing__link');
-    await expect(firstNewsListingItemTitleElement).toBeVisible();
-    const firstNewsListingItemTitleText = (await firstNewsListingItemTitleElement.textContent())?.trim();
+    // Get all news items from the listing block.
+    const newsListingItems = newsListingBlock.locator('.news-listing__item');
+    const newsListingCount = await newsListingItems.count();
+    expect(newsListingCount).toBeGreaterThan(0);
 
-    // Click the button and verify that the user is taken to the front page news listing.
+    // Save all item titles from the listing block to an array.
+    const newsListingTitles = [];
+
+    // Loop through each of the news items and save their titles to the array.
+    for (let i = 0; i < newsListingCount; i++) {
+      const itemTitleElement = newsListingItems.nth(i).locator('.news-listing__link');
+      await expect(itemTitleElement).toBeVisible();
+      const titleText = (await itemTitleElement.textContent())?.trim();
+      if (titleText) {
+        newsListingTitles.push(titleText);
+      }
+    }
+
+    // Click the link-button and verify that the user is taken to the front page news listing.
     await linkButton.click();
-
-    // Verify that the user is taken to the front page news listing.
     const newsArchiveFilterResults = page.locator('.react-search__results');
     await expect(newsArchiveFilterResults).toBeVisible();
 
-    // Save the first item on the front page news listing.
-    const firstResultItem = newsArchiveFilterResults.locator('.card:first-child .card__link');
-    await expect(firstResultItem).toBeVisible();
-    const firstResultItemTitleText = (await firstResultItem.textContent())?.trim();
+    // Get all news items from the archive listing.
+    const archiveItems = newsArchiveFilterResults.locator('.card');
 
-    // Compare that the first items match.
-    expect(firstResultItemTitleText).toBe(firstNewsListingItemTitleText);
+    // Compare the number of news items.
+    const archiveItemCount = await archiveItems.count();
+    expect(archiveItemCount).toBeGreaterThanOrEqual(newsListingCount);
+
+    // Compare each item in the listing with the corresponding item in the archive.
+    // To be on the safe side, check which number of items is smaller and use it for 
+    // the comparison.
+    const itemsToCompare = Math.min(newsListingCount, archiveItemCount);
+    for (let i = 0; i < itemsToCompare; i++) {
+      const archiveItemTitle = (await archiveItems.nth(i).locator('.card__link').textContent())?.trim();
+      expect(archiveItemTitle).toBe(newsListingTitles[i]);
+    }
 
     logger('Link-button on the block takes the user to front page news listing with correct filters.');
   });
