@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { clickResultsButton, existsBeforeEach, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
+import { clickResultsButton, existsBeforeEach, expectResult } from '../../../common/calculators/calculatorsCommon';
 import {
   fillHouseholdSize,
   fillGrossIncomePerMonth,
