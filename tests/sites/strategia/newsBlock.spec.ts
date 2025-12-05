@@ -1,6 +1,6 @@
 import { fetchJsonApiRequest, type JsonApiResponse } from '../../../utils/fetchJsonApiRequest';
 import { logger } from '../../../utils/logger';
-import { expect, Page, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 /**
  * Type definition for news item data structure from Drupal's JSON:API.
@@ -83,7 +83,7 @@ test.describe('News listing block', () => {
     // Fetch news items from Drupal's JSON:API using the created query parameters.
     const data = await fetchJsonApiRequest<JsonApiResponse<NewsItem>>(
       process.env.ETUSIVU_BASE_URL ?? 'https://www.test.hel.ninja',
-      '/fi/jsonapi/node/news?' + params.toString()
+      `/fi/jsonapi/node/news?${params.toString()}`
     );
 
     // Verify we received data from the API.
