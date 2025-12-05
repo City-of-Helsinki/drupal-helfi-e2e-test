@@ -77,6 +77,10 @@ test.describe('News listing block', () => {
     });
 
     // Append multiple values for the same parameter.
+    // @todo: It would ge a good idea to add the tags 
+    // to the news list block as a data-attribute and 
+    // then fetch the data-attribute here instead of
+    // hardcoding the values.
     params.append('filter[field_news_item_tags.meta.drupal_internal__target_id][condition][value][]', '336');
     params.append('filter[field_news_item_tags.meta.drupal_internal__target_id][condition][value][]', '384');
 
