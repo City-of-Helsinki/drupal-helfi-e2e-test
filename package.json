@@ -20,6 +20,8 @@
     "@dotenvx/dotenvx": "^1.15.0",
     "@playwright/test": "^1.55.1",
     "@types/node": "^24.5.2",
+    "@types/xmldom": "^0.1.34",
+    "@xmldom/xmldom": "^0.8.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }
