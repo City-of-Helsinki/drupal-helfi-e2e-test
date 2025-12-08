@@ -2,6 +2,8 @@ import { expect, type Page, test } from '@playwright/test';
 import { DOMParser } from '@xmldom/xmldom';
 import type {TestCase } from './newsArchiveTestCases';
 
+const resultSelector = '.hdbt-search--react__results--title';
+
 /**
  * Helper function for the dropdowns on news archive page.
  */
@@ -59,12 +61,8 @@ const clickSubmitButton = async (page: Page) =>
   });
 
 // All the test cases expect more than one result.
-const resultSelector = '.hdbt-search--react__results--title';
-const expectResult = async (page: Page, testCase?: TestCase) =>
+const expectResult = async (page: Page, initialText: string, testCase?: TestCase) =>
   await test.step('Check the results', async () => {
-    // Get the current results text before waiting for changes.
-    const initialText = await page.locator(resultSelector).textContent() || '';
-
     // Wait for the results to change.
     const resultLocator = page.locator(resultSelector);
     await resultLocator.waitFor({ state: 'visible' });
@@ -163,4 +161,5 @@ export {
   clickSubmitButton,
   expectResult,
   expectRss,
+  resultSelector,
 };

@@ -9,6 +9,7 @@ import {
   clickSubmitButton,
   expectResult,
   expectRss,
+  resultSelector,
 } from './utils/newsArchiveInput';
 
 /**
@@ -18,9 +19,9 @@ async function navigateToNewsArchive(page: Page) {
   // Navigate to the news archive.
   await page.goto('/fi/uutiset', { waitUntil: 'domcontentloaded' });
 
-  // Verify that the react application has successfully loaded.
+  // Verify that the React application has successfully loaded.
   await verifyReact(page);
-  
+
   // Make sure there is no error message.
   expect(
     await page.locator('.react-search__results').getByText('Sisällön lataamisessa tapahtui virhe.').isVisible(),
@@ -54,13 +55,13 @@ test.describe('News archive', () => {
 
     // Click to link.
     await newsArchiveLink.click();
-    
+
     // Expect the React application to load.
     await verifyReact(page);
-    
+
     logger('News archive is accessible from the front page.');
   });
-  
+
   test('should have results by default', async ({ page }) => {
     // Go directly to the news archive page.
     const newsArchive = await navigateToNewsArchive(page);
@@ -77,7 +78,7 @@ test.describe('News archive', () => {
       test('Fill in the form and check results', async ({ page }) => {
         await navigateToNewsArchive(page);
         await verifyReact(page);
-        
+
         // Then chain the form filling operations
         await (async () => {
           if (testCase.TEXT_FILTER !== null) {
@@ -93,9 +94,12 @@ test.describe('News archive', () => {
             await fillTargetGroups(page, testCase.TARGET_GROUPS);
           }
         })();
-        
+
+        // Get the initial results text.
+        const initialText = await page.locator(resultSelector).textContent() || '';
+
         await clickSubmitButton(page);
-        await expectResult(page, testCase);
+        await expectResult(page, initialText, testCase);
         await expectRss(page);
       });
     });
