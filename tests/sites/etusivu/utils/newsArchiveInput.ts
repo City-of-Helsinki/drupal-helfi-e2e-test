@@ -1,6 +1,6 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
+import { DOMParser } from '@xmldom/xmldom';
 import type {TestCase } from './newsArchiveTestCases';
-import { DOMParser } from 'xmldom';
 
 /**
  * Helper function for the dropdowns on news archive page.
@@ -17,7 +17,7 @@ async function fillDropdown(page: Page, selector: string, values: string[]) {
     (chain, value) =>
       chain.then(async () => {
         const option = page.locator(`.hdbt-search--react__dropdown-filters > *:nth-child(${selector}) li[aria-label="${value}"]`);
-        
+
         // As playwright click won't work for this case, we use evaluate to click the element.
         await option.evaluate((el) => {
           (el as HTMLElement).click();
@@ -64,16 +64,16 @@ const expectResult = async (page: Page, testCase?: TestCase) =>
   await test.step('Check the results', async () => {
     // Get the current results text before waiting for changes.
     const initialText = await page.locator(resultSelector).textContent() || '';
-    
+
     // Wait for the results to change.
     const resultLocator = page.locator(resultSelector);
     await resultLocator.waitFor({ state: 'visible' });
 
     // Check if all filters are null
-    const areAllFiltersNull = testCase && 
-      testCase.TEXT_FILTER === null && 
-      testCase.TOPICS === null && 
-      testCase.CITY_DISTRICTS === null && 
+    const areAllFiltersNull = testCase &&
+      testCase.TEXT_FILTER === null &&
+      testCase.TOPICS === null &&
+      testCase.CITY_DISTRICTS === null &&
       testCase.TARGET_GROUPS === null;
 
     if (areAllFiltersNull) {
@@ -81,7 +81,7 @@ const expectResult = async (page: Page, testCase?: TestCase) =>
       await expect(resultLocator).toHaveText(initialText, { timeout: 5000 });
       return;
     }
-    
+
     // Wait for the text to change from initial and contain 'hakutulosta'.
     await expect(resultLocator).not.toHaveText(initialText, { timeout: 5000 });
     await expect(resultLocator).toContainText('hakutulosta', { timeout: 5000 });
@@ -124,7 +124,7 @@ const expectRss = async (page: Page) =>
         ignoreHTTPSErrors: true
       });
       expect(response.status()).toBe(200);
-      
+
       const rssContent = await response.text();
       const rssXml = new DOMParser().parseFromString(rssContent, 'text/xml');
 
