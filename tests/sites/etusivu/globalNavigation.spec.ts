@@ -361,64 +361,55 @@ const testMobileMenu = (
  * Test suite for global navigation (mega + mobile menus) across languages and viewports.
  */
 test.describe('Global navigation', () => {
-  languages.forEach((language: string) => {
-    test(`Test global menu for language: ${language}`, async ({
-                                                                browser,
-                                                                baseURL,
-                                                              }) => {
-      if (typeof baseURL === 'undefined') {
-        throw new Error('Base URL is undefined');
-      }
+  languages.forEach((language) => {
+    test.describe(`Language: ${language}`, () => {
+      let menuItems: GlobalMenuItem[] = [];
 
-      const response = await apiResponse(language, baseURL);
-      const menuItems = Object.values(response);
+      test.beforeAll(async ({ baseURL }) => {
+        if (typeof baseURL === 'undefined') {
+          throw new Error('Base URL is undefined');
+        }
 
-      if (!menuItems.length) {
-        throw new Error('GlobalMenuResponse is empty');
-      }
+        const response = await apiResponse(language, baseURL);
+        menuItems = Object.values(response);
 
-      await Promise.all(
-        viewports.map(async ({ label, width, height }) => {
+        if (!menuItems.length) {
+          throw new Error('GlobalMenuResponse is empty');
+        }
+      });
+
+      viewports.forEach(({ label, width, height }) => {
+        test(`Navigation works on ${label} (${width}x${height})`, async ({ browser }) => {
           const context = await browser.newContext();
           const page = await context.newPage();
 
           await test.step(
-            `Navigation works on ${label} (${width}x${height})`,
+            `Open front page for ${language} on ${label}`,
             async () => {
               await page.setViewportSize({ width, height });
-              await page.goto(`/${language}`, {
-                waitUntil: 'domcontentloaded',
-              });
-
-              const menuButton = page.locator(
-                '.nav-toggle--menu button.nav-toggle__button',
-              );
-              await expect(menuButton).toBeVisible();
-              await menuButton.click();
-
-              if (label === 'desktop') {
-                // Expect the mega and mobile menu container to be visible.
-                await expect(
-                  page.locator(
-                    'nav.nav-toggle-dropdown .mega-and-mobilemenu',
-                  ),
-                ).toBeVisible();
-                await testMegaMenu(page, menuItems, label);
-              } else {
-                // Expect the mobile menu panels to be visible.
-                await expect(
-                  page.locator(
-                    'nav.nav-toggle-dropdown .mmenu .mmenu__panels',
-                  ),
-                ).toBeVisible();
-                await testMobileMenu(page, menuItems, label);
-              }
+              await page.goto(`/${language}`, { waitUntil: 'domcontentloaded' });
             },
           );
 
+          const menuButton = page.locator('.nav-toggle--menu button.nav-toggle__button');
+          await expect(menuButton).toBeVisible();
+          await menuButton.click();
+
+          if (label === 'desktop') {
+            await expect(
+              page.locator('nav.nav-toggle-dropdown .mega-and-mobilemenu'),
+            ).toBeVisible();
+            await testMegaMenu(page, menuItems, label);
+          } else {
+            await expect(
+              page.locator('nav.nav-toggle-dropdown .mmenu .mmenu__panels'),
+            ).toBeVisible();
+            await testMobileMenu(page, menuItems, label);
+          }
+
           await context.close();
-        }),
-      );
+        });
+      });
     });
   });
 });
