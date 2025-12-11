@@ -300,7 +300,10 @@ test.describe('Global navigation', () => {
         }
 
         const response = await apiResponse(language, baseURL);
-        menuItems = Object.values(response);
+
+        // Filter out "etusivu" link from the response.
+        const { etusivu: _, ...rest } = response;
+        menuItems = Object.values(rest);
 
         if (!menuItems.length) {
           throw new Error('GlobalMenuResponse is empty');
