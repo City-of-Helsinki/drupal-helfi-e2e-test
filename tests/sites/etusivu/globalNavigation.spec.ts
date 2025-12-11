@@ -1,22 +1,16 @@
 import { expect, type Page, test } from '@playwright/test';
 import { fetchJsonApiRequest } from '../../../utils/fetchJsonApiRequest';
 import type { GlobalMenuResponse } from './types/globalMenuResponseType';
+import { DEFAULT_LANGUAGES, type Langcode } from './types/languagesType';
 import type { GlobalMenuItem, MenuLink } from './types/menuLinkType';
-
-const viewports = [
-  { label: 'mobile', width: 375, height: 812 },
-  { label: 'tablet', width: 768, height: 1024 },
-  { label: 'desktop', width: 1280, height: 800 },
-];
-
-const languages: string[] = ['fi', 'sv', 'en'];
+import { DEFAULT_VIEWPORTS } from './types/viewportsType';
 
 /**
  * Fetches the global mobile menu JSON for a given language.
  *
- * @param language - Language code (e.g. 'fi', 'sv', 'en').
- * @param baseURL - Base URL of the site under test.
- * @throws If the API is unreachable or returns an empty response.
+ * @param language - Language code.
+ * @param baseURL - Base URL of the site.
+ * @throws error - If the API is unreachable or returns an empty response.
  * @returns Parsed global menu API response.
  */
 async function apiResponse(language: string, baseURL: string) {
@@ -33,7 +27,7 @@ async function apiResponse(language: string, baseURL: string) {
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(
-        `Failed to fetch menu items from /${language}/api/v1/global-mobile-menu. The API might be down or the endpoint is not accessible. Error: ${error.message}`,
+        `Failed to fetch menu items from ${baseURL}/${language}/api/v1/global-mobile-menu. Error: ${error.message}`,
       );
     }
 
@@ -46,10 +40,10 @@ async function apiResponse(language: string, baseURL: string) {
 }
 
 /**
- * Picks a single random item from a non-empty array.
+ * Picks a single random item from an array.
  *
  * @param items - Array of items to pick from.
- * @throws If the array is empty.
+ * @throws error - If the array is empty.
  * @returns A single randomly selected item.
  */
 const getRandomArrayItem = <T>(items: T[]): T => {
@@ -62,51 +56,42 @@ const getRandomArrayItem = <T>(items: T[]): T => {
 };
 
 /**
- * Builds a random navigation chain starting from a given menu link.
+ * Builds a random navigation path starting from a given menu link.
  *
- * The function walks down through `sub_tree` picking a random child at each level
- * until either:
- *  - maxDepth is reached, or
- *  - a link without children is found.
+ * The function traverses down through the subtree by picking a random
+ * child at each level until either maxDepth is reached or a link without
+ * children is found.
  *
  * @param link - Root link to start from.
- * @param maxDepth - Maximum depth to follow from the root (Infinity for full depth).
- * @param currentDepth - Internal recursion counter, do not pass manually.
- * @returns Array of MenuLinks representing the navigation chain.
+ * @param maxDepth - Maximum depth to follow from the root.
+ * @param currentDepth - Internal recursion counter.
+ * @returns Array of MenuLinks representing the navigation path.
  */
-const buildRandomLinkChainFromLink = (
-  link: MenuLink,
-  maxDepth: number,
-  currentDepth = 0,
-): MenuLink[] => {
-  if (
-    currentDepth >= maxDepth ||
-    !link.sub_tree ||
-    link.sub_tree.length === 0
-  ) {
+const buildNavigationPathFromLink = (link: MenuLink, maxDepth: number, currentDepth = 0): MenuLink[] => {
+  // Return the link if the maximum depth is reached or there are no children.
+  if (currentDepth >= maxDepth || !link.sub_tree || link.sub_tree.length === 0) {
     return [link];
   }
 
+  // Pick a random child to traverse down to.
   const child = getRandomArrayItem(link.sub_tree);
 
-  return [
-    link,
-    ...buildRandomLinkChainFromLink(child, maxDepth, currentDepth + 1),
-  ];
+  // Return the link and the navigation path from the child.
+  return [link, ...buildNavigationPathFromLink(child, maxDepth, currentDepth + 1)];
 };
 
 /**
- * Creates a random navigation chain from a menu item root.
+ * Creates a random navigation path from a menu item root.
  *
- * For 'mega' menus, the chain is at most two items (root + one child).
- * For 'mobile' menus, the chain can be arbitrarily deep.
+ * For megamenu, the path is max. two levels.
+ * For mobile menus, the path can be deep.
  *
  * @param menuItem - A single root menu item from the API response.
  * @param type - Menu type, 'mega' or 'mobile'. Defaults to 'mobile'.
- * @throws If the menu tree is empty.
- * @returns Array of MenuLinks representing the navigation chain.
+ * @throws error - If the menu tree is empty.
+ * @returns Array of MenuLinks representing the navigation path.
  */
-export const getRandomLinkChainFromMenuItem = (
+export const getRandomLinkPathFromMenuItem = (
   menuItem: GlobalMenuItem,
   type: 'mega' | 'mobile' = 'mobile',
 ): MenuLink[] => {
@@ -115,103 +100,76 @@ export const getRandomLinkChainFromMenuItem = (
   }
 
   const rootLink = getRandomArrayItem(menuItem.menu_tree);
-  return buildRandomLinkChainFromLink(
-    rootLink,
-    type === 'mega' ? 1 : Infinity,
-  );
+  return buildNavigationPathFromLink(rootLink, type === 'mega' ? 1 : Infinity);
 };
 
 /**
- * Tests the desktop mega menu by verifying that randomly selected links
+ * Tests the desktop mega menu by verifying that the links
  * from the API also exist in the rendered mega menu.
  *
  * @param page - Playwright page instance.
  * @param menuItems - Global menu items from the API.
- * @param viewportLabel - Label for the current viewport (e.g. 'desktop').
+ * @param viewportLabel - Label for the current viewport.
  */
-const testMegaMenu = (
-  page: Page,
-  menuItems: GlobalMenuItem[],
-  viewportLabel: string,
-) =>
+const testMegaMenu = (page: Page, menuItems: GlobalMenuItem[], viewportLabel: string) =>
   test.step(`Test the mega menu for: ${viewportLabel}`, async () => {
-    const megaMenu = page.locator(
-      'nav.nav-toggle-dropdown .mega-and-mobilemenu .megamenu:not(.megamenu__subnav)',
-    );
+    const megaMenu = page.locator('nav.nav-toggle-dropdown .mega-and-mobilemenu .megamenu:not(.megamenu__subnav)');
 
     await expect(megaMenu).toBeVisible();
 
-    // Pick two random chains to test (root and possible child).
-    const chainsToTest = [
-      ...getRandomLinkChainFromMenuItem(
-        getRandomArrayItem(menuItems),
-        'mega',
-      ),
-      ...getRandomLinkChainFromMenuItem(
-        getRandomArrayItem(menuItems),
-        'mega',
-      ),
+    // Pick two random navigation paths to test.
+    const pathsToTest = [
+      ...getRandomLinkPathFromMenuItem(getRandomArrayItem(menuItems), 'mega'),
+      ...getRandomLinkPathFromMenuItem(getRandomArrayItem(menuItems), 'mega'),
     ];
 
-    await test.step('Assert randomly selected mega menu links are visible', async () => {
+    await test.step('Assert the mega menu links are visible', async () => {
       await Promise.all(
-        chainsToTest.map(async (link: MenuLink) => {
-          const anchor = page.locator(
-            `a.megamenu__link[href="${link.url}"]`,
-          );
+        pathsToTest.map(async (link: MenuLink) => {
+          const anchor = page.locator(`a.megamenu__link[href="${link.url}"]`);
           await expect(anchor).toBeVisible();
-          await expect(
-            anchor.locator('span.megamenu__link__text'),
-          ).toHaveText(link.name);
+          await expect(anchor.locator('span.megamenu__link__text')).toHaveText(link.name);
         }),
       );
     });
   });
 
 /**
- * Navigates the mobile menu downwards according to the given chain.
- *
- * For each item in the chain except the last one, this function:
- *  - clicks the corresponding `.mmenu__forward` button
- *  - asserts that the panel title matches the link (href + text)
- *
- * For the last item, it asserts that a corresponding `.mmenu__item-link`
- * exists in the current panel.
+ * Navigates the mobile menu downwards according to the given path.
  *
  * @param page - Playwright page instance.
- * @param chain - Navigation chain as returned by getRandomLinkChainFromMenuItem().
+ * @param path - Navigation path.
  */
-const navigateMobileMenuDown = async (page: Page, chain: MenuLink[]) => {
-  if (!chain.length) {
-    throw new Error('Cannot navigate an empty chain');
+const navigateMobileMenuDown = async (page: Page, path: MenuLink[]) => {
+  if (!path.length) {
+    throw new Error('Cannot navigate an empty path');
   }
 
   await test.step(
-    `Navigate mobile menu down: ${chain.map((link) => link.name).join(' → ')}`,
+    `Navigate mobile menu down: ${path.map((link) => link.name).join(' → ')}`,
     async () => {
-      // If the chain has only a single item, just assert it exists in the current panel.
-      if (chain.length === 1) {
-        const leaf = chain[0];
+      // Handle case where path contains only a single panel.
+      if (path.length === 1) {
+        const panel = path[0];
 
-        await test.step(`Assert single leaf item is visible: ${leaf.name}`, async () => {
-          const leafLink = page.locator(
-            `section.mmenu__panel--current a.mmenu__item-link[href="${leaf.url}"]`,
+        await test.step(`Assert single panel item is visible: ${panel.name}`, async () => {
+          const panelLink = page.locator(
+            `section.mmenu__panel--current a.mmenu__item-link[href="${panel.url}"]`,
           );
 
-          await expect(leafLink).toBeVisible();
-          await expect(
-            leafLink.locator('.mmenu__link__text'),
-          ).toHaveText(leaf.name);
+          await expect(panelLink).toBeVisible();
+          await expect(panelLink.locator('.mmenu__link__text')).toHaveText(panel.name);
         });
 
         return;
       }
 
-      // All items *except* the last – these will be clicked via .mmenu__forward.
-      const pathToLeafParent = chain.slice(0, -1);
-      const leaf = chain[chain.length - 1];
+      // Get all links from path except the last one.
+      const pathToPanelParent = path.slice(0, -1);
+      // Get the last link from path.
+      const panel = path[path.length - 1];
 
-      await pathToLeafParent.reduce<Promise<void>>(
+      await pathToPanelParent.reduce<Promise<void>>(
         async (previous, link) => {
           await previous;
 
@@ -219,149 +177,120 @@ const navigateMobileMenuDown = async (page: Page, chain: MenuLink[]) => {
             const forwardButton = page.locator(
               `section.mmenu__panel--current button.mmenu__forward[value="${link.id}"]`,
             );
-
             await forwardButton.click();
 
-            const title = page.locator(
-              'section.mmenu__panel--current .mmenu__title-link',
-            );
+            // Assert that panel title matches current link.
+            const title = page.locator('section.mmenu__panel--current .mmenu__title-link');
             await expect(title).toHaveAttribute('href', link.url);
-            await expect(
-              title.locator('.mmenu__link__text'),
-            ).toHaveText(link.name);
+            await expect(title.locator('.mmenu__link__text')).toHaveText(link.name);
           });
         },
         Promise.resolve(),
       );
 
-      // Now we should be on the parent panel of the leaf item.
-      // The leaf itself should be rendered as `.mmenu__item-link`.
-      await test.step(`Assert leaf item is visible: ${leaf.name}`, async () => {
-        const leafItem = page.locator(
-          `section.mmenu__panel--current a.mmenu__item-link[href="${leaf.url}"]`,
+      // The current panel should contain the final panel from the path.
+      await test.step(`Assert panel item is visible: ${panel.name}`, async () => {
+        // Try locating the panel link inside list items.
+        const panelItem = page.locator(
+          `section.mmenu__panel--current a.mmenu__item-link[href="${panel.url}"]`,
         );
 
-        if (await leafItem.count()) {
-          await expect(leafItem).toBeVisible();
-          await expect(
-            leafItem.locator('.mmenu__link__text'),
-          ).toHaveText(leaf.name);
+        // If found in the list, assert visibility and text.
+        if (await panelItem.count()) {
+          await expect(panelItem).toBeVisible();
+          await expect(panelItem.locator('.mmenu__link__text')).toHaveText(panel.name);
           return;
         }
 
-        // Fallback: in some configurations the leaf may be the title link.
-        const leafTitle = page.locator(
-          'section.mmenu__panel--current .mmenu__title-link',
-        );
-        await expect(leafTitle).toHaveAttribute('href', leaf.url);
-        await expect(
-          leafTitle.locator('.mmenu__link__text'),
-        ).toHaveText(leaf.name);
+        // If the panel link is not in the list, it must be the title link.
+        const panelTitle = page.locator('section.mmenu__panel--current .mmenu__title-link');
+        await expect(panelTitle).toHaveAttribute('href', panel.url);
+        await expect(panelTitle.locator('.mmenu__link__text')).toHaveText(panel.name);
       });
     },
   );
 };
 
 /**
- * Navigates the mobile menu back up using the given chain.
+ * Navigates the mobile menu back up using the given path.
  *
- * Starting from the deepest level (last item in the chain), this function:
+ * Starting from the deepest level (last item in the path), this function:
  *  - clicks `.mmenu__back` to go one level up (for each step except the first),
  *  - asserts that the panel title matches the link (href + text).
  *
  * @param page - Playwright page instance.
- * @param chain - Navigation chain that was previously used to go down.
+ * @param path - Navigation path that was previously used to go down.
  */
-const navigateMobileMenuUp = async (page: Page, chain: MenuLink[]) => {
-  // If the chain was empty or only had a leaf (which we never opened as a panel),
-  // there is nothing meaningful to navigate back through.
-  if (chain.length <= 1) {
+const navigateMobileMenuUp = async (page: Page, path: MenuLink[]) => {
+  // If the path has only one item, we cannot navigate up.
+  if (path.length <= 1) {
     return;
   }
 
-  // We only navigated panels for all items *except* the leaf.
-  const parents = chain.slice(0, -1);
+  // Get all links from path except the last one.
+  const parents = path.slice(0, -1);
+  // Reverse the path to navigate up.
   const reversed = [...parents].reverse();
 
-  await test.step(
-    `Navigate mobile menu up: ${reversed.map((link) => link.name).join(' ← ')}`,
-    async () => {
-      await reversed.reduce<Promise<void>>(
-        async (previous, link, index) => {
-          await previous;
+  await test.step(`Navigate mobile menu up: ${reversed.map((link) => link.name).join(' ← ')}`, async () => {
+    await reversed.reduce<Promise<void>>(async (previous, link, index) => {
+      await previous;
 
-          await test.step(
-            index === 0
-              ? `Assert deepest parent panel title: ${link.name}`
-              : `Go back to: ${link.name}`,
-            async () => {
-              if (index > 0) {
-                const backButton = page.locator(
-                  'section.mmenu__panel--current button.mmenu__back',
-                );
-                await backButton.click();
-              }
+      await test.step(
+        index === 0 ? `Assert deepest parent panel title: ${link.name}` : `Go back to: ${link.name}`,
+        async () => {
+          if (index > 0) {
+            const backButton = page.locator('section.mmenu__panel--current button.mmenu__back');
+            await backButton.click();
+          }
 
-              const title = page.locator(
-                'section.mmenu__panel--current .mmenu__title-link',
-              );
-              await expect(title).toHaveAttribute('href', link.url);
-              await expect(
-                title.locator('.mmenu__link__text'),
-              ).toHaveText(link.name);
-            },
-          );
+          const title = page.locator('section.mmenu__panel--current .mmenu__title-link');
+          await expect(title).toHaveAttribute('href', link.url);
+          await expect(title.locator('.mmenu__link__text')).toHaveText(link.name);
         },
-        Promise.resolve(),
       );
-    },
-  );
+    }, Promise.resolve());
+  });
 };
 
 /**
- * Tests the mobile menu by navigating a random chain from the API
- * and verifying that the corresponding links exist in the rendered menu.
+ * Tests the mobile menu by navigating a random path from the API.
  *
  * @param page - Playwright page instance.
  * @param menuItems - Global menu items from the API.
- * @param viewportLabel - Label for the current viewport (e.g. 'mobile', 'tablet').
+ * @param viewportLabel - Label for the current viewport.
  */
-const testMobileMenu = (
-  page: Page,
-  menuItems: GlobalMenuItem[],
-  viewportLabel: string,
-) =>
+const testMobileMenu = (page: Page, menuItems: GlobalMenuItem[], viewportLabel: string) =>
   test.step(`Test the mobile menu for: ${viewportLabel}`, async () => {
     const mobileMenu = page.locator('nav.nav-toggle-dropdown .mmenu');
 
     await expect(mobileMenu).toBeVisible();
 
+    // Pick a random menu from the API response and generate a path for it.
     const randomMenuItem = getRandomArrayItem(menuItems);
-    const chain = getRandomLinkChainFromMenuItem(randomMenuItem, 'mobile');
+    const path = getRandomLinkPathFromMenuItem(randomMenuItem, 'mobile');
 
-    await navigateMobileMenuDown(page, chain);
+    // Navigate down the path.
+    await navigateMobileMenuDown(page, path);
 
-    // Final leaf verification from the current panel list.
-    const leaf = chain[chain.length - 1];
+    // Get the final panel from the path.
+    const panel = path[path.length - 1];
 
-    await test.step(`Verify final leaf link in list: ${leaf.name}`, async () => {
-      const leafAnchor = page.locator(
-        `section.mmenu__panel--current a.mmenu__item-link[href="${leaf.url}"]`,
-      );
-      await expect(leafAnchor).toBeVisible();
-      await expect(
-        leafAnchor.locator('.mmenu__link__text'),
-      ).toHaveText(leaf.name);
+    await test.step(`Verify final panel link in list: ${panel.name}`, async () => {
+      const panelAnchor = page.locator(`section.mmenu__panel--current a.mmenu__item-link[href="${panel.url}"]`);
+      await expect(panelAnchor).toBeVisible();
+      await expect(panelAnchor.locator('.mmenu__link__text')).toHaveText(panel.name);
     });
 
-    await navigateMobileMenuUp(page, chain);
+    // Navigate up the path.
+    await navigateMobileMenuUp(page, path);
   });
 
 /**
  * Test suite for global navigation (mega + mobile menus) across languages and viewports.
  */
 test.describe('Global navigation', () => {
-  languages.forEach((language) => {
+  DEFAULT_LANGUAGES.forEach((language: Langcode) => {
     test.describe(`Language: ${language}`, () => {
       let menuItems: GlobalMenuItem[] = [];
 
@@ -378,32 +307,29 @@ test.describe('Global navigation', () => {
         }
       });
 
-      viewports.forEach(({ label, width, height }) => {
+      DEFAULT_VIEWPORTS.forEach(({ label, width, height }) => {
         test(`Navigation works on ${label} (${width}x${height})`, async ({ browser }) => {
           const context = await browser.newContext();
           const page = await context.newPage();
 
-          await test.step(
-            `Open front page for ${language} on ${label}`,
-            async () => {
-              await page.setViewportSize({ width, height });
-              await page.goto(`/${language}`, { waitUntil: 'domcontentloaded' });
-            },
-          );
+          await test.step(`Open front page for ${language} on ${label}`, async () => {
+            await page.setViewportSize({ width, height });
+            await page.goto(`/${language}`, { waitUntil: 'domcontentloaded' });
+          });
 
+          // Open the menu.
           const menuButton = page.locator('.nav-toggle--menu button.nav-toggle__button');
           await expect(menuButton).toBeVisible();
           await menuButton.click();
 
+          // Test mega menu on desktop.
           if (label === 'desktop') {
-            await expect(
-              page.locator('nav.nav-toggle-dropdown .mega-and-mobilemenu'),
-            ).toBeVisible();
+            await expect(page.locator('nav.nav-toggle-dropdown .mega-and-mobilemenu')).toBeVisible();
             await testMegaMenu(page, menuItems, label);
-          } else {
-            await expect(
-              page.locator('nav.nav-toggle-dropdown .mmenu .mmenu__panels'),
-            ).toBeVisible();
+          }
+          // Test mobile menu on mobile and tablet.
+          else {
+            await expect(page.locator('nav.nav-toggle-dropdown .mmenu .mmenu__panels')).toBeVisible();
             await testMobileMenu(page, menuItems, label);
           }
 
