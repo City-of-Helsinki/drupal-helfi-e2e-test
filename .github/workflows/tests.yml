@@ -19,3 +19,6 @@ jobs:
         run: |
           npm ci
           npm run lint:js
+
+      - name: NPM Audit
+        run: npm audit
