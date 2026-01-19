@@ -71,6 +71,11 @@ export const sites: SiteConfig[] = [
     envPrefix: 'ASUMINEN',
     defaultBaseURL: 'https://www.test.hel.ninja',
   },
+  {
+    name: 'emergency-site',
+    envPrefix: 'EMERGENCY_SITE',
+    defaultBaseURL: 'https://emergency-site.stage.hel.ninja',
+  },
   // Add more sites here as needed:
   // {
   //   name: 'asuminen',
