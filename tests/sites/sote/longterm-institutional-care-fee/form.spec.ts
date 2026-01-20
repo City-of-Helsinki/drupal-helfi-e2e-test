@@ -12,19 +12,19 @@ test('Test unfilled fields', async ({ page }) => {
 });
 
 test('Earned income input must be positive', async ({ page }) => {
-  await page.getByLabel('Ansiotulot (euroa)').fill('-1');
+  await page.getByLabel('Ansiotulot (euroa)', { exact: true }).fill('-1');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
   expect(await page.getByText('Arvon pitää olla 0 tai enemmän: Ansiotulot.').isVisible()).toBeTruthy();
 
-  await page.getByLabel('Ansiotulot (euroa)').fill('1500,50€');
+  await page.getByLabel('Ansiotulot (euroa)', { exact: true }).fill('1500,50€');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
   expect(await page.getByText('Arvon pitää olla 0 tai enemmän: Ansiotulot.').isVisible()).toBeFalsy();
 });
 
 test('Annual forest income input must be positive', async ({ page }) => {
-  await page.getByLabel('Metsän vuotuinen tuotto (euroa)').fill('-10');
+  await page.getByLabel('Metsän vuotuinen tuotto (euroa)', { exact: true }).fill('-10');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
   expect(await page.getByText('Arvon pitää olla 0 tai enemmän: Metsän vuotuinen tuotto.').isVisible()).toBeTruthy();
@@ -39,7 +39,7 @@ test('Social welfare act selection must be selected', async ({ page }) => {
 test('Has spouse selection must be selected', async ({ page }) => {
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
-  expect(await page.getByText('Valinta on pakollinen: Onko asiakkaalla puolisoa.').isVisible()).toBeTruthy();
+  expect(await page.getByText('Valinta on pakollinen: Onko asiakkaalla puolisoa?').isVisible()).toBeTruthy();
 });
 
 test('Spouse earned income must be positive when spouse is selected', async ({ page }) => {
@@ -50,20 +50,20 @@ test('Spouse earned income must be positive when spouse is selected', async ({ p
   await page.getByLabel('Puolison ansiotulot (euroa)').fill('-100');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
-  expect(await page.getByText('Arvon pitää olla 0 tai enemmän: Ansiotulot.').isVisible(),).toBeTruthy();
+  expect(await page.getByText('Arvon pitää olla 0 tai enemmän: Puolison ansiotulot.').isVisible(),).toBeTruthy();
 });
 
 test('Valid inputs produce a result receipt', async ({ page }) => {
-  await page.getByRole('group', { name: 'Sovelletaanko sosiaalihuoltolakia' })
+  await page.getByRole('group', { name: 'Kyseessä on sosiaalihuoltolain mukainen palvelu' })
     .locator('label', { hasText: 'Kyllä' })
     .click();
 
-  await page.getByLabel('Ansiotulot (euroa)').fill('2000');
-  await page.getByLabel('Etuudet (euroa)').fill('500');
-  await page.getByLabel('Pääomatulot (euroa)').fill('0');
-  await page.getByLabel('Metsätulot vuodessa (euroa)').fill('1200');
+  await page.getByLabel('Ansiotulot (euroa)', { exact: true }).fill('2000');
+  await page.getByLabel('Etuudet (euroa)', { exact: true }).fill('500');
+  await page.getByLabel('Pääomatulot (euroa)', { exact: true }).fill('0');
+  await page.getByLabel('Metsän vuotuinen tuotto (euroa)', { exact: true }).fill('1200');
 
-  await page.getByRole('group', { name: 'Onko asiakkaalla puoliso' })
+  await page.getByRole('group', { name: 'Onko asiakkaalla puolisoa' })
     .locator('label', { hasText: 'Ei' })
     .click();
 
