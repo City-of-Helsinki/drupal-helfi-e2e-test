@@ -1,4 +1,4 @@
-import { Page, test } from '@playwright/test';
+import { type Page, test } from '@playwright/test';
 import { clickResultsButton, existsBeforeEach, expectResult } from '../../../common/calculators/calculatorsCommon';
 import {
   fillEarnedIncome,
