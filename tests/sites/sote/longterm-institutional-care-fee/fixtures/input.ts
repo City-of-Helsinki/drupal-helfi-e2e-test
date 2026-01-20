@@ -76,7 +76,7 @@ const selectSocialWelfareActNo = (page: Page) =>
   const selectHasSpouseYes = (page: Page) =>
   test.step('Select has spouse: yes', async () => {
     const group = page.getByRole('group', {
-      name: 'Onko sinulla puoliso ',
+      name: 'Onko asiakkaalla puolisoa',
     });
 
     await selectRadioOption(group, 'yes');
@@ -85,7 +85,7 @@ const selectSocialWelfareActNo = (page: Page) =>
 const selectHasSpouseNo = (page: Page) =>
   test.step('Select has spouse: no', async () => {
     const group = page.getByRole('group', {
-      name: 'Onko sinulla puoliso ',
+      name: 'Onko asiakkaalla puolisoa',
     });
 
     await selectRadioOption(group, 'no');

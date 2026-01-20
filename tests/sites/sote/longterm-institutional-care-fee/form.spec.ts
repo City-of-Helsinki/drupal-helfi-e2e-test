@@ -39,11 +39,11 @@ test('Social welfare act selection must be selected', async ({ page }) => {
 test('Has spouse selection must be selected', async ({ page }) => {
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
-  expect(await page.getByText('Valinta on pakollinen: Onko sinulla puoliso.').isVisible()).toBeTruthy();
+  expect(await page.getByText('Valinta on pakollinen: Onko asiakkaalla puolisoa.').isVisible()).toBeTruthy();
 });
 
 test('Spouse earned income must be positive when spouse is selected', async ({ page }) => {
-  const group = page.getByRole('group', {name: 'Onko sinulla puoliso'});
+  const group = page.getByRole('group', {name: 'Onko asiakkaalla puolisoa'});
 
   await group.locator('label', { hasText: 'Kyllä' }).click();
 
