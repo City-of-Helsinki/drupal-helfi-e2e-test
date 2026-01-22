@@ -1,6 +1,7 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
 import { clickResultsButton, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
-import { addNextChildsInformation, fillHouseHoldSize } from './fixtures/input';
+import { fillHouseholdSize } from '../../../common/calculators/calculatorsInput';
+import { addNextChildsInformation } from './fixtures/input';
 
 const expectVisible = async (locator: Locator) => {
   expect(locator.isVisible()).toBeTruthy();
@@ -77,7 +78,7 @@ test('On submit, unfilled fields give an error', async ({ page }) => {
   ).toBeTruthy();
 
   // Add a household size.
-  await fillHouseHoldSize(page, '2');
+  await fillHouseholdSize(page, '2', 'Perheen koko');
 
   // Submit the form to trigger the additional error messages.
   await clickResultsButton(page);
@@ -92,15 +93,15 @@ test('On submit, unfilled fields give an error', async ({ page }) => {
 });
 
 test('Household size must be two or more', async ({ page }) => {
-  await fillHouseHoldSize(page, '-1');
+  await fillHouseholdSize(page, '-1', 'Perheen koko');
   await clickResultsButton(page);
   await expectVisible(page.getByText('Arvon pitää olla 2 tai enemmän: Perheen koko.'));
 
-  await fillHouseHoldSize(page, '1');
+  await fillHouseholdSize(page, '1', 'Perheen koko');
   await clickResultsButton(page);
   await expectVisible(page.getByText('Arvon pitää olla 2 tai enemmän: Perheen koko.'));
 
-  await fillHouseHoldSize(page, '3');
+  await fillHouseholdSize(page, '3', 'Perheen koko');
   await clickResultsButton(page);
   await expectNotVisible(page.getByText('Arvon pitää olla 2 tai enemmän: Perheen koko.'));
 });

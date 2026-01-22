@@ -1,10 +1,10 @@
 import { test } from '@playwright/test';
 import { cookieHandler } from '../../../../utils/handlers';
 import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
+import { fillHouseholdSize } from '../../../common/calculators/calculatorsInput';
 import {
   addNextChildsInformation,
   fillGrossIncome,
-  fillHouseHoldSize,
   fillRegularDaysOffPerMonth,
   selectDaycareTime,
   selectDaycareType,
@@ -27,7 +27,7 @@ test.describe('Early childhood education fee', () => {
         const children = Object.values(testCase.CHILDREN) as ChildDetails[];
 
         // Fill in household size and gross income.
-        await fillHouseHoldSize(page, testCase.HOUSEHOLD_SIZE);
+        await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE, 'Perheen koko');
         await fillGrossIncome(page, testCase.INCOME);
 
         // Fill in children information.

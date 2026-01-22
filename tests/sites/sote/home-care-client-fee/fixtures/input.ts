@@ -1,4 +1,4 @@
-import { expect, test, type Page, type Locator } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 
 async function selectRadioOption(group: Locator, option: 'yes' | 'no') {
   await group.waitFor({ state: 'visible' });
@@ -14,21 +14,6 @@ async function selectRadioOption(group: Locator, option: 'yes' | 'no') {
 
   await expect(input).toBeChecked();
 }
-
-const fillHouseholdSize = (page: Page, value: string) =>
-  test.step('Fill household size', async () => {
-    await page.getByLabel('Talouden koko (henkilöä)').fill(String(value));
-  });
-
-const fillGrossIncomePerMonth = (page: Page, value: string) =>
-  test.step('Fill gross income per month', async () => {
-    await page.getByLabel('Talouden bruttotulot kuukaudessa (euroa)').fill(String(value));
-  });
-
-const fillMonthlyUsage = (page: Page, value: string) =>
-  test.step('Fill monthly usage', async () => {
-    await page.getByLabel('Kotihoidon tuntimäärä kuukaudessa (tuntia)').fill(String(value));
-  });
 
 const selectSafetyPhone = async (page: Page) =>
   test.step('Select safety phone option', async () => {
@@ -90,9 +75,6 @@ const fillMealServicePerWeek = (page: Page, value: string) =>
   });
 
 export {
-  fillHouseholdSize,
-  fillGrossIncomePerMonth,
-  fillMonthlyUsage,
   selectSafetyPhone,
   selectNoSafetyPhone,
   selectGroceryDeliveryService,

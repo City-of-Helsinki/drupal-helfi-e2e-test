@@ -5,11 +5,6 @@ const addNextChildsInformation = (page: Page) =>
     await page.getByRole('button', { name: 'Lisää seuraavan lapsen tiedot' }).click();
   });
 
-const fillHouseHoldSize = (page: Page, value: string) =>
-  test.step('Fill household size', async () => {
-    await page.getByLabel('Perheen koko').fill(String(value));
-  });
-
 const fillGrossIncome = (page: Page, value: string) =>
   test.step("Fill family's gross monthly income", async () => {
     await page.getByLabel('Perheen bruttotulot kuukaudessa').fill(String(value));
@@ -58,7 +53,6 @@ const selectDaycareTime = (page: Page, child: number, daycareType: number, dayca
 
 export {
   addNextChildsInformation,
-  fillHouseHoldSize,
   fillGrossIncome,
   selectDaycareType,
   selectDaycareTypeExtra,
