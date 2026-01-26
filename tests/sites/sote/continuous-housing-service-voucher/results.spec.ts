@@ -1,6 +1,7 @@
 import { test } from '@playwright/test';
 import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
-import { fillNetIncomePerMonth, fillServiceProviderPrice } from './fixtures/input';
+import { fillServiceProviderPrice } from '../../../common/calculators/calculatorsInput';
+import { fillNetIncomePerMonth } from './fixtures/input';
 
 const TEST_CASES = [
   {
@@ -34,7 +35,7 @@ TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {
     test('Fill in form and check results', async ({ page }) => {
       await fillNetIncomePerMonth(page, testCase.NET_INCOME_PER_MONTH);
-      await fillServiceProviderPrice(page, testCase.SERVICE_PROVIDER_PRICE);
+      await fillServiceProviderPrice(page, testCase.SERVICE_PROVIDER_PRICE, 'Palveluasumisen vuorokausihinta (euroa)');
       await clickResultsButton(page);
       await expectResult(page, testCase.RESULT);
     });

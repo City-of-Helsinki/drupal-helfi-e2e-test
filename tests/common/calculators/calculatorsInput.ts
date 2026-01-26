@@ -15,9 +15,9 @@ const fillMonthlyUsage = (page: Page, value: string, label: string = 'Kotihoidon
     await page.getByLabel(label).fill(String(value));
   });
 
-const fillServiceProviderPrice = (page: Page, value: string) =>
+const fillServiceProviderPrice = (page: Page, value: string, label: string = 'Palveluntuottajan tuntihinta (euroa)') =>
   test.step('Fill service provider price', async () => {
-    await page.getByLabel('Palveluntuottajan tuntihinta (euroa)').fill(String(value));
+    await page.getByLabel(label).fill(String(value));
   });
 
 export { fillHouseholdSize, fillGrossIncomePerMonth, fillMonthlyUsage, fillServiceProviderPrice };
