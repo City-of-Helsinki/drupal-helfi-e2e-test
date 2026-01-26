@@ -57,7 +57,7 @@ const TEST_CASES = [
       SPOUSE_NO: '842,24',
     },
   },
-    {
+  {
     NAME: 'Same income',
     CLIENT: {
       EARNED: '3000',
@@ -88,7 +88,7 @@ const TEST_CASES = [
       SPOUSE_NO: '2156,65',
     },
   },
-    {
+  {
     NAME: 'Client high income',
     CLIENT: {
       EARNED: '3000',
@@ -117,6 +117,37 @@ const TEST_CASES = [
     RESULT: {
       SPOUSE_YES: '1401,33',
       SPOUSE_NO: '2228,90',
+    },
+  },
+  {
+    NAME: 'Spouse no income',
+    CLIENT: {
+      EARNED: '1500',
+      BENEFITS: '300',
+      CAPITAL: '0',
+      FOREST: '1200',
+      GUARDIANSHIP: '0',
+      FORECLOSURE: '0',
+      COMPENSATION: '0',
+      MAINTENANCE: '500',
+      MEDICATION: '100',
+      HOUSING: '200',
+    },
+    SPOUSE: {
+      EARNED: '0',
+      BENEFITS: '0',
+      CAPITAL: '0',
+      FOREST: '0',
+      GUARDIANSHIP: '0',
+      FORECLOSURE: '0',
+      COMPENSATION: '0',
+      MAINTENANCE: '0',
+      MEDICATION: '0',
+      HOUSING: '0',
+    },
+    RESULT: {
+      SPOUSE_YES: '248,69',
+      SPOUSE_NO: '842,24',
     },
   },
 ];
