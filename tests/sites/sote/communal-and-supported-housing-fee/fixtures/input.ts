@@ -37,21 +37,6 @@ async function selectRadioOptionMultiple(group: Locator, option: 'yes_full_servi
   await expect(input).toBeChecked();
 }
 
-const fillHouseholdSize = (page: Page, value: string) =>
-  test.step('Fill household size', async () => {
-    await page.getByLabel('Talouden koko (henkilöä)').fill(String(value));
-  });
-
-const fillGrossIncomePerMonth = (page: Page, value: string) =>
-  test.step('Fill gross income per month', async () => {
-    await page.getByLabel('Talouden bruttotulot kuukaudessa (euroa)').fill(String(value));
-  });
-
-const fillMonthlyUsage = (page: Page, value: string) =>
-  test.step('Fill monthly usage', async () => {
-    await page.getByLabel('Palvelun tuntimäärä kuukaudessa (tuntia)').fill(String(value));
-  });
-
 const selectSafetyPhone = async (page: Page) =>
   test.step('Select safety phone option', async () => {
     const group = page.getByRole('group', {
@@ -117,9 +102,6 @@ const selectMealServiceFull = (page: Page) =>
 
 
 export {
-  fillHouseholdSize,
-  fillGrossIncomePerMonth,
-  fillMonthlyUsage,
   selectSafetyPhone,
   selectNoSafetyPhone,
   selectGroceryDeliveryService,

@@ -1,16 +1,14 @@
 import { test } from '@playwright/test';
 import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
+import { fillGrossIncomePerMonth, fillHouseholdSize, fillMonthlyUsage } from '../../../common/calculators/calculatorsInput';
 import {
-  fillHouseholdSize,
-  fillGrossIncomePerMonth,
-  fillMonthlyUsage,
-  selectSafetyPhone,
-  selectNoSafetyPhone,
-  selectGroceryDeliveryService,
-  selectNoGroceryDeliveryService,
-  selectMealService,
-  selectNoMealService,
   fillMealServicePerWeek,
+  selectGroceryDeliveryService,
+  selectMealService,
+  selectNoGroceryDeliveryService,
+  selectNoMealService,
+  selectNoSafetyPhone,
+  selectSafetyPhone,
 } from './fixtures/input';
 
 const TEST_CASES = [
@@ -77,10 +75,11 @@ test.beforeEach(
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {
     test.describe('Home care client fee', () => {
+      const labelMonthlyUsage = 'Kotihoidon tuntimäärä kuukaudessa (tuntia)';
       test('With safety phone, grocery delivery service and NO meal service', async ({ page }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
-        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
+        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, labelMonthlyUsage);
         await selectSafetyPhone(page);
         await selectGroceryDeliveryService(page);
         await selectNoMealService(page);
@@ -91,7 +90,7 @@ TEST_CASES.forEach((testCase) => {
       test('With safety phone, grocery delivery service and 4 meal services', async ({ page }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
-        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
+        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, labelMonthlyUsage);
         await selectSafetyPhone(page);
         await selectGroceryDeliveryService(page);
         await selectMealService(page);
@@ -103,7 +102,7 @@ TEST_CASES.forEach((testCase) => {
       test('With safety phone, grocery delivery service and 7 meal services', async ({ page }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
-        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
+        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, labelMonthlyUsage);
         await selectSafetyPhone(page);
         await selectGroceryDeliveryService(page);
         await selectMealService(page);
@@ -115,7 +114,7 @@ TEST_CASES.forEach((testCase) => {
       test('With NO safety phone, grocery delivery service and NO meal service', async ({ page }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
-        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
+        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, labelMonthlyUsage);
         await selectNoSafetyPhone(page);
         await selectGroceryDeliveryService(page);
         await selectNoMealService(page);
@@ -126,7 +125,7 @@ TEST_CASES.forEach((testCase) => {
       test('With NO safety phone, grocery delivery service and 4 meal services', async ({ page }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
-        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
+        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, labelMonthlyUsage);
         await selectNoSafetyPhone(page);
         await selectGroceryDeliveryService(page);
         await selectMealService(page);
@@ -138,7 +137,7 @@ TEST_CASES.forEach((testCase) => {
       test('With NO safety phone, grocery delivery service and 7 meal services', async ({ page }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
-        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
+        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, labelMonthlyUsage);
         await selectNoSafetyPhone(page);
         await selectGroceryDeliveryService(page);
         await selectMealService(page);
@@ -150,7 +149,7 @@ TEST_CASES.forEach((testCase) => {
       test('With NO safety phone, NO grocery delivery service and NO meal service', async ({ page }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
-        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
+        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, labelMonthlyUsage);
         await selectNoSafetyPhone(page);
         await selectNoGroceryDeliveryService(page);
         await selectNoMealService(page);
@@ -161,7 +160,7 @@ TEST_CASES.forEach((testCase) => {
       test('With NO safety phone, NO grocery delivery service and 4 meal services', async ({ page }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
-        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
+        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, labelMonthlyUsage);
         await selectNoSafetyPhone(page);
         await selectNoGroceryDeliveryService(page);
         await selectMealService(page);
@@ -173,7 +172,7 @@ TEST_CASES.forEach((testCase) => {
       test('With NO safety phone, NO grocery delivery service and 7 meal services', async ({ page }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
-        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
+        await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, labelMonthlyUsage);
         await selectNoSafetyPhone(page);
         await selectNoGroceryDeliveryService(page);
         await selectMealService(page);

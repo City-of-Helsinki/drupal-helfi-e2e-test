@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
-import { fillHouseholdSize, fillGrossIncomePerMonth, fillMonthlyUsage } from './fixtures/input';
+import { fillHouseholdSize, fillGrossIncomePerMonth, fillMonthlyUsage } from '../../../common/calculators/calculatorsInput';
 
 const TEST_CASES = [
   {
@@ -36,9 +36,9 @@ test.beforeEach(
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {
     test('Fill in form and check results', async ({ page }) => {
-      await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
-      await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
-      await fillMonthlyUsage(page, testCase.MONTHLY_USAGE);
+      await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE, 'Perheen koko (henkilöä)');
+      await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH, 'Perheen bruttotulot kuukaudessa (euroa)');
+      await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, 'Palvelutunteja kuukaudessa (tuntia)');
       await clickResultsButton(page);
       await expectResult(page, testCase.RESULT);
     });
