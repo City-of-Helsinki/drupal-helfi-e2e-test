@@ -9,8 +9,8 @@ import {
   fillClientForeclosure,
   fillCompensationOrLifeAnnuity,
   fillMaintenancePayments,
-  selectSocialWelfareActYes,
-  selectSocialWelfareActNo,
+  fillMedicationCosts,
+  fillShareOfHousingCosts,
   selectHasSpouseYes,
   selectHasSpouseNo,
   fillSpouseEarnedIncome,
@@ -21,6 +21,8 @@ import {
   fillSpouseClientForeclosure,
   fillSpouseCompensationOrLifeAnnuity,
   fillSpouseMaintenancePayments,
+  fillSpouseMedicationCosts,
+  fillSpouseShareOfHousingCosts,
 } from './fixtures/input';
 
 const TEST_CASES = [
@@ -35,9 +37,11 @@ const TEST_CASES = [
       FORECLOSURE: '0',
       COMPENSATION: '0',
       MAINTENANCE: '500',
+      MEDICATION: '100',
+      HOUSING: '200',
     },
     SPOUSE: {
-      EARNED: '3000',
+      EARNED: '8000',
       BENEFITS: '600',
       CAPITAL: '0',
       FOREST: '1000',
@@ -45,18 +49,18 @@ const TEST_CASES = [
       FORECLOSURE: '500',
       COMPENSATION: '0',
       MAINTENANCE: '500',
+      MEDICATION: '200',
+      HOUSING: '300',
     },
     RESULT: {
-      SOCIAL_WELFARE_YES_SPOUSE_YES: '1181,50',
-      SOCIAL_WELFARE_NO_SPOUSE_YES: '1181,50',
-      SOCIAL_WELFARE_YES_SPOUSE_NO: '1181,50',
-      SOCIAL_WELFARE_NO_SPOUSE_NO: '1181,50',
+      SPOUSE_YES: '842,24',
+      SPOUSE_NO: '842,24',
     },
   },
-    {
+  {
     NAME: 'Same income',
     CLIENT: {
-      EARNED: '2000',
+      EARNED: '3000',
       BENEFITS: '300',
       CAPITAL: '0',
       FOREST: '1200',
@@ -64,9 +68,11 @@ const TEST_CASES = [
       FORECLOSURE: '0',
       COMPENSATION: '0',
       MAINTENANCE: '500',
+      MEDICATION: '100',
+      HOUSING: '200',
     },
     SPOUSE: {
-      EARNED: '2000',
+      EARNED: '3000',
       BENEFITS: '300',
       CAPITAL: '0',
       FOREST: '1200',
@@ -74,18 +80,18 @@ const TEST_CASES = [
       FORECLOSURE: '0',
       COMPENSATION: '0',
       MAINTENANCE: '500',
+      MEDICATION: '100',
+      HOUSING: '200',
     },
     RESULT: {
-      SOCIAL_WELFARE_YES_SPOUSE_YES: '1606,50',
-      SOCIAL_WELFARE_NO_SPOUSE_YES: '1606,50',
-      SOCIAL_WELFARE_YES_SPOUSE_NO: '1606,50',
-      SOCIAL_WELFARE_NO_SPOUSE_NO: '1606,50',
+      SPOUSE_YES: '2156,65',
+      SPOUSE_NO: '2156,65',
     },
   },
-    {
+  {
     NAME: 'Client high income',
     CLIENT: {
-      EARNED: '20000',
+      EARNED: '3000',
       BENEFITS: '600',
       CAPITAL: '0',
       FOREST: '1000',
@@ -93,6 +99,8 @@ const TEST_CASES = [
       FORECLOSURE: '0',
       COMPENSATION: '0',
       MAINTENANCE: '500',
+      MEDICATION: '200',
+      HOUSING: '300',
     },
     SPOUSE: {
       EARNED: '1000',
@@ -103,12 +111,43 @@ const TEST_CASES = [
       FORECLOSURE: '0',
       COMPENSATION: '0',
       MAINTENANCE: '500',
+      MEDICATION: '200',
+      HOUSING: '300',
     },
     RESULT: {
-      SOCIAL_WELFARE_YES_SPOUSE_YES: '7656,00',
-      SOCIAL_WELFARE_NO_SPOUSE_YES: '9073,75',
-      SOCIAL_WELFARE_YES_SPOUSE_NO: '7656,00',
-      SOCIAL_WELFARE_NO_SPOUSE_NO: '12045,00',
+      SPOUSE_YES: '1401,33',
+      SPOUSE_NO: '2228,90',
+    },
+  },
+  {
+    NAME: 'Spouse no income',
+    CLIENT: {
+      EARNED: '1500',
+      BENEFITS: '300',
+      CAPITAL: '0',
+      FOREST: '1200',
+      GUARDIANSHIP: '0',
+      FORECLOSURE: '0',
+      COMPENSATION: '0',
+      MAINTENANCE: '500',
+      MEDICATION: '100',
+      HOUSING: '200',
+    },
+    SPOUSE: {
+      EARNED: '0',
+      BENEFITS: '0',
+      CAPITAL: '0',
+      FOREST: '0',
+      GUARDIANSHIP: '0',
+      FORECLOSURE: '0',
+      COMPENSATION: '0',
+      MAINTENANCE: '0',
+      MEDICATION: '0',
+      HOUSING: '0',
+    },
+    RESULT: {
+      SPOUSE_YES: '248,69',
+      SPOUSE_NO: '842,24',
     },
   },
 ];
@@ -117,7 +156,7 @@ test.describe.configure({ mode: 'parallel' });
 
 test.beforeEach(
   existsBeforeEach(
-    '/fi/sosiaali-ja-terveyspalvelut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri',
+    '/fi/sosiaali-ja-terveyspalvelut/pitkaaikaisen-ymparivuorokautisen-palveluasumisen-asiakasmaksun-laskuri',
   ),
 );
 
@@ -133,6 +172,8 @@ TEST_CASES.forEach((testCase) => {
         await fillClientForeclosure(page, testCase.CLIENT.FORECLOSURE);
         await fillCompensationOrLifeAnnuity(page, testCase.CLIENT.COMPENSATION);
         await fillMaintenancePayments(page, testCase.CLIENT.MAINTENANCE);
+        await fillMedicationCosts(page, testCase.CLIENT.MEDICATION);
+        await fillShareOfHousingCosts(page, testCase.CLIENT.HOUSING);
       }
 
       async function fillSpouse(page: Page) {
@@ -144,40 +185,24 @@ TEST_CASES.forEach((testCase) => {
         await fillSpouseClientForeclosure(page, testCase.SPOUSE.FORECLOSURE);
         await fillSpouseCompensationOrLifeAnnuity(page, testCase.SPOUSE.COMPENSATION);
         await fillSpouseMaintenancePayments(page, testCase.SPOUSE.MAINTENANCE);
+        await fillSpouseMedicationCosts(page, testCase.SPOUSE.MEDICATION);
+        await fillSpouseShareOfHousingCosts(page, testCase.SPOUSE.HOUSING);
       }
 
-      test('Social welfare act YES + spouse YES', async ({ page }) => {
+      test('spouse YES', async ({ page }) => {
         await fillClient(page);
-        await selectSocialWelfareActYes(page);
         await selectHasSpouseYes(page);
         await fillSpouse(page);
         await clickResultsButton(page);
-        await expectResult(page, testCase.RESULT.SOCIAL_WELFARE_YES_SPOUSE_YES);
+        await expectResult(page, testCase.RESULT.SPOUSE_YES);
       });
 
-      test('Social welfare act NO + spouse YES', async ({ page }) => {
-        await fillClient(page);
-        await selectSocialWelfareActNo(page);
-        await selectHasSpouseYes(page);
-        await fillSpouse(page);
-        await clickResultsButton(page);
-        await expectResult(page, testCase.RESULT.SOCIAL_WELFARE_NO_SPOUSE_YES);
-      });
 
-      test('Social welfare act YES + spouse NO', async ({ page }) => {
+      test('spouse NO', async ({ page }) => {
         await fillClient(page);
-        await selectSocialWelfareActYes(page);
         await selectHasSpouseNo(page);
         await clickResultsButton(page);
-        await expectResult(page, testCase.RESULT.SOCIAL_WELFARE_YES_SPOUSE_NO);
-      });
-
-      test('Social welfare act NO + spouse NO', async ({ page }) => {
-        await fillClient(page);
-        await selectSocialWelfareActNo(page);
-        await selectHasSpouseNo(page);
-        await clickResultsButton(page);
-        await expectResult(page, testCase.RESULT.SOCIAL_WELFARE_NO_SPOUSE_NO);
+        await expectResult(page, testCase.RESULT.SPOUSE_NO);
       });
     });
   });
