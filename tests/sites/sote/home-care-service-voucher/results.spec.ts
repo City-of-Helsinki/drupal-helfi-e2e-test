@@ -4,8 +4,9 @@ import {
   fillGrossIncomePerMonth,
   fillHouseholdSize,
   fillMonthlyUsage,
+  fillServiceProviderPrice,
 } from '../../../common/calculators/calculatorsInput';
-import { expectCalculatorResults, fillServiceProviderPrice } from './fixtures/input';
+import { expectCalculatorResults } from './fixtures/input';
 
 const TEST_CASES = [
   {

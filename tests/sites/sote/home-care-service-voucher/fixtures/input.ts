@@ -1,10 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
 
-const fillServiceProviderPrice = (page: Page, value: string) =>
-  test.step('Fill service provider price', async () => {
-    await page.getByLabel('Palveluntuottajan tuntihinta (euroa)').fill(String(value));
-  });
-
 type CalculatorResults = {
   RESULT_TOTAL_SERVICE_COST: string;
   RESULT_CITY_PAYMENT: string;
@@ -30,4 +25,4 @@ const expectCalculatorResults = async (page: Page, results: CalculatorResults) =
     );
   });
 
-export { fillServiceProviderPrice, expectCalculatorResults };
+export { expectCalculatorResults };
