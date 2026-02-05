@@ -1,11 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { existsBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
-test.beforeEach(
-  existsBeforeEach(
-    '/fi/sosiaali-ja-terveyspalvelut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri',
-  ),
-);
+test.beforeEach(existsBeforeEach('/fi/sosiaali-ja-terveyspalvelut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri'));
 
 test('Test unfilled fields', async ({ page }) => {
   await testUnfilledFields(page);
@@ -33,7 +29,9 @@ test('Annual forest income input must be positive', async ({ page }) => {
 test('Social welfare act selection must be selected', async ({ page }) => {
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
-  expect(await page.getByText('Valinta on pakollinen: Kyseessä on sosiaalihuoltolain mukainen palvelu.').isVisible()).toBeTruthy();
+  expect(
+    await page.getByText('Valinta on pakollinen: Kyseessä on sosiaalihuoltolain mukainen palvelu.').isVisible(),
+  ).toBeTruthy();
 });
 
 test('Has spouse selection must be selected', async ({ page }) => {
@@ -43,18 +41,19 @@ test('Has spouse selection must be selected', async ({ page }) => {
 });
 
 test('Spouse earned income must be positive when spouse is selected', async ({ page }) => {
-  const group = page.getByRole('group', {name: 'Onko asiakkaalla puolisoa'});
+  const group = page.getByRole('group', { name: 'Onko asiakkaalla puolisoa' });
 
   await group.locator('label', { hasText: 'Kyllä' }).click();
 
   await page.getByLabel('Puolison ansiotulot (euroa)').fill('-100');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
-  expect(await page.getByText('Arvon pitää olla 0 tai enemmän: Puolison ansiotulot.').isVisible(),).toBeTruthy();
+  expect(await page.getByText('Arvon pitää olla 0 tai enemmän: Puolison ansiotulot.').isVisible()).toBeTruthy();
 });
 
 test('Valid inputs produce a result receipt', async ({ page }) => {
-  await page.getByRole('group', { name: 'Kyseessä on sosiaalihuoltolain mukainen palvelu' })
+  await page
+    .getByRole('group', { name: 'Kyseessä on sosiaalihuoltolain mukainen palvelu' })
     .locator('label', { hasText: 'Kyllä' })
     .click();
 
@@ -63,13 +62,9 @@ test('Valid inputs produce a result receipt', async ({ page }) => {
   await page.getByLabel('Pääomatulot (euroa)', { exact: true }).fill('0');
   await page.getByLabel('Metsän vuotuinen tuotto (euroa)', { exact: true }).fill('1200');
 
-  await page.getByRole('group', { name: 'Onko asiakkaalla puolisoa' })
-    .locator('label', { hasText: 'Ei' })
-    .click();
+  await page.getByRole('group', { name: 'Onko asiakkaalla puolisoa' }).locator('label', { hasText: 'Ei' }).click();
 
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
-  await expect(
-    page.getByText('Arvoitu asiakasmaksu on yhteensä'),
-  ).toBeVisible();
+  await expect(page.getByText('Arvoitu asiakasmaksu on yhteensä')).toBeVisible();
 });

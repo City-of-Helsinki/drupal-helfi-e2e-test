@@ -70,8 +70,8 @@ const selectHasSpouseYes = (page: Page) =>
     const group = page.getByRole('group', {
       name: 'Onko asiakkaalla puolisoa',
     });
-  await selectRadioOption(group, 'yes');
-});
+    await selectRadioOption(group, 'yes');
+  });
 
 const selectHasSpouseNo = (page: Page) =>
   test.step('Select has spouse: no', async () => {
@@ -132,8 +132,7 @@ const fillSpouseShareOfHousingCosts = (page: Page, value: string) =>
     await page.getByLabel('Puolison asumiskulujen omavastuu (euroa)', { exact: true }).fill(String(value));
   });
 
-
-  export {
+export {
   fillEarnedIncome,
   fillClientBenefits,
   fillCapitalIncome,

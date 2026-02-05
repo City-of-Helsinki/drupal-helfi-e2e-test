@@ -55,7 +55,7 @@ const fillMaintenancePayments = (page: Page, value: string) =>
     await page.getByLabel('Elatusapu (euroa)', { exact: true }).fill(String(value));
   });
 
-  const selectSocialWelfareActYes = (page: Page) =>
+const selectSocialWelfareActYes = (page: Page) =>
   test.step('Select social welfare act: yes', async () => {
     const group = page.getByRole('group', {
       name: 'Kyseessä on sosiaalihuoltolain mukainen palvelu',
@@ -73,7 +73,7 @@ const selectSocialWelfareActNo = (page: Page) =>
     await selectRadioOption(group, 'no');
   });
 
-  const selectHasSpouseYes = (page: Page) =>
+const selectHasSpouseYes = (page: Page) =>
   test.step('Select has spouse: yes', async () => {
     const group = page.getByRole('group', {
       name: 'Onko asiakkaalla puolisoa',
@@ -91,7 +91,7 @@ const selectHasSpouseNo = (page: Page) =>
     await selectRadioOption(group, 'no');
   });
 
-  const fillSpouseEarnedIncome = (page: Page, value: string) =>
+const fillSpouseEarnedIncome = (page: Page, value: string) =>
   test.step('Fill spouse earned income', async () => {
     await page.getByLabel('Puolison ansiotulot (euroa)', { exact: true }).fill(String(value));
   });
@@ -111,7 +111,7 @@ const fillSpouseAnnualForestIncome = (page: Page, value: string) =>
     await page.getByLabel('Puolison metsän vuotuinen tuotto (euroa)', { exact: true }).fill(String(value));
   });
 
-  const fillSpouseGuardianshipFees = (page: Page, value: string) =>
+const fillSpouseGuardianshipFees = (page: Page, value: string) =>
   test.step('Fill spouse guardianship fees', async () => {
     await page.getByLabel('Puolison edunvalvontamaksut (euroa)', { exact: true }).fill(String(value));
   });
@@ -131,7 +131,7 @@ const fillSpouseMaintenancePayments = (page: Page, value: string) =>
     await page.getByLabel('Puolison elatusapu (euroa)', { exact: true }).fill(String(value));
   });
 
-  export {
+export {
   fillEarnedIncome,
   fillClientBenefits,
   fillCapitalIncome,

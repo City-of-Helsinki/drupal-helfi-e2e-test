@@ -2,9 +2,7 @@ import { expect, test } from '@playwright/test';
 import { existsBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
 test.beforeEach(
-  existsBeforeEach(
-    '/fi/sosiaali-ja-terveyspalvelut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri',
-  ),
+  existsBeforeEach('/fi/sosiaali-ja-terveyspalvelut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri'),
 );
 
 test('Test unfilled fields', async ({ page }) => {
@@ -104,5 +102,3 @@ test('Meal service input must be selected', async ({ page }) => {
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(await page.getByText('Valinta on pakollinen: Laske arvioon ateriapalvelu.').isVisible()).toBeTruthy();
 });
-
-

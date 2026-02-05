@@ -1,6 +1,10 @@
 import { test } from '@playwright/test';
 import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
-import { fillGrossIncomePerMonth, fillHouseholdSize, fillMonthlyUsage } from '../../../common/calculators/calculatorsInput';
+import {
+  fillGrossIncomePerMonth,
+  fillHouseholdSize,
+  fillMonthlyUsage,
+} from '../../../common/calculators/calculatorsInput';
 import {
   fillMealServicePerWeek,
   selectGroceryDeliveryService,

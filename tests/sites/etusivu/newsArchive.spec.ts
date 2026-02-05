@@ -96,7 +96,7 @@ test.describe('News archive', () => {
         })();
 
         // Get the initial results text.
-        const initialText = await page.locator(resultSelector).textContent() || '';
+        const initialText = (await page.locator(resultSelector).textContent()) || '';
 
         await clickSubmitButton(page);
         await expectResult(page, initialText, testCase);

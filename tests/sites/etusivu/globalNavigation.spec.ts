@@ -17,10 +17,7 @@ async function apiResponse(language: string, baseURL: string) {
   let response: GlobalMenuResponse;
 
   try {
-    response = await fetchJsonApiRequest<GlobalMenuResponse>(
-      baseURL,
-      `/${language}/api/v1/global-mobile-menu`,
-    );
+    response = await fetchJsonApiRequest<GlobalMenuResponse>(baseURL, `/${language}/api/v1/global-mobile-menu`);
 
     // Verify that the response contains at least one menu root.
     expect(Object.keys(response).length).toBeGreaterThan(0);
@@ -145,70 +142,58 @@ const navigateMobileMenuDown = async (page: Page, path: MenuLink[]) => {
     throw new Error('Cannot navigate an empty path');
   }
 
-  await test.step(
-    `Navigate mobile menu down: ${path.map((link) => link.name).join(' → ')}`,
-    async () => {
-      // Handle case where path contains only a single panel.
-      if (path.length === 1) {
-        const panel = path[0];
+  await test.step(`Navigate mobile menu down: ${path.map((link) => link.name).join(' → ')}`, async () => {
+    // Handle case where path contains only a single panel.
+    if (path.length === 1) {
+      const panel = path[0];
 
-        await test.step(`Assert single panel item is visible: ${panel.name}`, async () => {
-          const panelLink = page.locator(
-            `section.mmenu__panel--current a.mmenu__item-link[href="${panel.url}"]`,
-          );
+      await test.step(`Assert single panel item is visible: ${panel.name}`, async () => {
+        const panelLink = page.locator(`section.mmenu__panel--current a.mmenu__item-link[href="${panel.url}"]`);
 
-          await expect(panelLink).toBeVisible();
-          await expect(panelLink.locator('.mmenu__link__text')).toHaveText(panel.name);
-        });
+        await expect(panelLink).toBeVisible();
+        await expect(panelLink.locator('.mmenu__link__text')).toHaveText(panel.name);
+      });
 
+      return;
+    }
+
+    // Get all links from path except the last one.
+    const pathToPanelParent = path.slice(0, -1);
+    // Get the last link from path.
+    const panel = path[path.length - 1];
+
+    await pathToPanelParent.reduce<Promise<void>>(async (previous, link) => {
+      await previous;
+
+      await test.step(`Open submenu: ${link.name}`, async () => {
+        const forwardButton = page.locator(`section.mmenu__panel--current button.mmenu__forward[value="${link.id}"]`);
+        await forwardButton.click();
+
+        // Assert that panel title matches current link.
+        const title = page.locator('section.mmenu__panel--current .mmenu__title-link');
+        await expect(title).toHaveAttribute('href', link.url);
+        await expect(title.locator('.mmenu__link__text')).toHaveText(link.name);
+      });
+    }, Promise.resolve());
+
+    // The current panel should contain the final panel from the path.
+    await test.step(`Assert panel item is visible: ${panel.name}`, async () => {
+      // Try locating the panel link inside list items.
+      const panelItem = page.locator(`section.mmenu__panel--current a.mmenu__item-link[href="${panel.url}"]`);
+
+      // If found in the list, assert visibility and text.
+      if (await panelItem.count()) {
+        await expect(panelItem).toBeVisible();
+        await expect(panelItem.locator('.mmenu__link__text')).toHaveText(panel.name);
         return;
       }
 
-      // Get all links from path except the last one.
-      const pathToPanelParent = path.slice(0, -1);
-      // Get the last link from path.
-      const panel = path[path.length - 1];
-
-      await pathToPanelParent.reduce<Promise<void>>(
-        async (previous, link) => {
-          await previous;
-
-          await test.step(`Open submenu: ${link.name}`, async () => {
-            const forwardButton = page.locator(
-              `section.mmenu__panel--current button.mmenu__forward[value="${link.id}"]`,
-            );
-            await forwardButton.click();
-
-            // Assert that panel title matches current link.
-            const title = page.locator('section.mmenu__panel--current .mmenu__title-link');
-            await expect(title).toHaveAttribute('href', link.url);
-            await expect(title.locator('.mmenu__link__text')).toHaveText(link.name);
-          });
-        },
-        Promise.resolve(),
-      );
-
-      // The current panel should contain the final panel from the path.
-      await test.step(`Assert panel item is visible: ${panel.name}`, async () => {
-        // Try locating the panel link inside list items.
-        const panelItem = page.locator(
-          `section.mmenu__panel--current a.mmenu__item-link[href="${panel.url}"]`,
-        );
-
-        // If found in the list, assert visibility and text.
-        if (await panelItem.count()) {
-          await expect(panelItem).toBeVisible();
-          await expect(panelItem.locator('.mmenu__link__text')).toHaveText(panel.name);
-          return;
-        }
-
-        // If the panel link is not in the list, it must be the title link.
-        const panelTitle = page.locator('section.mmenu__panel--current .mmenu__title-link');
-        await expect(panelTitle).toHaveAttribute('href', panel.url);
-        await expect(panelTitle.locator('.mmenu__link__text')).toHaveText(panel.name);
-      });
-    },
-  );
+      // If the panel link is not in the list, it must be the title link.
+      const panelTitle = page.locator('section.mmenu__panel--current .mmenu__title-link');
+      await expect(panelTitle).toHaveAttribute('href', panel.url);
+      await expect(panelTitle.locator('.mmenu__link__text')).toHaveText(panel.name);
+    });
+  });
 };
 
 /**

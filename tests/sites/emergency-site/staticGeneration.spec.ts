@@ -41,16 +41,21 @@ test('Static generation test', async ({ page }) => {
   // up to 45 mins for the azure purge process to finish, but content should
   // be visible much sooner.
   const staticPage = await page.context().newPage();
-  await expect.poll(async () => {
-    const response = await staticPage.request.get(staticNewsItemUrl);
-    return response.status();
-  }, {
-    message: 'Make sure news item is eventually visible in static version.',
-    // Poll every 10 seconds.
-    intervals: [10 * 1000],
-    // Use the same timeout as the test.
-    timeout: timeout,
-  }).toBe(200);
+  await expect
+    .poll(
+      async () => {
+        const response = await staticPage.request.get(staticNewsItemUrl);
+        return response.status();
+      },
+      {
+        message: 'Make sure news item is eventually visible in static version.',
+        // Poll every 10 seconds.
+        intervals: [10 * 1000],
+        // Use the same timeout as the test.
+        timeout: timeout,
+      },
+    )
+    .toBe(200);
 
   // Remove test content.
   await page.goto(announcementUrl);

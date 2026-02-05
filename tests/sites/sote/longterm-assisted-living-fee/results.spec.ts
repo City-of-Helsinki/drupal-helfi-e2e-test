@@ -197,7 +197,6 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.RESULT.SPOUSE_YES);
       });
 
-
       test('spouse NO', async ({ page }) => {
         await fillClient(page);
         await selectHasSpouseNo(page);

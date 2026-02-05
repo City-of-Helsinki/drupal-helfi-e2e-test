@@ -1,6 +1,10 @@
 import { test } from '@playwright/test';
 import { clickResultsButton, existsBeforeEach, expectResult } from '../../../common/calculators/calculatorsCommon';
-import { fillHouseholdSize, fillGrossIncomePerMonth, fillMonthlyUsage } from '../../../common/calculators/calculatorsInput';
+import {
+  fillHouseholdSize,
+  fillGrossIncomePerMonth,
+  fillMonthlyUsage,
+} from '../../../common/calculators/calculatorsInput';
 import {
   selectSafetyPhone,
   selectNoSafetyPhone,
@@ -67,9 +71,7 @@ const TEST_CASES = [
 
 test.describe.configure({ mode: 'parallel' });
 test.beforeEach(
-  existsBeforeEach(
-    '/fi/sosiaali-ja-terveyspalvelut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri',
-  ),
+  existsBeforeEach('/fi/sosiaali-ja-terveyspalvelut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri'),
 );
 
 TEST_CASES.forEach((testCase) => {
