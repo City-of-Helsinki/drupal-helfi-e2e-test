@@ -16,7 +16,10 @@ const login = async (page: Page) => {
   let password = null;
 
   try {
-    const userObject = JSON.parse(user);
+    // All double quotes are escaped to allow the json to pass through in
+    // Azure DevOps without being parsed into ansible variables. We need to
+    // unescape them before parsing.
+    const userObject = JSON.parse(user.replace(/\\"/g, '"'));
     username = userObject.username;
     password = userObject.password;
   } catch {
