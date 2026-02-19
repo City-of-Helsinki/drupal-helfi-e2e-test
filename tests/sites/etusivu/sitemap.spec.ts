@@ -53,6 +53,17 @@ const testUrls = (request: APIRequestContext, pageUrls: string[], path: string) 
   });
 
 /**
+ * Check if the sitemap is a sitemap index.
+ *
+ * @param xml
+ *   The XML content of the sitemap.
+ * @returns True if the sitemap is a sitemap index, false otherwise.
+ */
+const hasSitemapIndex = (xml: string): boolean => {
+  return /<\s*sitemapindex\b/i.test(xml);
+};
+
+/**
  * Tests a multipage sitemap.
  *
  * @param request - Playwright API request context.
@@ -104,8 +115,11 @@ test('Sitemap', async ({ request, baseURL }) => {
 
       // Handle front page separately, as it's a multipage sitemap.
       if (isFrontPage) {
-        await testMultiPageSitemap(request, response, path);
-        return;
+        const sitemapXml = await response.text();
+        if (hasSitemapIndex(sitemapXml)) {
+          await testMultiPageSitemap(request, response, path);
+          return;
+        }
       }
 
       // Handle normal sitemap.
