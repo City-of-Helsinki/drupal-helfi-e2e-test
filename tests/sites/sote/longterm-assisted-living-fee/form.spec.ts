@@ -66,11 +66,11 @@ test('Valid inputs produce a result receipt', async ({ page }) => {
 });
 
 test('Guardianship fees input must be positive, integer and in range', async ({ page }) => {
-  await page.getByLabel('Edunvalvontamaksut (euroa)').fill('-1');
+  await page.getByLabel('Edunvalvontamaksut (euroa)', { exact: true }).fill('-1');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(await page.getByText('Arvon pitää olla väliltä 0 ja 43.34: Edunvalvontamaksut.').isVisible()).toBeTruthy();
 
-  await page.getByLabel('Edunvalvontamaksut (euroa)').fill('100');
+  await page.getByLabel('Edunvalvontamaksut (euroa)', { exact: true }).fill('100');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
   expect(await page.getByText('Arvon pitää olla väliltä 0 ja 43.34: Edunvalvontamaksut.').isVisible()).toBeTruthy();
