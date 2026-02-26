@@ -40,7 +40,7 @@ async function selectRadioOptionMultiple(group: Locator, option: 'yes_full_servi
 const selectSafetyPhone = async (page: Page) =>
   test.step('Select safety phone option', async () => {
     const group = page.getByRole('group', {
-      name: 'Laske arvioon turvapuhelin ja turvaranneke',
+      name: 'Laske arvioon hälytyskutsupalvelu',
     });
 
     await selectRadioOption(group, 'yes');
@@ -49,7 +49,7 @@ const selectSafetyPhone = async (page: Page) =>
 const selectNoSafetyPhone = (page: Page) =>
   test.step('Select no safety phone option', async () => {
     const group = page.getByRole('group', {
-      name: 'Laske arvioon turvapuhelin ja turvaranneke',
+      name: 'Laske arvioon hälytyskutsupalvelu',
     });
 
     await selectRadioOption(group, 'no');
@@ -82,22 +82,27 @@ const selectMealServiceFull = (page: Page) =>
     await selectRadioOptionMultiple(group, 'yes_full_service');
   });
 
-  const selectMealServicePartial = (page: Page) =>
-    test.step('Select meal service', async () => {
-      const group = page.getByRole('group', {
-        name: 'Laske arvioon ateriapalvelu',
-      });
+const selectMealServicePartial = (page: Page) =>
+  test.step('Select meal service', async () => {
+    const group = page.getByRole('group', {
+      name: 'Laske arvioon ateriapalvelu',
+    });
 
-    await selectRadioOptionMultiple(group, 'yes_partial_service');
-  });
+  await selectRadioOptionMultiple(group, 'yes_partial_service');
+});
 
-  const selectNoMealService = (page: Page) =>
-    test.step('Select meal service', async () => {
-      const group = page.getByRole('group', {
-        name: 'Laske arvioon ateriapalvelu',
-      });
+const selectNoMealService = (page: Page) =>
+  test.step('Select meal service', async () => {
+    const group = page.getByRole('group', {
+      name: 'Laske arvioon ateriapalvelu',
+    });
 
-    await selectRadioOptionMultiple(group, 'no');
+  await selectRadioOptionMultiple(group, 'no');
+});
+
+const fillGuardianshipFees = (page: Page, value: string) =>
+  test.step('Fill guardianship fees', async () => {
+    await page.getByLabel('Edunvalvontamaksut (euroa)', { exact: true }).fill(String(value));
   });
 
 
@@ -109,4 +114,5 @@ export {
   selectMealServiceFull,
   selectMealServicePartial,
   selectNoMealService,
+  fillGuardianshipFees,
 };

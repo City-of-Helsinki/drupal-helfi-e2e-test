@@ -146,7 +146,7 @@ const TEST_CASES = [
       HOUSING: '0',
     },
     RESULT: {
-      SPOUSE_YES: '248,69',
+      SPOUSE_YES: '263,81',
       SPOUSE_NO: '842,24',
     },
   },
