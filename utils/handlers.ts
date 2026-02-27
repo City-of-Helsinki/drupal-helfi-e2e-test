@@ -1,4 +1,6 @@
 import type { Page } from '@playwright/test';
+import path from 'path';
+import { sites } from '../sites.config';
 import { logger } from './logger';
 
 /**
@@ -52,4 +54,75 @@ const dialogHandler = async (page: Page) => {
   }
 };
 
-export { cookieHandler, dialogHandler };
+/**
+ * Get local base URL from a direct CLI run like:
+ *   npx playwright test tests/sites/sote/.../*.spec.ts
+ *   npx playwright test --project=sote
+ *
+ * Returns the base URL of the site or null.
+ */
+const getLocalBaseURL = (): string | null => {
+  if (!process.env.ETUSIVU_BASE_URL?.includes('docker.so') || !process.env.BASE_URL?.includes('docker.so')) {
+    return null;
+  }
+
+  // Convert path separators to forward slashes.
+  const argv = process.argv.map((arg) => arg.split(path.sep).join('/'));
+
+  // Find any CLI argument that contains tests/sites/<site>/.
+  const matchArg = argv.find((arg) => arg.includes('tests/sites/'));
+  let siteName = null;
+
+  // Try to get site name from CLI argument.
+  if (matchArg) {
+    const match = matchArg.match(/tests\/sites\/([^/]+)(\/|$)/);
+    siteName = match ? match[1] : null;
+  }
+  // Try to get site name from --project CLI argument.
+  else {
+    siteName = getProjectFromArgv();
+  }
+
+  // If no site name was found, return null.
+  if (!siteName) {
+    return null;
+  }
+
+  // Find site configuration.
+  const siteConfig = sites.find((site) => site.name === siteName) ?? null;
+
+  // If no site configuration was found, return null.
+  if (!siteConfig) {
+    return null;
+  }
+  const envVariable = `${siteConfig?.envPrefix}_BASE_URL`;
+
+  // Return the environment variable if it exists.
+  if (process.env[envVariable]) {
+    return process.env[envVariable];
+  }
+  return null;
+};
+
+/**
+ * Get project name from CLI arguments.
+ */
+const getProjectFromArgv = (): string | null => {
+  const argv = process.argv;
+
+  // Handle: --project=common
+  const equalsForm = argv.find((arg) => arg.startsWith('--project='));
+  if (equalsForm) {
+    return equalsForm.split('=')[1] ?? null;
+  }
+
+  // Handle: --project common
+  const index = argv.indexOf('--project');
+  if (index !== -1 && argv[index + 1]) {
+    return argv[index + 1];
+  }
+
+  return null;
+};
+
+export { cookieHandler, dialogHandler, getLocalBaseURL };
