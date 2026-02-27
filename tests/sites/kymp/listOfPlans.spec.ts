@@ -1,0 +1,41 @@
+import { expect, test } from '@playwright/test';
+import { fetchRssFeed } from '../../../utils/fetchRssFeed';
+
+test.describe('List of plans paragraph', () => {
+  test('should be visible on the page', async ({ page }) => {
+    await page.goto(
+      '/fi/kaupunkiymparisto-ja-liikenne/kaupunkisuunnittelu-ja-rakentaminen/osallistu-kaupungin-suunnitteluun',
+      { waitUntil: 'domcontentloaded' },
+    );
+
+    // Get the results container from the list of plans.
+    const listOfPlans = page.locator('.component--list-of-plans');
+    await expect(listOfPlans).toBeVisible();
+
+    // Store all plan items.
+    const planItems = listOfPlans.locator('.card--list-of-plans');
+
+    // Get the URL of the RSS feed from the list of plans feed link.
+    const rssFeedUrl = listOfPlans.locator('.feed-link');
+
+    await expect(rssFeedUrl).toBeVisible();
+    const rssUrl = await rssFeedUrl.getAttribute('href');
+    expect(rssUrl).toBeTruthy();
+
+    if (rssUrl) {
+      const rssItems = await fetchRssFeed(page, rssUrl);
+
+      // Compare the number of plans.
+      const planCount = await planItems.count();
+      expect(planCount).toBeGreaterThanOrEqual(rssItems.length);
+
+      // Compare the plan titles so that they match in the results and RSS feed.
+      const itemsToCompare = Math.min(rssItems.length, planCount);
+      for (let i = 0; i < itemsToCompare; i++) {
+        const planTitle = (await planItems.nth(i).locator('.card__link').textContent())?.trim();
+        const rssItemTitle = rssItems[i].getElementsByTagName('title')[0].textContent?.trim();
+        expect(planTitle).toContain(rssItemTitle);
+      }
+    }
+  });
+});
