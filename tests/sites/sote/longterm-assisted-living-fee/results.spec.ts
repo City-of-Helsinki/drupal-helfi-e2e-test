@@ -53,8 +53,8 @@ const TEST_CASES = [
       HOUSING: '300',
     },
     RESULT: {
-      SPOUSE_YES: '842,24',
-      SPOUSE_NO: '842,24',
+      SPOUSE_YES: '841,99',
+      SPOUSE_NO: '841,99',
     },
   },
   {
@@ -84,8 +84,8 @@ const TEST_CASES = [
       HOUSING: '200',
     },
     RESULT: {
-      SPOUSE_YES: '2156,65',
-      SPOUSE_NO: '2156,65',
+      SPOUSE_YES: '2156,44',
+      SPOUSE_NO: '2156,44',
     },
   },
   {
@@ -115,8 +115,8 @@ const TEST_CASES = [
       HOUSING: '300',
     },
     RESULT: {
-      SPOUSE_YES: '1401,33',
-      SPOUSE_NO: '2228,90',
+      SPOUSE_YES: '1401,22',
+      SPOUSE_NO: '2228,69',
     },
   },
   {
@@ -146,8 +146,8 @@ const TEST_CASES = [
       HOUSING: '0',
     },
     RESULT: {
-      SPOUSE_YES: '248,69',
-      SPOUSE_NO: '842,24',
+      SPOUSE_YES: '263,56',
+      SPOUSE_NO: '841,99',
     },
   },
 ];

@@ -1,5 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
-import { DOMParser } from '@xmldom/xmldom';
+import { fetchRssFeed } from '../../../../utils/fetchRssFeed';
 import type { TestCase } from './newsArchiveTestCases';
 
 const resultSelector = '.hdbt-search--react__results--title';
@@ -8,9 +8,7 @@ const resultSelector = '.hdbt-search--react__results--title';
  * Helper function for the dropdowns on news archive page.
  */
 async function fillDropdown(page: Page, selector: string, values: string[]) {
-  const dropdownButton = page.locator(
-    `.hdbt-search--react__dropdown-filters > *:nth-child(${selector}) button[role="combobox"]`,
-  );
+  const dropdownButton = page.locator(`.hdbt-search--react__dropdown-filters > *:nth-child(${selector}) button[role="combobox"]`);
 
   // Open the dropdown.
   await dropdownButton.click();
@@ -20,9 +18,7 @@ async function fillDropdown(page: Page, selector: string, values: string[]) {
   await values.reduce<Promise<void>>(
     (chain, value) =>
       chain.then(async () => {
-        const option = page.locator(
-          `.hdbt-search--react__dropdown-filters > *:nth-child(${selector}) li[aria-label="${value}"]`,
-        );
+        const option = page.locator(`.hdbt-search--react__dropdown-filters > *:nth-child(${selector}) li[aria-label="${value}"]`);
 
         // As playwright click won't work for this case, we use evaluate to click the element.
         await option.evaluate((el) => {
@@ -72,8 +68,7 @@ const expectResult = async (page: Page, initialText: string, testCase?: TestCase
     await resultLocator.waitFor({ state: 'visible' });
 
     // Check if all filters are null
-    const areAllFiltersNull =
-      testCase &&
+    const areAllFiltersNull = testCase &&
       testCase.TEXT_FILTER === null &&
       testCase.TOPICS === null &&
       testCase.CITY_DISTRICTS === null &&
@@ -113,7 +108,9 @@ const expectRss = async (page: Page) =>
     const rssLink = page.locator('.news-archive__rss-link');
 
     // Make sure the link is visible.
-    expect(await rssLink.isVisible()).toBeTruthy();
+    expect(
+      await rssLink.isVisible()
+    ).toBeTruthy();
 
     // Get the url of the RSS feed from the link.
     const rssUrl = await rssLink.getAttribute('href');
@@ -121,26 +118,8 @@ const expectRss = async (page: Page) =>
 
     // Fetch the RSS feed.
     if (rssUrl) {
-      const response = await page.request.get(rssUrl, {
-        ignoreHTTPSErrors: true,
-      });
-      expect(response.status()).toBe(200);
-
-      const rssContent = await response.text();
-      const rssXml = new DOMParser().parseFromString(rssContent, 'text/xml');
-
-      // Use DOMParser to parse the RSS feed.
-      const rssElement = rssXml.getElementsByTagName('rss')[0];
-      const channelElement = rssXml.getElementsByTagName('channel')[0];
-      const channelTitle = channelElement.getElementsByTagName('title')[0].textContent?.trim();
-
-      // Verify basic RSS structure.
-      expect(rssElement).toBeDefined();
-      expect(channelElement).toBeDefined();
-      expect(channelTitle).toContain('Uutiset');
-
       // Get all items from the RSS feed.
-      const rssItems = rssXml.getElementsByTagName('item');
+      const rssItems = await fetchRssFeed(page, rssUrl, 'Uutiset');
 
       // Compare the number of news items.
       const archiveItemCount = await archiveItems.count();

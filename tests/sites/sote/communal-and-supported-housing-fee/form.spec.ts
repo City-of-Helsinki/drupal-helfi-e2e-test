@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { existsBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
 test.beforeEach(
-  existsBeforeEach('/fi/sosiaali-ja-terveyspalvelut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri'),
+  existsBeforeEach('/fi/sosiaali-ja-terveyspalvelut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksun-laskuri'),
 );
 
 test('Test unfilled fields', async ({ page }) => {
@@ -21,7 +21,7 @@ test('Household size input must be positive, integer and in range', async ({ pag
   await page.getByLabel('Talouden koko (henkilöä)').fill('100');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
-  expect(await page.getByText('Arvon pitää olla väliltä 1 ja 6: Talouden koko.').isVisible()).toBeFalsy();
+  expect(await page.getByText('Arvon pitää olla väliltä 1 ja 6: Talouden koko.').isVisible()).toBeTruthy();
 });
 
 test('Gross income per month input must be positive and in range', async ({ page }) => {
@@ -62,13 +62,13 @@ test('Monthly usage input must be positive, integer and in range', async ({ page
 test('Safety phone input must be selected', async ({ page }) => {
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(
-    await page.getByText('Valinta on pakollinen: Laske arvioon turvapuhelin ja turvaranneke.').isVisible(),
+    await page.getByText('Valinta on pakollinen: Laske arvioon hälytyskutsupalvelu.').isVisible(),
   ).toBeTruthy();
 });
 
 test('If safety phone is selected, a helper text must become visible', async ({ page }) => {
   const group = page.getByRole('group', {
-    name: 'Laske arvioon turvapuhelin ja turvaranneke',
+    name: 'Laske arvioon hälytyskutsupalvelu',
   });
 
   await group.waitFor({ state: 'visible' });
@@ -101,4 +101,15 @@ test('Grocery delivery service input must be selected', async ({ page }) => {
 test('Meal service input must be selected', async ({ page }) => {
   await page.getByRole('button', { name: 'Laske arvio' }).click();
   expect(await page.getByText('Valinta on pakollinen: Laske arvioon ateriapalvelu.').isVisible()).toBeTruthy();
+});
+
+test('Guardianship fees input must be positive, integer and in range', async ({ page }) => {
+  await page.getByLabel('Edunvalvontamaksut (euroa)').fill('-1');
+  await page.getByRole('button', { name: 'Laske arvio' }).click();
+  expect(await page.getByText('Arvon pitää olla väliltä 0 ja 43.34: Edunvalvontamaksut.').isVisible()).toBeTruthy();
+
+  await page.getByLabel('Edunvalvontamaksut (euroa)').fill('100');
+  await page.getByRole('button', { name: 'Laske arvio' }).click();
+
+  expect(await page.getByText('Arvon pitää olla väliltä 0 ja 43.34: Edunvalvontamaksut.').isVisible()).toBeTruthy();
 });
