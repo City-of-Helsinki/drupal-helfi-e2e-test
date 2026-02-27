@@ -5,7 +5,11 @@ const fillHouseholdSize = (page: Page, value: string, label: string = 'Talouden 
     await page.getByLabel(label).fill(String(value));
   });
 
-const fillGrossIncomePerMonth = (page: Page, value: string, label: string = 'Talouden bruttotulot kuukaudessa (euroa)') =>
+const fillGrossIncomePerMonth = (
+  page: Page,
+  value: string,
+  label: string = 'Talouden bruttotulot kuukaudessa (euroa)',
+) =>
   test.step('Fill gross income per month', async () => {
     await page.getByLabel(label).fill(String(value));
   });

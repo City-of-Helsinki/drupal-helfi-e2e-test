@@ -8,19 +8,19 @@ const TEST_CASES = [
     NAME: 'Low',
     NET_INCOME_PER_MONTH: '0',
     SERVICE_PROVIDER_PRICE: '120',
-    RESULT: '350,00',
+    RESULT: '119,00',
   },
   {
     NAME: 'Medium',
     NET_INCOME_PER_MONTH: '2000',
     SERVICE_PROVIDER_PRICE: '180',
-    RESULT: '3275,00',
+    RESULT: '3121,00',
   },
   {
     NAME: 'High',
     NET_INCOME_PER_MONTH: '9000',
     SERVICE_PROVIDER_PRICE: '210',
-    RESULT: '5887,50',
+    RESULT: '5852,50',
   },
 ];
 

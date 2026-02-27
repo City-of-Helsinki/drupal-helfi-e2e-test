@@ -53,7 +53,7 @@ const TEST_CASES = [
       SOCIAL_WELFARE_NO_SPOUSE_NO: '1181,50',
     },
   },
-    {
+  {
     NAME: 'Same income',
     CLIENT: {
       EARNED: '2000',
@@ -82,7 +82,7 @@ const TEST_CASES = [
       SOCIAL_WELFARE_NO_SPOUSE_NO: '1606,50',
     },
   },
-    {
+  {
     NAME: 'Client high income',
     CLIENT: {
       EARNED: '20000',
@@ -115,11 +115,7 @@ const TEST_CASES = [
 
 test.describe.configure({ mode: 'parallel' });
 
-test.beforeEach(
-  existsBeforeEach(
-    '/fi/sosiaali-ja-terveyspalvelut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri',
-  ),
-);
+test.beforeEach(existsBeforeEach('/fi/sosiaali-ja-terveyspalvelut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri'));
 
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {

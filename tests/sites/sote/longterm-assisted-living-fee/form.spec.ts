@@ -37,32 +37,27 @@ test('Has spouse selection must be selected', async ({ page }) => {
 });
 
 test('Spouse earned income must be positive when spouse is selected', async ({ page }) => {
-  const group = page.getByRole('group', {name: 'Onko asiakkaalla puolisoa'});
+  const group = page.getByRole('group', { name: 'Onko asiakkaalla puolisoa' });
 
   await group.locator('label', { hasText: 'Kyllä' }).click();
 
   await page.getByLabel('Puolison ansiotulot (euroa)').fill('-100');
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
-  expect(await page.getByText('Arvon pitää olla 0 tai enemmän: Puolison ansiotulot.').isVisible(),).toBeTruthy();
+  expect(await page.getByText('Arvon pitää olla 0 tai enemmän: Puolison ansiotulot.').isVisible()).toBeTruthy();
 });
 
 test('Valid inputs produce a result receipt', async ({ page }) => {
-
   await page.getByLabel('Ansiotulot (euroa)', { exact: true }).fill('2000');
   await page.getByLabel('Etuudet (euroa)', { exact: true }).fill('500');
   await page.getByLabel('Pääomatulot (euroa)', { exact: true }).fill('0');
   await page.getByLabel('Metsän vuotuinen tuotto (euroa)', { exact: true }).fill('1200');
 
-  await page.getByRole('group', { name: 'Onko asiakkaalla puolisoa' })
-    .locator('label', { hasText: 'Ei' })
-    .click();
+  await page.getByRole('group', { name: 'Onko asiakkaalla puolisoa' }).locator('label', { hasText: 'Ei' }).click();
 
   await page.getByRole('button', { name: 'Laske arvio' }).click();
 
-  await expect(
-    page.getByText('Arvoitu asiakasmaksu on yhteensä'),
-  ).toBeVisible();
+  await expect(page.getByText('Arvoitu asiakasmaksu on yhteensä')).toBeVisible();
 });
 
 test('Guardianship fees input must be positive, integer and in range', async ({ page }) => {

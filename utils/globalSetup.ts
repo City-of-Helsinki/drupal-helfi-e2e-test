@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium, type FullConfig } from '@playwright/test';
-import { cookieHandler, dialogHandler } from './handlers';
+import { cookieHandler, dialogHandler, getLocalBaseURL } from './handlers';
 import { getStorageStatePath } from './storagePath';
 
 /**
@@ -21,7 +21,7 @@ export default async function globalSetup(config: FullConfig) {
   // Launch a new browser instance.
   const browser = await chromium.launch();
   const page = await browser.newPage({
-    baseURL: config.projects[0].use.baseURL,
+    baseURL: getLocalBaseURL() ?? config.projects[0].use.baseURL,
   });
 
   try {

@@ -17,7 +17,6 @@ interface TestCase {
   TARGET_GROUPS: string[] | null;
 }
 
-
 const testCases: TestCases = [
   {
     NAME: 'should work without filters',

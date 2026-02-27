@@ -42,9 +42,7 @@ test.describe('News listing block', () => {
     const newsListingBlock = await findNewsListingBlock(page);
 
     // Make sure there is no empty-results message.
-    expect(
-      await newsListingBlock.locator('.no-results').isVisible(),
-    ).toBeFalsy();
+    expect(await newsListingBlock.locator('.no-results').isVisible()).toBeFalsy();
 
     // Check that there is at least one news item.
     const newsListingItems = newsListingBlock.locator('.news-listing__item');
@@ -55,30 +53,29 @@ test.describe('News listing block', () => {
     const newsTags = newsListingBlock.locator('.content-tags');
 
     // Make sure the news tags element is visible.
-    expect(
-      await newsTags.isVisible()
-    ).toBeTruthy();
+    expect(await newsTags.isVisible()).toBeTruthy();
 
     // Check that there is at least one news tag.
     const newsTagsItems = newsTags.locator('.content-tags__tags__tag');
     const tagsCount = await newsTagsItems.count();
     expect(tagsCount).toBeGreaterThan(0);
-    
+
     logger('News listing block is visible on the front page and it has results.');
   });
 
   test('should have the same news items as in the API response', async ({ page }) => {
     // Construct client-side query parameters for the API request.
     const params = new URLSearchParams({
-      'filter[field_news_item_tags.meta.drupal_internal__target_id][condition][path]': 'field_news_item_tags.meta.drupal_internal__target_id',
+      'filter[field_news_item_tags.meta.drupal_internal__target_id][condition][path]':
+        'field_news_item_tags.meta.drupal_internal__target_id',
       'filter[field_news_item_tags.meta.drupal_internal__target_id][condition][operator]': 'IN',
-      'sort': '-published_at',
-      'page[limit]': '8'
+      sort: '-published_at',
+      'page[limit]': '8',
     });
 
     // Append multiple values for the same parameter.
-    // @todo: It would ge a good idea to add the tags 
-    // to the news list block as a data-attribute and 
+    // @todo: It would ge a good idea to add the tags
+    // to the news list block as a data-attribute and
     // then fetch the data-attribute here instead of
     // hardcoding the values.
     params.append('filter[field_news_item_tags.meta.drupal_internal__target_id][condition][value][]', '336');
@@ -87,7 +84,7 @@ test.describe('News listing block', () => {
     // Fetch news items from Drupal's JSON:API using the created query parameters.
     const data = await fetchJsonApiRequest<JsonApiResponse<NewsItem>>(
       process.env.ETUSIVU_BASE_URL ?? 'https://www.test.hel.ninja',
-      `/fi/jsonapi/node/news?${params.toString()}`
+      `/fi/jsonapi/node/news?${params.toString()}`,
     );
 
     // Verify we received data from the API.
@@ -108,7 +105,7 @@ test.describe('News listing block', () => {
     await items.reduce(async (prev, item) => {
       await prev;
 
-      // Get the title of the news item. 
+      // Get the title of the news item.
       const title = item.attributes.title;
 
       // Skip if there is no title to verify.
@@ -121,7 +118,8 @@ test.describe('News listing block', () => {
       await page.goto('/fi/paatoksenteko-ja-hallinto', { waitUntil: 'domcontentloaded' });
 
       // Verify that the news item is visible in the instance front page.
-      const newsItem = page.locator('.news-listing__item')
+      const newsItem = page
+        .locator('.news-listing__item')
         .filter({ has: page.getByRole('link', { name: title, exact: true }) })
         .first();
       await expect(newsItem).toBeVisible();
@@ -130,16 +128,16 @@ test.describe('News listing block', () => {
     logger('News listing block has the same news items as in the API response.');
   });
 
-  test('should have a link-button on the block that takes the user to front page news listing with correct filters', async ({ page }) => {
+  test('should have a link-button on the block that takes the user to front page news listing with correct filters', async ({
+    page,
+  }) => {
     const newsListingBlock = await findNewsListingBlock(page);
 
     // Find the link-button on the block that takes the user to front page news listing.
     const linkButton = newsListingBlock.getByRole('link').filter({ hasText: 'Katso kaikki aiheen uutiset' });
 
     // Make sure the button is visible.
-    expect(
-      await linkButton.isVisible()
-    ).toBeTruthy();
+    expect(await linkButton.isVisible()).toBeTruthy();
 
     // Get all news items from the listing block.
     const newsListingItems = newsListingBlock.locator('.news-listing__item');
@@ -172,7 +170,7 @@ test.describe('News listing block', () => {
     expect(archiveItemCount).toBeGreaterThanOrEqual(newsListingCount);
 
     // Compare each item in the listing with the corresponding item in the archive.
-    // To be on the safe side, check which number of items is smaller and use it for 
+    // To be on the safe side, check which number of items is smaller and use it for
     // the comparison.
     const itemsToCompare = Math.min(newsListingCount, archiveItemCount);
     for (let i = 0; i < itemsToCompare; i++) {

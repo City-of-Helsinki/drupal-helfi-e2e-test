@@ -32,7 +32,11 @@ async function selectRadioOptionMultiple(group: Locator, option: 'yes_full_servi
   await label.click();
 
   const input =
-    option === 'yes_full_service' ? group.locator('input[type="radio"]').first() : option === 'yes_partial_service' ? group.locator('input[type="radio"]').nth(1) : group.locator('input[type="radio"]').last();
+    option === 'yes_full_service'
+      ? group.locator('input[type="radio"]').first()
+      : option === 'yes_partial_service'
+        ? group.locator('input[type="radio"]').nth(1)
+        : group.locator('input[type="radio"]').last();
 
   await expect(input).toBeChecked();
 }
@@ -88,8 +92,8 @@ const selectMealServicePartial = (page: Page) =>
       name: 'Laske arvioon ateriapalvelu',
     });
 
-  await selectRadioOptionMultiple(group, 'yes_partial_service');
-});
+    await selectRadioOptionMultiple(group, 'yes_partial_service');
+  });
 
 const selectNoMealService = (page: Page) =>
   test.step('Select meal service', async () => {
@@ -97,14 +101,13 @@ const selectNoMealService = (page: Page) =>
       name: 'Laske arvioon ateriapalvelu',
     });
 
-  await selectRadioOptionMultiple(group, 'no');
-});
+    await selectRadioOptionMultiple(group, 'no');
+  });
 
 const fillGuardianshipFees = (page: Page, value: string) =>
   test.step('Fill guardianship fees', async () => {
     await page.getByLabel('Edunvalvontamaksut (euroa)', { exact: true }).fill(String(value));
   });
-
 
 export {
   selectSafetyPhone,

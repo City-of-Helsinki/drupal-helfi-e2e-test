@@ -1,6 +1,10 @@
 import { test } from '@playwright/test';
 import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
-import { fillHouseholdSize, fillGrossIncomePerMonth, fillMonthlyUsage } from '../../../common/calculators/calculatorsInput';
+import {
+  fillHouseholdSize,
+  fillGrossIncomePerMonth,
+  fillMonthlyUsage,
+} from '../../../common/calculators/calculatorsInput';
 
 const TEST_CASES = [
   {
