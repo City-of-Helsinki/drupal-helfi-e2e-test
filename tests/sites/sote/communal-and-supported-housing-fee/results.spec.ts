@@ -78,9 +78,7 @@ const TEST_CASES = [
 
 test.describe.configure({ mode: 'parallel' });
 test.beforeEach(
-  existsBeforeEach(
-    '/fi/sosiaali-ja-terveyspalvelut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksun-laskuri',
-  ),
+  existsBeforeEach('/fi/sosiaali-ja-terveyspalvelut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksun-laskuri'),
 );
 
 TEST_CASES.forEach((testCase) => {
@@ -121,7 +119,9 @@ TEST_CASES.forEach((testCase) => {
         await expectResult(page, testCase.MEAL_SERVICE.PHONE_GROCERY_MEAL_FULL);
       });
 
-      test('With NO safety phone, grocery delivery service and NO meal service and guardianship fees', async ({ page }) => {
+      test('With NO safety phone, grocery delivery service and NO meal service and guardianship fees', async ({
+        page,
+      }) => {
         await fillHouseholdSize(page, testCase.HOUSEHOLD_SIZE);
         await fillGrossIncomePerMonth(page, testCase.GROSS_INCOME_PER_MONTH);
         await fillMonthlyUsage(page, testCase.MONTHLY_USAGE, labelMonthlyUsage);

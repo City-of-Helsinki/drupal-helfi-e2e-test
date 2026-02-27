@@ -92,8 +92,8 @@ const selectMealServicePartial = (page: Page) =>
       name: 'Laske arvioon ateriapalvelu',
     });
 
-  await selectRadioOptionMultiple(group, 'yes_partial_service');
-});
+    await selectRadioOptionMultiple(group, 'yes_partial_service');
+  });
 
 const selectNoMealService = (page: Page) =>
   test.step('Select meal service', async () => {
@@ -101,8 +101,8 @@ const selectNoMealService = (page: Page) =>
       name: 'Laske arvioon ateriapalvelu',
     });
 
-  await selectRadioOptionMultiple(group, 'no');
-});
+    await selectRadioOptionMultiple(group, 'no');
+  });
 
 const fillGuardianshipFees = (page: Page, value: string) =>
   test.step('Fill guardianship fees', async () => {

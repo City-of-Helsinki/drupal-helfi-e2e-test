@@ -61,9 +61,7 @@ test('Monthly usage input must be positive, integer and in range', async ({ page
 
 test('Safety phone input must be selected', async ({ page }) => {
   await page.getByRole('button', { name: 'Laske arvio' }).click();
-  expect(
-    await page.getByText('Valinta on pakollinen: Laske arvioon hälytyskutsupalvelu.').isVisible(),
-  ).toBeTruthy();
+  expect(await page.getByText('Valinta on pakollinen: Laske arvioon hälytyskutsupalvelu.').isVisible()).toBeTruthy();
 });
 
 test('If safety phone is selected, a helper text must become visible', async ({ page }) => {
