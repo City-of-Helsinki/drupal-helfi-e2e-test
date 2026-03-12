@@ -1,5 +1,5 @@
+import path from 'node:path';
 import type { Page } from '@playwright/test';
-import path from 'path';
 import { sites } from '../sites.config';
 import { logger } from './logger';
 
