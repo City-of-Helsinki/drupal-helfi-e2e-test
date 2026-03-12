@@ -128,6 +128,9 @@ const expectRss = async (page: Page) =>
       const archiveItemCount = await archiveItems.count();
       expect(archiveItemCount).toBeGreaterThanOrEqual(rssItems.length);
 
+      // The rssItems count should be higher than zero.
+      expect(rssItems.length, `There are ${archiveItemCount} items in the news archive, but the RSS item count is ${rssItems.length}`).toBeGreaterThan(0);
+
       // Compare the news item titles so that they match in the results and RSS feed.
       const itemsToCompare = Math.min(rssItems.length, archiveItemCount);
       for (let i = 0; i < itemsToCompare; i++) {
