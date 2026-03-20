@@ -100,44 +100,63 @@ const expectResult = async (page: Page, initialText: string, testCase?: TestCase
     }
   });
 
+// Compares archive items on the current page against the given RSS feed URL.
+async function compareArchiveWithRss(
+  page: Page,
+  archiveResults: ReturnType<Page['locator']>,
+  rssUrl: string,
+  channelTitle: string = '',
+) {
+  const archiveItems = archiveResults.locator('.card');
+  const archiveItemCount = await archiveItems.count();
+  const rssItems = Array.from(await fetchRssFeed(page, rssUrl, channelTitle));
+
+  expect(
+    rssItems.length,
+    `There are ${archiveItemCount} items in the news archive, but the RSS feed returned ${rssItems.length} items`,
+  ).toBeGreaterThan(0);
+
+  // Verify that each archive item title matches the corresponding RSS item title.
+  const itemsToCompare = Math.min(rssItems.length, archiveItemCount);
+  for (let i = 0; i < itemsToCompare; i++) {
+    const archiveItemTitle = (await archiveItems.nth(i).locator('.card__link').textContent())?.trim();
+    const rssItemTitle = rssItems[i].getElementsByTagName('title')[0].textContent?.trim();
+    expect(archiveItemTitle).toBe(rssItemTitle);
+  }
+
+  return archiveItemCount;
+}
+
+
 const expectRss = async (page: Page) =>
   await test.step('Check that the results match with RSS', async () => {
-    // Get the results container from the news archive.
-    const newsArchiveFilterResults = page.locator('.react-search__results');
-    await expect(newsArchiveFilterResults).toBeVisible();
+    const newsArchiveResults = page.locator('.react-search__results');
+    await expect(newsArchiveResults).toBeVisible();
 
-    // Save all news items from the news archive.
-    const archiveItems = newsArchiveFilterResults.locator('.card');
-
-    // Find the rss-link.
+    // Get the RSS feed URL from the link on the page.
     const rssLink = page.locator('.news-archive__rss-link');
+    await expect(rssLink).toBeVisible();
 
-    // Make sure the link is visible.
-    expect(await rssLink.isVisible()).toBeTruthy();
-
-    // Get the url of the RSS feed from the link.
     const rssUrl = await rssLink.getAttribute('href');
-    expect(rssUrl).toBeTruthy();
+    if (!rssUrl) throw new Error('RSS feed URL is missing');
 
-    // Fetch the RSS feed.
-    if (rssUrl) {
-      // Get all items from the RSS feed.
-      const rssItems = await fetchRssFeed(page, rssUrl, 'Uutiset');
+    // Check the first page.
+    await compareArchiveWithRss(page, newsArchiveResults, rssUrl, 'Uutiset');
 
-      // Compare the number of news items.
-      const archiveItemCount = await archiveItems.count();
-      expect(archiveItemCount).toBeGreaterThanOrEqual(rssItems.length);
+    // If there are more items than the RSS page limit and a second page exists, check it too.
+    const secondPageLink = page.locator('.pager__items a[href*="page=2"]');
+    const secondPageExists = await secondPageLink.waitFor({ state: 'visible', timeout: 5_000 }).then(() => true).catch(() => false);
+    if (secondPageExists) {
+      await secondPageLink.click();
+      const newsArchiveResults = page.locator('.react-search__results');
+      await expect(newsArchiveResults).toBeVisible();
 
-      // The rssItems count should be higher than zero.
-      expect(rssItems.length, `There are ${archiveItemCount} items in the news archive, but the RSS item count is ${rssItems.length}`).toBeGreaterThan(0);
-
-      // Compare the news item titles so that they match in the results and RSS feed.
-      const itemsToCompare = Math.min(rssItems.length, archiveItemCount);
-      for (let i = 0; i < itemsToCompare; i++) {
-        const archiveItemTitle = (await archiveItems.nth(i).locator('.card__link').textContent())?.trim();
-        const rssItemTitle = rssItems[i].getElementsByTagName('title')[0].textContent?.trim();
-        expect(archiveItemTitle).toBe(rssItemTitle);
-      }
+      // Re-read the RSS URL after navigation and build the page 2 URL.
+      const rssLink = page.locator('.news-archive__rss-link');
+      await expect(rssLink).toBeVisible();
+      const rssUrl = await rssLink.getAttribute('href');
+      if (!rssUrl) throw new Error('RSS feed URL is missing');
+      await compareArchiveWithRss(page, newsArchiveResults, rssUrl, 'Uutiset');
     }
   });
 
