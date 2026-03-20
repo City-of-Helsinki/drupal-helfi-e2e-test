@@ -121,42 +121,37 @@ async function compareArchiveWithRss(
   for (let i = 0; i < itemsToCompare; i++) {
     const archiveItemTitle = (await archiveItems.nth(i).locator('.card__link').textContent())?.trim();
     const rssItemTitle = rssItems[i].getElementsByTagName('title')[0].textContent?.trim();
-    expect(archiveItemTitle).toBe(rssItemTitle);
+    expect(archiveItemTitle, `Item ${i + 1}: archive title "${archiveItemTitle}" matches RSS title "${rssItemTitle}"`).toBe(rssItemTitle);
   }
 
   return archiveItemCount;
 }
 
+// Gets the RSS feed URL from the page and compares news items against it.
+async function matchesWithRss(page: Page) {
+  const newsArchiveResults = page.locator('.react-search__results');
+  await expect(newsArchiveResults).toBeVisible();
+
+  const rssLink = page.locator('.news-archive__rss-link');
+  await expect(rssLink).toBeVisible();
+
+  const rssUrl = await rssLink.getAttribute('href');
+  if (!rssUrl) throw new Error('RSS feed URL is missing');
+
+  await compareArchiveWithRss(page, newsArchiveResults, rssUrl, 'Uutiset');
+}
 
 const expectRss = async (page: Page) =>
   await test.step('Check that the results match with RSS', async () => {
-    const newsArchiveResults = page.locator('.react-search__results');
-    await expect(newsArchiveResults).toBeVisible();
-
-    // Get the RSS feed URL from the link on the page.
-    const rssLink = page.locator('.news-archive__rss-link');
-    await expect(rssLink).toBeVisible();
-
-    const rssUrl = await rssLink.getAttribute('href');
-    if (!rssUrl) throw new Error('RSS feed URL is missing');
-
     // Check the first page.
-    await compareArchiveWithRss(page, newsArchiveResults, rssUrl, 'Uutiset');
+    await matchesWithRss(page);
 
     // If there are more items than the RSS page limit and a second page exists, check it too.
     const secondPageLink = page.locator('.pager__items a[href*="page=2"]');
     const secondPageExists = await secondPageLink.waitFor({ state: 'visible', timeout: 5_000 }).then(() => true).catch(() => false);
     if (secondPageExists) {
       await secondPageLink.click();
-      const newsArchiveResults = page.locator('.react-search__results');
-      await expect(newsArchiveResults).toBeVisible();
-
-      // Re-read the RSS URL after navigation and build the page 2 URL.
-      const rssLink = page.locator('.news-archive__rss-link');
-      await expect(rssLink).toBeVisible();
-      const rssUrl = await rssLink.getAttribute('href');
-      if (!rssUrl) throw new Error('RSS feed URL is missing');
-      await compareArchiveWithRss(page, newsArchiveResults, rssUrl, 'Uutiset');
+      await matchesWithRss(page);
     }
   });
 
