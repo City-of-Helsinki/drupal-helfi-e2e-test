@@ -12,31 +12,27 @@ export async function fetchRssFeed(
   page: Page,
   rssUrl: string,
   title: string = '',
-): Promise<HTMLCollectionOf<Element> | []> {
-  try {
-    const response = await page.request.get(rssUrl, {
-      ignoreHTTPSErrors: true,
-    });
-    expect(response.status()).toBe(200);
+): Promise<HTMLCollectionOf<Element>> {
+  const response = await page.request.get(rssUrl, {
+    ignoreHTTPSErrors: true,
+  });
+  expect(response.status()).toBe(200);
 
-    const rssContent = await response.text();
-    const rssXml = new DOMParser().parseFromString(rssContent, 'text/xml');
+  const rssContent = await response.text();
+  const rssXml = new DOMParser().parseFromString(rssContent, 'text/xml');
 
-    // Use DOMParser to parse the RSS feed.
-    const rssElement = rssXml.getElementsByTagName('rss')[0];
-    const channelElement = rssXml.getElementsByTagName('channel')[0];
-    const channelTitle = channelElement.getElementsByTagName('title')[0].textContent?.trim();
+  // Use DOMParser to parse the RSS feed.
+  const rssElement = rssXml.getElementsByTagName('rss')[0];
+  const channelElement = rssXml.getElementsByTagName('channel')[0];
+  const channelTitle = channelElement.getElementsByTagName('title')[0].textContent?.trim();
 
-    // Verify basic RSS structure.
-    expect(rssElement).toBeDefined();
-    expect(channelElement).toBeDefined();
-    expect(channelTitle).toBeDefined();
-    if (title) {
-      expect(channelTitle).toContain(title);
-    }
-    return rssXml.getElementsByTagName('item');
-  } catch (error) {
-    console.error(error);
-    return [];
+  // Verify basic RSS structure.
+  expect(rssElement).toBeDefined();
+  expect(channelElement).toBeDefined();
+  expect(channelTitle).toBeDefined();
+  if (title) {
+    expect(channelTitle).toContain(title);
   }
+
+  return channelElement.getElementsByTagName('item');
 }
