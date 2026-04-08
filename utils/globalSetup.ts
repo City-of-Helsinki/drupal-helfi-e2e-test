@@ -12,9 +12,6 @@ import { getStorageStatePath } from './storagePath';
 export default async function globalSetup(config: FullConfig) {
   const storageStatePath = getStorageStatePath();
 
-  // Early return if storage state already exists.
-  if (fs.existsSync(storageStatePath)) return;
-
   // Ensure the parent directory exists.
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
 
