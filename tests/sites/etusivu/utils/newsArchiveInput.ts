@@ -113,7 +113,7 @@ async function compareNewsArchiveWithRss(
 
   expect(
     rssItems.length,
-    `There are ${archiveItemCount} items in the news archive, but the RSS feed returned ${rssItems.length} items`,
+    `There are ${archiveItemCount} items in the news archive. The RSS feed returned ${rssItems.length} items.`,
   ).toBeGreaterThan(0);
 
   // Verify that each archive item title matches the corresponding RSS item title.
@@ -128,16 +128,19 @@ async function compareNewsArchiveWithRss(
 }
 
 // Get the RSS feed URL from the page and compare news items against it.
-async function matchesWithRss(page: Page) {
+async function matchesWithRss(page: Page, rssPage?: number) {
   const newsArchiveResults = page.locator('.react-search__results');
   await expect(newsArchiveResults).toBeVisible();
 
   const rssLink = page.locator('.news-archive__rss-link');
   await expect(rssLink).toBeVisible();
 
-  const rssUrl = await rssLink.getAttribute('href');
+  let rssUrl = await rssLink.getAttribute('href');
   if (!rssUrl) throw new Error('RSS feed URL is missing');
 
+  if (rssPage) {
+    rssUrl += rssUrl.includes('?') ? `&page=${rssPage}` : `?page=${rssPage}`;
+  }
   await compareNewsArchiveWithRss(page, newsArchiveResults, rssUrl, 'Uutiset');
 }
 
@@ -151,7 +154,7 @@ const expectRss = async (page: Page) =>
     const secondPageExists = await secondPageLink.waitFor({ state: 'visible', timeout: 5_000 }).then(() => true).catch(() => false);
     if (secondPageExists) {
       await secondPageLink.click();
-      await matchesWithRss(page);
+      await matchesWithRss(page, 1);
     }
   });
 
