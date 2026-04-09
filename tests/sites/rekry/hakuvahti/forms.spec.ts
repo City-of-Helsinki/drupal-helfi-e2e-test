@@ -20,6 +20,6 @@ test.describe('Hakuvahti forms', () => {
     // Form should be submitted automatically, but the submitting
     // will fail since the test subscription does not exist.
     // @todo create a way to test hakuvahti with e2e tests
-    await page.getByText('Hakuvahdin poisto epäonnistui').waitFor({ timeout: 5000 });
+    await page.getByText('Hakuvahdin poistaminen epäonnistui').waitFor({ timeout: 5000 });
   });
 });
