@@ -1,8 +1,7 @@
 import { test } from '@playwright/test';
 
 /**
- * Test to verify that announcements marked for external publishing are visible
- * on their respective language home pages
+ * Tests for Hakuvahti form submission (activate and delete).
  */
 test.describe('Hakuvahti forms', () => {
   test('Activate form', async ({ page }) => {
@@ -10,8 +9,8 @@ test.describe('Hakuvahti forms', () => {
 
     // Form should be submitted automatically, but the submitting
     // will fail since the test subscription does not exist.
-    // @todo create a way to test hakuvahti with e2e tests
-    await page.getByText('Hakuvahdin vahvistus epäonnistui').waitFor({ timeout: 5000 });
+    // @todo UHF-12540: Create a way to test hakuvahti with e2e tests
+    await page.getByRole('heading', { name: 'Hakuvahdin vahvistus epäonnistui' }).waitFor({ timeout: 5000 });
   });
 
   test('Delete form', async ({ page }) => {
@@ -19,7 +18,7 @@ test.describe('Hakuvahti forms', () => {
 
     // Form should be submitted automatically, but the submitting
     // will fail since the test subscription does not exist.
-    // @todo create a way to test hakuvahti with e2e tests
-    await page.getByText('Hakuvahdin poistaminen epäonnistui').waitFor({ timeout: 5000 });
+    // @todo UHF-12540: Create a way to test hakuvahti with e2e tests
+    await page.getByRole('heading', { name: 'Hakuvahdin poistaminen epäonnistui' }).waitFor({ timeout: 5000 });
   });
 });
