@@ -1,7 +1,5 @@
 import { test, type Page } from '@playwright/test';
 
-const PAY_SUBSIDY_PERCENTAGES = ['50', '70'];
-
 const fillVacationMoney = (page: Page, value: string) =>
   test.step('Fill vacation money', async () => {
     await page.getByLabel('Lomaraha').fill(String(value));
