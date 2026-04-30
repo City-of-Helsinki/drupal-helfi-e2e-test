@@ -6,10 +6,7 @@ import {
   fillVacationMoney,
   selectCompanyTypeAssociation,
   selectCompanyTypeBusiness,
-  selectPaySubsidyGranted,
   selectPaySubsidyNotGranted,
-  selectPaySubsidyPercentageOption1,
-  selectPaySubsidyPercentageOption2,
 } from './fixtures/input';
 
 const TEST_CASES = [
@@ -19,13 +16,9 @@ const TEST_CASES = [
     VACATION_MONEY: '16',
     BUSINESS_ACTIVITIES: {
       NONE: '252,00',
-      50: '52,00',
-      70: '224,00',
     },
     ASSOCIATION: {
       NONE: '504,00',
-      50: '304,00',
-      70: '224,00',
     },
   },
   {
@@ -34,13 +27,9 @@ const TEST_CASES = [
     VACATION_MONEY: '42',
     BUSINESS_ACTIVITIES: {
       NONE: '631,00',
-      50: '131,00',
-      70: '562,00',
     },
     ASSOCIATION: {
-      NONE: '800,00',
-      50: '762,00',
-      70: '562,00',
+      NONE: '1262,00',
     },
   },
   {
@@ -48,14 +37,10 @@ const TEST_CASES = [
     MONTLY_PAY: '2000',
     VACATION_MONEY: '88',
     BUSINESS_ACTIVITIES: {
-      NONE: '800,00',
-      50: '264,00',
-      70: '800,00',
+      NONE: '1264,00',
     },
     ASSOCIATION: {
-      NONE: '800,00',
-      50: '800,00',
-      70: '800,00',
+      NONE: '1500,00',
     },
   },
 ];
@@ -76,26 +61,6 @@ TEST_CASES.forEach((testCase) => {
         await clickResultsButton(page);
         await expectResult(page, testCase.BUSINESS_ACTIVITIES.NONE);
       });
-
-      test('Fill in form and check results (50)', async ({ page }) => {
-        await fillMonthlyPay(page, testCase.MONTLY_PAY);
-        await fillVacationMoney(page, testCase.VACATION_MONEY);
-        await selectCompanyTypeBusiness(page);
-        await selectPaySubsidyGranted(page);
-        await selectPaySubsidyPercentageOption1(page);
-        await clickResultsButton(page);
-        await expectResult(page, testCase.BUSINESS_ACTIVITIES['50']);
-      });
-
-      test('Fill in form and check results (70)', async ({ page }) => {
-        await fillMonthlyPay(page, testCase.MONTLY_PAY);
-        await fillVacationMoney(page, testCase.VACATION_MONEY);
-        await selectCompanyTypeBusiness(page);
-        await selectPaySubsidyGranted(page);
-        await selectPaySubsidyPercentageOption2(page);
-        await clickResultsButton(page);
-        await expectResult(page, testCase.BUSINESS_ACTIVITIES['70']);
-      });
     });
 
     test.describe('Association: business', () => {
@@ -108,28 +73,6 @@ TEST_CASES.forEach((testCase) => {
         await clickResultsButton(page);
         await expectResult(page, testCase.BUSINESS_ACTIVITIES.NONE);
       });
-
-      test('Fill in form and check results (50)', async ({ page }) => {
-        await fillMonthlyPay(page, testCase.MONTLY_PAY);
-        await fillVacationMoney(page, testCase.VACATION_MONEY);
-        await selectCompanyTypeAssociation(page);
-        await checkAssociationHasBusinessActivities(page);
-        await selectPaySubsidyGranted(page);
-        await selectPaySubsidyPercentageOption1(page);
-        await clickResultsButton(page);
-        await expectResult(page, testCase.BUSINESS_ACTIVITIES['50']);
-      });
-
-      test('Fill in form and check results (70)', async ({ page }) => {
-        await fillMonthlyPay(page, testCase.MONTLY_PAY);
-        await fillVacationMoney(page, testCase.VACATION_MONEY);
-        await selectCompanyTypeAssociation(page);
-        await checkAssociationHasBusinessActivities(page);
-        await selectPaySubsidyGranted(page);
-        await selectPaySubsidyPercentageOption2(page);
-        await clickResultsButton(page);
-        await expectResult(page, testCase.BUSINESS_ACTIVITIES['70']);
-      });
     });
 
     test.describe('Association', () => {
@@ -140,26 +83,6 @@ TEST_CASES.forEach((testCase) => {
         await selectPaySubsidyNotGranted(page);
         await clickResultsButton(page);
         await expectResult(page, testCase.ASSOCIATION.NONE);
-      });
-
-      test('[Association] Fill in form and check results (50)', async ({ page }) => {
-        await fillMonthlyPay(page, testCase.MONTLY_PAY);
-        await fillVacationMoney(page, testCase.VACATION_MONEY);
-        await selectCompanyTypeAssociation(page);
-        await selectPaySubsidyGranted(page);
-        await selectPaySubsidyPercentageOption1(page);
-        await clickResultsButton(page);
-        await expectResult(page, testCase.ASSOCIATION['50']);
-      });
-
-      test('[Association] Fill in form and check results (70)', async ({ page }) => {
-        await fillMonthlyPay(page, testCase.MONTLY_PAY);
-        await fillVacationMoney(page, testCase.VACATION_MONEY);
-        await selectCompanyTypeAssociation(page);
-        await selectPaySubsidyGranted(page);
-        await selectPaySubsidyPercentageOption2(page);
-        await clickResultsButton(page);
-        await expectResult(page, testCase.ASSOCIATION['70']);
       });
     });
   });

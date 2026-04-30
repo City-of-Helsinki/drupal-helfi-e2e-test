@@ -1,7 +1,5 @@
 import { test, type Page } from '@playwright/test';
 
-const PAY_SUBSIDY_PERCENTAGES = ['50', '70'];
-
 const fillVacationMoney = (page: Page, value: string) =>
   test.step('Fill vacation money', async () => {
     await page.getByLabel('Lomaraha').fill(String(value));
@@ -12,41 +10,12 @@ const fillMonthlyPay = (page: Page, value: string) =>
     await page.getByLabel('Työntekijän tuleva bruttopalkka').fill(String(value));
   });
 
-const selectPaySubsidyGranted = (page: Page) =>
-  test.step('Select pay subsidy granted', async () => {
-    await page
-      .getByText('Palkkatuki tai 55 vuotta täyttäneiden työllistämistuki', {
-        exact: true,
-      })
-      .click();
-  });
-
 const selectPaySubsidyNotGranted = (page: Page) =>
   test.step('Select pay subsidy not granted', async () => {
     await page
-      .getByText('Työsuhteeseen ei ole myönnetty tai haettu muuta tukea', {
+      .getByText('Työsuhteeseen ei ole myönnetty tai haettu muuta tukea *', {
         exact: true,
       })
-      .click();
-  });
-
-const selectPaySubsidyPercentageOption1 = (page: Page) =>
-  test.step('Select pay subsidy percentage #1', async () => {
-    await page
-      .getByText(
-        `Tuki kattaa ${PAY_SUBSIDY_PERCENTAGES[0]} % palkkauskustannuksista (tuen perusteena ammatillisen osaamisen parantaminen)`,
-        { exact: true },
-      )
-      .click();
-  });
-
-const selectPaySubsidyPercentageOption2 = (page: Page) =>
-  test.step('Select pay subsidy percentage #2', async () => {
-    await page
-      .getByText(
-        `Tuki kattaa ${PAY_SUBSIDY_PERCENTAGES[1]} % palkkauskustannuksista (tuen perusteena alentunut työkyky tai 55 vuotta täyttäneiden työllistämistuki)`,
-        { exact: true },
-      )
       .click();
   });
 
@@ -67,13 +36,10 @@ const checkAssociationHasBusinessActivities = (page: Page) =>
   });
 
 export {
-  selectPaySubsidyPercentageOption1,
-  selectPaySubsidyPercentageOption2,
   fillVacationMoney,
   fillMonthlyPay,
   selectCompanyTypeBusiness,
   selectCompanyTypeAssociation,
   checkAssociationHasBusinessActivities,
-  selectPaySubsidyGranted,
   selectPaySubsidyNotGranted,
 };
