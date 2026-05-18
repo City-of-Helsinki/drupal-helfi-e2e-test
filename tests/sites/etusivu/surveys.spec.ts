@@ -62,7 +62,11 @@ test('Externally published surveys are visible', async ({ page }) => {
 
     const path = `/${lang || ''}`.replace(/\/+$/, '') || '/';
     await test.step(`Verify survey appears on ${path}`, async () => {
+      await page.clock.install({ time: new Date() });
       await page.goto(path, { waitUntil: 'domcontentloaded' });
+
+      // Fast-forward 15 seconds.
+      await page.clock.fastForward(15_000);
 
       // Verify survey dialog is visible and contains expected elements.
       const surveyDialog = page.locator('.dialog--survey');
