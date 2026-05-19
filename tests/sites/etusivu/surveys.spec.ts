@@ -57,12 +57,17 @@ test('Externally published surveys are visible', async ({ page }) => {
       return;
     }
 
+    let contentFound = false;
     const textSegments = extractTextSegments(html);
     expect(textSegments.length, 'No valid text segments found in survey').toBeGreaterThan(0);
 
     const path = `/${lang || ''}`.replace(/\/+$/, '') || '/';
     await test.step(`Verify survey appears on ${path}`, async () => {
+      await page.clock.install({ time: new Date() });
       await page.goto(path, { waitUntil: 'domcontentloaded' });
+
+      // Fast-forward 15 seconds.
+      await page.clock.fastForward(15_000);
 
       // Verify survey dialog is visible and contains expected elements.
       const surveyDialog = page.locator('.dialog--survey');
@@ -80,10 +85,27 @@ test('Externally published surveys are visible', async ({ page }) => {
         try {
           await expect(surveyDialog.filter({ hasText: segment })).toBeVisible();
           logger(`Found survey on path ${path}, text: ${segment.slice(0, 50)}...`);
-          return;
+          contentFound = true;
         } catch (_e) {
           logger(`Text segment not found: ${path}: ${segment.slice(0, 50)}...`);
         }
+      }
+
+      // Test the "Remind me later" button functionality.
+      if (contentFound) {
+        const remindMeLaterButton = surveyDialog.locator('#helfi-survey__later-button');
+        await expect(remindMeLaterButton).toBeVisible();
+        await remindMeLaterButton.click();
+
+        // Verify survey dialog is not visible after "Remind me later" click.
+        await expect(surveyDialog).not.toBeVisible();
+
+        // Fast-forward 120 seconds.
+        await page.clock.fastForward(120_000);
+
+        // Verify survey dialog is visible after waiting period..
+        await expect(surveyDialog).toBeVisible();
+        return;
       }
 
       // If we get here, none of the segments were found.
