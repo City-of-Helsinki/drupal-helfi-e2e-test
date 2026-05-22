@@ -121,7 +121,10 @@ async function compareNewsArchiveWithRss(
   for (let i = 0; i < itemsToCompare; i++) {
     const archiveItemTitle = (await archiveItems.nth(i).locator('.card__link').textContent())?.trim();
     const rssItemTitle = rssItems[i].getElementsByTagName('title')[0].textContent?.trim();
-    expect(archiveItemTitle, `Item ${i + 1}: archive title "${archiveItemTitle}" matches RSS title "${rssItemTitle}"`).toBe(rssItemTitle);
+    expect(
+      archiveItemTitle,
+      `Item ${i + 1}: archive title "${archiveItemTitle}" matches RSS title "${rssItemTitle}"`,
+    ).toBe(rssItemTitle);
   }
 
   return archiveItemCount;
@@ -151,7 +154,10 @@ const expectRss = async (page: Page) =>
 
     // Check if the second page exists.
     const secondPageLink = page.locator('.pager__items a[href*="page=2"]');
-    const secondPageExists = await secondPageLink.waitFor({ state: 'visible', timeout: 5_000 }).then(() => true).catch(() => false);
+    const secondPageExists = await secondPageLink
+      .waitFor({ state: 'visible', timeout: 5_000 })
+      .then(() => true)
+      .catch(() => false);
     if (secondPageExists) {
       await secondPageLink.click();
       await matchesWithRss(page, 1);
