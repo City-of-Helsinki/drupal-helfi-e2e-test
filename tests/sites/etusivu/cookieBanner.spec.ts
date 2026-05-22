@@ -1,5 +1,5 @@
+import { expect, type Page, test } from '@playwright/test';
 import { logger } from '../../../utils/logger';
-import { expect, test, type Page } from '@playwright/test';
 
 test.beforeEach(async ({ context }) => {
   await context.clearCookies();
@@ -51,16 +51,13 @@ test.describe('Cookie Banner', () => {
     const cookieBanner = await navigateToFrontPage(page);
     await page.locator('.hds-cc__required-cookies-button').click();
 
-    // Wait for the page to fully load.
-    await page.waitForLoadState('domcontentloaded');
+    await expect(cookieBanner).not.toBeVisible();
 
     // Verify that a cookie containing the cookie consent settings is set.
     const cookies = await context.cookies();
     const consentCookie = cookies.find((cookie) => cookie.name === 'helfi-cookie-consents');
     expect(consentCookie).toBeDefined();
     expect(consentCookie?.value).toBeDefined();
-
-    await expect(cookieBanner).not.toBeVisible();
   });
 
   test('should set correct cookie settings when accepting required cookies', async ({ page }) => {
