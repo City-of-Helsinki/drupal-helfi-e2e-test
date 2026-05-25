@@ -8,11 +8,7 @@ import { DOMParser } from '@xmldom/xmldom';
  * @param title - Optional title of the RSS feed.
  * @returns Array of RSS feed items or empty array if no items are found.
  */
-export async function fetchRssFeed(
-  page: Page,
-  rssUrl: string,
-  title: string = '',
-): Promise<HTMLCollectionOf<Element>> {
+export async function fetchRssFeed(page: Page, rssUrl: string, title: string = ''): Promise<HTMLCollectionOf<Element>> {
   const response = await page.request.get(rssUrl, {
     ignoreHTTPSErrors: true,
   });
