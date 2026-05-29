@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { existsBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
+import { publishedBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
 test.beforeEach(
-  existsBeforeEach('/fi/sosiaali-ja-terveyspalvelut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksun-laskuri'),
+  publishedBeforeEach('/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri'),
 );
 
 test('Test unfilled fields', async ({ page }) => {

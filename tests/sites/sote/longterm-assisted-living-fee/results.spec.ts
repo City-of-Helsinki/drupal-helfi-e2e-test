@@ -1,5 +1,5 @@
 import { type Page, test } from '@playwright/test';
-import { clickResultsButton, existsBeforeEach, expectResult } from '../../../common/calculators/calculatorsCommon';
+import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
 import {
   fillEarnedIncome,
   fillClientBenefits,
@@ -155,8 +155,8 @@ const TEST_CASES = [
 test.describe.configure({ mode: 'parallel' });
 
 test.beforeEach(
-  existsBeforeEach(
-    '/fi/sosiaali-ja-terveyspalvelut/pitkaaikaisen-ymparivuorokautisen-palveluasumisen-asiakasmaksun-laskuri',
+  publishedBeforeEach(
+    '/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/pitkaaikaisen-ymparivuorokautisen-palveluasumisen-asiakasmaksun-laskuri',
   ),
 );
 

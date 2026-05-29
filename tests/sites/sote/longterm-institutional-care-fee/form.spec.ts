@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
-import { existsBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
+import { publishedBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
-test.beforeEach(existsBeforeEach('/fi/sosiaali-ja-terveyspalvelut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri'));
+test.beforeEach(publishedBeforeEach('/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri'));
 
 test('Test unfilled fields', async ({ page }) => {
   await testUnfilledFields(page);

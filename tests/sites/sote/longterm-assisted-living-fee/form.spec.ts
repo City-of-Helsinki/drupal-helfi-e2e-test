@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { existsBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
+import { publishedBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
 test.beforeEach(
-  existsBeforeEach(
-    '/fi/sosiaali-ja-terveyspalvelut/pitkaaikaisen-ymparivuorokautisen-palveluasumisen-asiakasmaksun-laskuri',
+  publishedBeforeEach(
+    '/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/pitkaaikaisen-ymparivuorokautisen-palveluasumisen-asiakasmaksun-laskuri',
   ),
 );
 
