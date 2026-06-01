@@ -1,5 +1,5 @@
 import { type Page, test } from '@playwright/test';
-import { clickResultsButton, existsBeforeEach, expectResult } from '../../../common/calculators/calculatorsCommon';
+import { clickResultsButton, expectResult, publishedBeforeEach } from '../../../common/calculators/calculatorsCommon';
 import {
   fillEarnedIncome,
   fillClientBenefits,
@@ -115,7 +115,7 @@ const TEST_CASES = [
 
 test.describe.configure({ mode: 'parallel' });
 
-test.beforeEach(existsBeforeEach('/fi/sosiaali-ja-terveyspalvelut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri'));
+test.beforeEach(publishedBeforeEach('/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri'));
 
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {
