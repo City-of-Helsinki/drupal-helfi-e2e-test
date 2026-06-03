@@ -1,6 +1,6 @@
-import { fetchJsonApiRequest } from '../../../utils/fetchJsonApiRequest';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { sites } from '../../../sites.config';
+import { fetchJsonApiRequest } from '../../../utils/fetchJsonApiRequest';
 import { logger } from '../../../utils/logger';
 
 // Type definitions based on the example response
