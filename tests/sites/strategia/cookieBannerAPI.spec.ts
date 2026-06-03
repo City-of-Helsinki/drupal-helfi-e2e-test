@@ -189,13 +189,13 @@ test.describe('Cookie Banner', () => {
 
     const acceptAllCookiesButton = page.locator('.hds-cc__all-cookies-button');
     await acceptAllCookiesButton.click();
-    await page.waitForLoadState('domcontentloaded');
 
-    // Select the example YouTube iframe.
-    const frame = page.frameLocator('iframe[title="Video: Esimerkki videoupotuksesta Youtubesta."]');
+    // The consent-gated embed is activated live, wait for the iframe to render.
+    const iframe = page.locator('iframe[title="Video: Esimerkki videoupotuksesta Youtubesta."]');
+    await iframe.waitFor({ state: 'visible', timeout: 15_000 });
 
-    // Wait for the iframe to be loaded.
-    const iframeBody = frame.locator('html');
+    // Wait for the iframe document to be loaded.
+    const iframeBody = iframe.contentFrame().locator('html');
     await expect(iframeBody).toBeVisible();
 
     // The cookie setting might still take a while so here is another additional wait.
