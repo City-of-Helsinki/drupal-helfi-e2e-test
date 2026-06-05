@@ -25,9 +25,14 @@ test.describe('List of plans paragraph', () => {
     if (rssUrl) {
       const rssItems = await fetchRssFeed(page, rssUrl);
 
-      // Compare the number of plans.
+      // The page may show fewer items than the RSS feed due to paging.
       const planCount = await planItems.count();
-      expect(planCount).toBeGreaterThanOrEqual(rssItems.length);
+      expect(rssItems.length).toBeGreaterThanOrEqual(planCount);
+
+      // If there are more than 10 RSS items, the block should show a pager.
+      if (rssItems.length > 10) {
+        await expect(listOfPlans.locator('.pager')).toBeVisible();
+      }
 
       // Compare the plan titles so that they match in the results and RSS feed.
       const itemsToCompare = Math.min(rssItems.length, planCount);
