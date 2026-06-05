@@ -25,6 +25,16 @@ test.describe('List of plans paragraph', () => {
     if (rssUrl) {
       const rssItems = await fetchRssFeed(page, rssUrl);
 
+      // Verify the displayed total count matches the RSS feed item count.
+      // Skipped when there are 0 items as the count container doesn't have
+      // the number of items written out.
+      if (rssItems.length > 0) {
+        const countContainer = listOfPlans.locator('.list-of-plans__count-container');
+        const countText = await countContainer.textContent();
+        const displayedCount = parseInt(countText?.match(/\d+/)?.[0] ?? '', 10);
+        expect(displayedCount).toBe(rssItems.length);
+      }
+
       // The page may show fewer items than the RSS feed due to paging.
       const planCount = await planItems.count();
       expect(rssItems.length).toBeGreaterThanOrEqual(planCount);
