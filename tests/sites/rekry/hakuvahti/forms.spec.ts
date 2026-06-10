@@ -19,6 +19,6 @@ test.describe('Hakuvahti forms', () => {
     // Form should be submitted automatically, but the submitting
     // will fail since the test subscription does not exist.
     // @todo UHF-12540: Create a way to test hakuvahti with e2e tests
-    await page.getByRole('heading', { name: 'Hakuvahdin poistaminen epäonnistui' }).waitFor({ timeout: 5000 });
+    await page.getByRole('heading', { name: 'Hakuvahtia ei löytynyt' }).waitFor({ timeout: 5000 });
   });
 });
