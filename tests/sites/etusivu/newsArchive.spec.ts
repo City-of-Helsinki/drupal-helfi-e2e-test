@@ -73,6 +73,19 @@ test.describe('News archive', () => {
     logger('News archive with results has been verified.');
   });
 
+  test('should move focus to first result when pagination is clicked', async ({ page }) => {
+    await navigateToNewsArchive(page);
+
+    const secondPageLink = page.locator('.pager__items a[href*="page=2"]');
+    await secondPageLink.waitFor({ state: 'visible' });
+    await secondPageLink.click();
+
+    const firstCardLink = page.locator('.hdbt-search--react__results--container a').first();
+    await expect(firstCardLink).toBeFocused();
+
+    logger('Focus moves to the first result after pagination click.');
+  });
+
   testCases.forEach((testCase: TestCase) => {
     test.describe(testCase.NAME, () => {
       test('Fill in the form and check results', async ({ page }) => {
