@@ -85,13 +85,13 @@ const testCases: TestCases = [
     PAYMENT: '0',
   },
   {
-    NAME: 'Household size 2, 1 child, income just above minimum → payment ≥ 31',
+    NAME: 'Household size 2, 1 child, income just above minimum → payment ≥ 32',
     HOUSEHOLD_SIZE: '2',
-    INCOME: '4355',
+    INCOME: '4664',
     CHILDREN: {
       1: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
     },
-    PAYMENT: '31',
+    PAYMENT: '32',
   },
 
   /**
@@ -115,7 +115,7 @@ const testCases: TestCases = [
       1: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
       2: { DAYCARE_TYPE: 2, DAYCARE_CARE_TIME: 4, DAYCARE_FREE_DAYS: 0 },
     },
-    PAYMENT: '112',
+    PAYMENT: '64',
   },
   {
     NAME: 'Household size 8, below computed min threshold',
@@ -130,7 +130,7 @@ const testCases: TestCases = [
   {
     NAME: 'Household size 8, above computed min threshold',
     HOUSEHOLD_SIZE: '8',
-    INCOME: '8000',
+    INCOME: '8809',
     CHILDREN: {
       1: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
       2: { DAYCARE_TYPE: 2, DAYCARE_CARE_TIME: 4, DAYCARE_FREE_DAYS: 0 },
@@ -142,13 +142,13 @@ const testCases: TestCases = [
    * 3. Max charge cap test.
    **/
   {
-    NAME: 'Household size 2, high income → capped at 311',
+    NAME: 'Household size 2, high income → capped at 335',
     HOUSEHOLD_SIZE: '2',
-    INCOME: '7000',
+    INCOME: '8000',
     CHILDREN: {
       1: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
     },
-    PAYMENT: '311',
+    PAYMENT: '335',
   },
 
   /**
@@ -157,13 +157,13 @@ const testCases: TestCases = [
   {
     NAME: 'Household size 4, 3 children, sibling discounts',
     HOUSEHOLD_SIZE: '4',
-    INCOME: '7000',
+    INCOME: '10000',
     CHILDREN: {
       1: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
       2: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
       3: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
     },
-    PAYMENT: '157',
+    PAYMENT: '536',
   },
 
   /**
@@ -176,16 +176,16 @@ const testCases: TestCases = [
     CHILDREN: {
       1: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
     },
-    PAYMENT: '112',
+    PAYMENT: '64',
   },
   {
-    NAME: 'Daycare type 1 5–7h (80%)',
+    NAME: 'Daycare type 1 5-7h (80%)',
     HOUSEHOLD_SIZE: '4',
     INCOME: '7000',
     CHILDREN: {
       1: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 2, DAYCARE_FREE_DAYS: 0 },
     },
-    PAYMENT: '89',
+    PAYMENT: '51',
   },
   {
     NAME: 'Daycare type 1 ≤5h (60%)',
@@ -194,7 +194,7 @@ const testCases: TestCases = [
     CHILDREN: {
       1: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 3, DAYCARE_FREE_DAYS: 0 },
     },
-    PAYMENT: '67',
+    PAYMENT: '39',
   },
   {
     NAME: 'Daycare type 2 (5yo), ≤4h (0%)',
@@ -206,13 +206,13 @@ const testCases: TestCases = [
     PAYMENT: '0',
   },
   {
-    NAME: 'Daycare type 3 (6yo), 7–8h (60%)',
+    NAME: 'Daycare type 3 (6yo), 7-8h (60%)',
     HOUSEHOLD_SIZE: '4',
     INCOME: '7000',
     CHILDREN: {
       1: { DAYCARE_TYPE: 3, DAYCARE_CARE_TIME: 2, DAYCARE_FREE_DAYS: 0 },
     },
-    PAYMENT: '67',
+    PAYMENT: '39',
   },
   {
     NAME: 'Daycare type 4, 161h+ per month, no preschool flag (100%)',
@@ -226,10 +226,10 @@ const testCases: TestCases = [
         DAYCARE_TYPE_4_EXTRA: false,
       },
     },
-    PAYMENT: '112',
+    PAYMENT: '64',
   },
   {
-    NAME: 'Daycare type 4, 161h+ per month, preschool flag enabled (65%)',
+    NAME: 'Daycare type 4, 101-160h per month, no preschool flag (80%)',
     HOUSEHOLD_SIZE: '4',
     INCOME: '7000',
     CHILDREN: {
@@ -240,10 +240,10 @@ const testCases: TestCases = [
         DAYCARE_TYPE_4_EXTRA: false,
       },
     },
-    PAYMENT: '89',
+    PAYMENT: '51',
   },
   {
-    NAME: 'Daycare type 4, 61–100h per month (60%)',
+    NAME: 'Daycare type 4, 61-100h per month (60%)',
     HOUSEHOLD_SIZE: '4',
     INCOME: '7000',
     CHILDREN: {
@@ -254,21 +254,7 @@ const testCases: TestCases = [
         DAYCARE_TYPE_4_EXTRA: false,
       },
     },
-    PAYMENT: '67',
-  },
-  {
-    NAME: 'Daycare type 4 without extra preschool flag (100% charge)',
-    HOUSEHOLD_SIZE: '4',
-    INCOME: '7000',
-    CHILDREN: {
-      1: {
-        DAYCARE_TYPE: 4,
-        DAYCARE_CARE_TIME: 1,
-        DAYCARE_FREE_DAYS: 0,
-        DAYCARE_TYPE_4_EXTRA: false,
-      },
-    },
-    PAYMENT: '112',
+    PAYMENT: '39',
   },
   {
     NAME: 'Daycare type 4 with extra preschool flag (65% charge)',
@@ -282,7 +268,7 @@ const testCases: TestCases = [
         DAYCARE_TYPE_4_EXTRA: true,
       },
     },
-    PAYMENT: '73',
+    PAYMENT: '42',
   },
 
   /**
@@ -291,24 +277,24 @@ const testCases: TestCases = [
   {
     NAME: '3 children, no free days',
     HOUSEHOLD_SIZE: '4',
-    INCOME: '7000',
+    INCOME: '7871',
     CHILDREN: {
       1: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
       2: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
       3: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 0 },
     },
-    PAYMENT: '157',
+    PAYMENT: '253',
   },
   {
     NAME: '3 children, 4,6,8 free days',
     HOUSEHOLD_SIZE: '4',
-    INCOME: '7000',
+    INCOME: '7871',
     CHILDREN: {
       1: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 4 },
       2: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 6 },
       3: { DAYCARE_TYPE: 1, DAYCARE_CARE_TIME: 1, DAYCARE_FREE_DAYS: 8 },
     },
-    PAYMENT: '128',
+    PAYMENT: '180',
   },
 ];
 
