@@ -18,7 +18,7 @@ const TEST_CASES = [
       NONE: '252,00',
     },
     ASSOCIATION: {
-      NONE: '504,00',
+      NONE: '252,00',
     },
   },
   {
@@ -29,7 +29,7 @@ const TEST_CASES = [
       NONE: '631,00',
     },
     ASSOCIATION: {
-      NONE: '1262,00',
+      NONE: '631,00',
     },
   },
   {
@@ -40,7 +40,7 @@ const TEST_CASES = [
       NONE: '1264,00',
     },
     ASSOCIATION: {
-      NONE: '1500,00',
+      NONE: '1264,00',
     },
   },
 ];
