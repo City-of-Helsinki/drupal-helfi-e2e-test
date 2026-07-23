@@ -61,6 +61,9 @@ The E2E testing framework is designed to:
    ```bash
    # Run all tests
    npm run test
+   # Run site specific tests
+   check readme in sites-folder.
+
    ```
 4. **Running Tests with just one worker can help with performance issues**:
    ```bash
