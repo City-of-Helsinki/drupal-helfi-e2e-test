@@ -16,7 +16,7 @@ type TestCase = {
 const TEST_CASES: TestCase[] = [
   {
     langcode: 'fi',
-    searchFormLabel: 'Mitä haet?',
+    searchFormLabel: 'Mitä etsit?',
     searchPhrase: 'Hyvää elämää Helsingissä',
     searchUrlPath: '/haku',
   },
