@@ -1,5 +1,6 @@
 import { logger } from '../../../utils/logger';
 import { expect, test, type Page } from '@playwright/test';
+import { verifyReact } from '../../../utils/helpers';
 import { type TestCase, testCases } from './utils/newsArchiveTestCases';
 import {
   fillTextFilter,
@@ -20,7 +21,7 @@ async function navigateToNewsArchive(page: Page) {
   await page.goto('/fi/uutiset', { waitUntil: 'domcontentloaded' });
 
   // Verify that the React application has successfully loaded.
-  await verifyReact(page);
+  await verifyReact(page, '.news-archive');
 
   // Make sure there is no error message.
   expect(
@@ -28,19 +29,6 @@ async function navigateToNewsArchive(page: Page) {
   ).toBeFalsy();
 
   return page.locator('.news-archive');
-}
-
-/**
- * Verify that the React application has fully loaded.
- */
-async function verifyReact(page: Page) {
-  // Wait for the form and results container to load.
-  await page.waitForSelector('.news-archive .hdbt-search--react__form-container');
-  await page.waitForSelector('.news-archive .react-search__results');
-
-  // Expect  the form and results container to be visible.
-  await expect(page.locator('.news-archive .hdbt-search--react__form-container')).toBeVisible();
-  await expect(page.locator('.news-archive .react-search__results')).toBeVisible();
 }
 
 test.describe('News archive', () => {
@@ -57,7 +45,7 @@ test.describe('News archive', () => {
     await newsArchiveLink.click();
 
     // Expect the React application to load.
-    await verifyReact(page);
+    await verifyReact(page, '.news-archive');
 
     logger('News archive is accessible from the front page.');
   });
@@ -90,7 +78,7 @@ test.describe('News archive', () => {
     test.describe(testCase.NAME, () => {
       test('Fill in the form and check results', async ({ page }) => {
         await navigateToNewsArchive(page);
-        await verifyReact(page);
+        await verifyReact(page, '.news-archive');
 
         // Then chain the form filling operations
         await (async () => {
