@@ -11,6 +11,9 @@ const verifyReact = async (page: Page, root: string, results: string = '.react-s
   // Expect the form and results container to be visible.
   await expect(page.locator(`${root} .hdbt-search--react__form-container`)).toBeVisible();
   await expect(page.locator(`${root} ${results}`)).toBeVisible();
+
+  // Wait for the loading skeleton to be replaced with the results.
+  await expect(page.locator(`${root} .card--ghost`)).toHaveCount(0);
 };
 
 export { verifyReact };
