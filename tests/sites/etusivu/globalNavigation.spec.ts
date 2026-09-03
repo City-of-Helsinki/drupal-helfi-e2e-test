@@ -1,9 +1,9 @@
 import { expect, type Page, test } from '@playwright/test';
 import { fetchJsonApiRequest } from '../../../utils/fetchJsonApiRequest';
-import type { GlobalMenuResponse } from './types/globalMenuResponseType';
-import { DEFAULT_LANGUAGES, type Langcode } from './types/languagesType';
-import type { GlobalMenuItem, MenuLink } from './types/menuLinkType';
-import { DEFAULT_VIEWPORTS } from './types/viewportsType';
+import type { GlobalMenuResponse } from '../../common/types/globalMenuResponseType';
+import { DEFAULT_LANGUAGES, type Langcode } from '../../common/types/languagesType';
+import type { GlobalMenuItem, MenuLink } from '../../common/types/menuLinkType';
+import { DEFAULT_VIEWPORTS } from '../../common/types/viewportsType';
 
 /**
  * Fetches the global mobile menu JSON for a given language.
