@@ -2,7 +2,9 @@ import { expect, test } from '@playwright/test';
 import { publishedBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
 test.beforeEach(
-  publishedBeforeEach('/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri'),
+  publishedBeforeEach(
+    '/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri',
+  ),
 );
 
 test('Test unfilled fields', async ({ page }) => {
