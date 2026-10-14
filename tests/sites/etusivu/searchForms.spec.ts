@@ -5,7 +5,9 @@ import { expect, type Locator, type Page, test } from '@playwright/test';
  */
 type TestCase = {
   langcode: string;
-  searchFormLabel: string;
+  headerSearchFormLabel: string;
+  heroSearchFormLabel: string;
+  submitButtonLabel: string;
   searchPhrase: string;
   searchUrlPath: string;
 };
@@ -16,21 +18,27 @@ type TestCase = {
 const TEST_CASES: TestCase[] = [
   {
     langcode: 'fi',
-    searchFormLabel: 'Mitä etsit?',
+    headerSearchFormLabel: 'Hakusana tai kysymys',
+    heroSearchFormLabel: 'Mitä etsit?',
+    submitButtonLabel: 'Hae',
     searchPhrase: 'Hyvää elämää Helsingissä',
-    searchUrlPath: '/haku',
+    searchUrlPath: '/fi/haku',
   },
   {
     langcode: 'sv',
-    searchFormLabel: 'Vad söker du?',
+    headerSearchFormLabel: 'Sökord eller fråga',
+    heroSearchFormLabel: 'Vad söker du?',
+    submitButtonLabel: 'Sök',
     searchPhrase: 'Livet är bra i Helsingfors',
-    searchUrlPath: '/sok',
+    searchUrlPath: '/sv/sok',
   },
   {
     langcode: 'en',
-    searchFormLabel: 'What are you looking for?',
+    headerSearchFormLabel: 'Search term or question',
+    heroSearchFormLabel: 'What are you looking for?',
+    submitButtonLabel: 'Search',
     searchPhrase: 'Life is good in Helsinki',
-    searchUrlPath: '/search',
+    searchUrlPath: '/en/search',
   },
 ];
 
@@ -39,19 +47,20 @@ const TEST_CASES: TestCase[] = [
  *
  * @param searchFormWrapper - Locator for the search form container.
  * @param testCase - Test case data.
+ * @param searchFormLabel - Label of the search input.
  */
-const fillSearchForm = (searchFormWrapper: Locator, testCase: TestCase) =>
+const fillSearchForm = (searchFormWrapper: Locator, testCase: TestCase, searchFormLabel: string) =>
   test.step('Fill and submit search form', async () => {
     const searchForm = searchFormWrapper.locator('.helfi-search__form');
     await expect(searchForm).toBeVisible();
 
     // Find and verify search input.
-    const searchInput = searchForm.getByLabel(testCase.searchFormLabel);
+    const searchInput = searchForm.getByLabel(searchFormLabel);
     await expect(searchInput).toBeVisible();
 
     // Fill in search phrase and submit.
     await searchInput.fill(testCase.searchPhrase);
-    const submitButton = searchForm.locator('.helfi-search__submit-button');
+    const submitButton = searchForm.getByRole('button', { name: testCase.submitButtonLabel, exact: true });
     await expect(submitButton).toBeVisible();
     await submitButton.click();
   });
@@ -71,7 +80,7 @@ const testSearchPage = (page: Page, testCase: TestCase) =>
     const currentUrl = page.url();
     const url = new URL(currentUrl);
     expect(url.pathname).toBe(testCase.searchUrlPath);
-    expect(url.searchParams.get('q')).toBe(testCase.searchPhrase);
+    expect(url.searchParams.get('s')).toBe(testCase.searchPhrase);
   });
 
 /**
@@ -100,7 +109,7 @@ const testHeaderBrandingSearch = (page: Page, testCase: TestCase) =>
     await expect(searchDropdown).toBeVisible();
 
     // Fill search form and navigate to search results page.
-    await fillSearchForm(headerBranding.locator('.header-search-wrapper'), testCase);
+    await fillSearchForm(headerBranding.locator('.header-search-wrapper'), testCase, testCase.headerSearchFormLabel);
     await testSearchPage(page, testCase);
   });
 
@@ -113,7 +122,7 @@ const testHeroBlockSearch = (page: Page, testCase: TestCase) =>
     await page.goto(`/${testCase.langcode}`, { waitUntil: 'domcontentloaded' });
 
     // Fill search form and navigate to search results page.
-    await fillSearchForm(page.locator('.hero--with-search'), testCase);
+    await fillSearchForm(page.locator('.hero--with-search'), testCase, testCase.heroSearchFormLabel);
     await testSearchPage(page, testCase);
   });
 
