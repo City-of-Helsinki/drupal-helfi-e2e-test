@@ -120,6 +120,32 @@ languages.forEach((language: Language) => {
       await expect(firstCardLink).toBeFocused();
     });
 
+    test('The filters should be restored when returning to the search from a course page', async ({ page }) => {
+      await navigateToSearch(page, language);
+
+      // Select the first mode of learning.
+      await selectDropdownOption(page, filterPosition.learningMode, 0);
+      const learningModeButton = page.locator(
+        `${filterSelector} > *:nth-child(${filterPosition.learningMode}) button[role="combobox"]`,
+      );
+      const learningModeLabel = (await learningModeButton.textContent()) || '';
+
+      // Submit the form and wait for the selections to be in the url.
+      await page.locator('.hdbt-search--react__submit-button').click();
+      await expect(page).toHaveURL(/\?/);
+      const searchUrl = page.url();
+
+      // Open a course and come back with the back button.
+      await page.locator('.react-search__list-container .card__link').first().click();
+      await page.waitForURL((url) => url.pathname !== language.SEARCH_PATH);
+      await page.goBack({ waitUntil: 'domcontentloaded' });
+      await verifyReact(page, '#helfi-events-search', '.react-search__list-container');
+
+      // The url and the filters should be the same as before leaving the search.
+      await expect(page).toHaveURL(searchUrl);
+      await expect(learningModeButton).toHaveText(learningModeLabel);
+    });
+
     // Run the search with the filter combinations of each test case.
     testCases.forEach((testCase: TestCase) => {
       test(testCase.NAME, async ({ page }) => {
