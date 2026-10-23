@@ -41,7 +41,7 @@ async function fillDropdown(page: Page, selector: string, values: string[]) {
 
 const fillTextFilter = async (page: Page, value: string) =>
   await test.step('Fill text filter', async () => {
-    await page.getByLabel('Hakusana').fill(String(value));
+    await page.getByLabel('Hakusana', { exact: true }).fill(String(value));
   });
 
 const fillTopics = async (page: Page, values: string[]) =>
