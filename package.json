@@ -29,5 +29,8 @@
     "ts-node": {
       "diff": "^8.0.3"
     }
+  },
+  "allowScripts": {
+    "fsevents": false
   }
 }

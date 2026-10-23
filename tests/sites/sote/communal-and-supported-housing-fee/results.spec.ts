@@ -78,7 +78,9 @@ const TEST_CASES = [
 
 test.describe.configure({ mode: 'parallel' });
 test.beforeEach(
-  publishedBeforeEach('/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri'),
+  publishedBeforeEach(
+    '/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/yhteisollisen-ja-tuetun-asumisen-asiakasmaksulaskuri',
+  ),
 );
 
 TEST_CASES.forEach((testCase) => {

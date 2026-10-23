@@ -115,7 +115,11 @@ const TEST_CASES = [
 
 test.describe.configure({ mode: 'parallel' });
 
-test.beforeEach(publishedBeforeEach('/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri'));
+test.beforeEach(
+  publishedBeforeEach(
+    '/fi/sosiaali-ja-terveyspalvelut/asiakkaan-tiedot-ja-oikeudet/maksut/pitkaaikaisen-laitoshoidon-asiakasmaksulaskuri',
+  ),
+);
 
 TEST_CASES.forEach((testCase) => {
   test.describe(testCase.NAME, () => {
