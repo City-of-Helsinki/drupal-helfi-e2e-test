@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { publishedBeforeEach, testUnfilledFields } from '../../../common/calculators/calculatorsCommon';
 
 test.beforeEach(
-  publishedBeforeEach('/fi/yritykset-ja-tyo/tyonantajat/taloudellista-tukea-tyonantajalle/helsinki-lisan-laskuri'),
+  publishedBeforeEach('/fi/yritykset-ja-tyo/tyonantajat/taloudellista-tukea-tyonantajalle/helsinki-lisa-tyonantajalle/helsinki-lisan-laskuri'),
 );
 
 test('Test unfilled fields', async ({ page }) => {
