@@ -5,12 +5,6 @@ const clickResultsButton = (page: Page) =>
     await page.getByRole('button', { name: 'Laske arvio' }).click();
   });
 
-const resultSelector = '.helfi-calculator__receipt-total__value';
-const expectResult = (page: Page, result: string) =>
-  test.step('Click results button', async () => {
-    expect(await page.locator(resultSelector).textContent()).toBe(result);
-  });
-
 const testUnfilledFields = (page: Page) =>
   test.step('On submit, unfilled fields give an error', async () => {
     await clickResultsButton(page);
@@ -61,4 +55,4 @@ const publishedBeforeEach =
   async ({ page }: { page: Page }, testInfo: TestInfo) =>
     skipUnpublished(page, url, testInfo);
 
-export { testUnfilledFields, clickResultsButton, expectResult, publishedBeforeEach, existsBeforeEach };
+export { testUnfilledFields, clickResultsButton, publishedBeforeEach, existsBeforeEach };
